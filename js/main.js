@@ -32,6 +32,7 @@ function buildProvinceDropdown() {
       $('#dropdown-menu-province').append(listItemHtml);       
   }
   analyzeData();
+  $("#loading").fadeOut(300);
 }
 
 function resetAdmin() {

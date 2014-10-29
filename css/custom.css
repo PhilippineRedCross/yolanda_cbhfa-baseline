@@ -26,6 +26,16 @@ body {
   color: #a0a1a3;
 }
 
+#loading {
+  position: fixed;
+  z-index: 99999;
+  width: 100%;
+  text-align: center;
+}
+#loader{
+  height: 280px;
+  margin-top: 10px;
+}
 
 svg {
   height: auto;
