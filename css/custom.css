@@ -6,6 +6,11 @@ html, body {
 body {
   padding-top: 85px;
 }
+.jumpto { 
+  margin-top: -110px;        /* Size of fixed header */
+  padding-bottom: 110px; 
+  display: block; 
+}
 
 .nav-admin{
   height: 85px;
@@ -14,6 +19,7 @@ body {
   width: 100%;
   background: #222;
   padding: 15px;
+  z-index: 99999;
 }
 .nav-text{
   font-weight: 500;
@@ -54,6 +60,11 @@ svg {
   height:180px;
   text-align: center;
   float: right;
+}
+.box-chart-no-float{
+  width:180px;
+  height:180px;
+  text-align: center;
 }
 .text-tagalog {
   color: #999;
