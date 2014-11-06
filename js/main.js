@@ -458,8 +458,12 @@ function FA7(){
       y: yesCount,
     },
     {
-      key: "no",
+      key: "no/dk",
       y: noCount + dkCount,
+    },
+    {
+      key: "skip",
+      y: skipped,
     }
   ];
   $("#infoWrapper").append('<div class="row"><div id="' + 
@@ -484,19 +488,21 @@ function FA7(){
   });
   var infoSelector = "#" + questionID + "_info";
   var thisInfoHtml = "";
-  var yesPerc = formatPerc(yesCount / (noCount + dkCount)); 
-  var noPerc = formatPerc(noCount / (noCount + dkCount));
+  var nodk = noCount + dkCount;
+  var totalCount = yesCount + noCount + dkCount + skipped;
+  var yesPerc = formatPerc(yesCount / totalCount); 
+  var noPerc = formatPerc(nodk / totalCount);
+  var skipPerc = formatPerc(skipped / totalCount);
+
+
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-dark'>" + yesPerc + "</span> answered Yes <span class='text-tagalog'>[Oo]</span> | " +
-    yesCount.toString() + ((yesCount == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-light'>" + noPerc + "</span> answered No <span class='text-tagalog'>[Hindi]</span> or Don't know <span class='text-tagalog'>[Hindi alam]</span> | " + 
-    noCount.toString() + ((noCount == 1) ? " interviewee" : " interviewees") + "<br>" + 
-    "(" + skipped.toString() + ((skipped == 1) ? " interviewee" : " interviewees") + " chose not to answer <span class='text-tagalog'>[Walang sagot]</span>";
-  if(topicSkipped > 0){
-    thisInfoHtml += " and " + topicSkipped.toString() + " not asked this question";
-  }
-  thisInfoHtml += ")</p><br>";
+    "<p><span class='percText-dark'>" + yesPerc + "</span> Yes <span class='text-tagalog'>[Oo]</span> (" +
+    yesCount.toString() + ")<br>" +
+    "<span class='percText-light'>" + noPerc + "</span> No <span class='text-tagalog'>[Hindi]</span> or Don't know <span class='text-tagalog'>[Hindi alam]</span> (" + 
+    nodk.toString() + ")<br>" + 
+    "<span class='percText-light'>" + skipPerc + "</span> No response <span class='text-tagalog'>[Walang sagot]</span> (" + 
+    skipped.toString() + ")<br>";
   $(infoSelector).append(thisInfoHtml);   
   CM1();
 }
@@ -694,14 +700,14 @@ function CM2(){
   });
   var infoSelector = "#" + questionID + "_info";
   var thisInfoHtml = "";
-  var yesPerc = formatPerc(yesCount / (noCount + dkCount)); 
-  var noPerc = formatPerc(noCount / (noCount + dkCount));
+  var yesPerc = formatPerc(yesCount / (yesCount + noCount + dkCount)); 
+  var noPerc = formatPerc(noCount / (yesCount + noCount + dkCount));
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-dark'>" + yesPerc + "</span> answered Yes <span class='text-tagalog'>[Oo]</span> | " +
-    yesCount.toString() + ((yesCount == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-light'>" + noPerc + "</span> answered No <span class='text-tagalog'>[Hindi]</span> or Don't know <span class='text-tagalog'>[Hindi alam]</span> | " + 
-    noCount.toString() + ((noCount == 1) ? " interviewee" : " interviewees") + "<br>" + 
+    "<p><span class='percText-dark'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
+    yesCount.toString() + ")<br>" +
+    "<span class='percText-light'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> or don't know <span class='text-tagalog'>[hindi alam]</span> (" + 
+    noCount.toString() + ")<br>" + 
     "(" + skipped.toString() + ((skipped == 1) ? " interviewee" : " interviewees") + " chose not to answer";
   if(topicSkipped > 0){
     thisInfoHtml += " and " + topicSkipped.toString() + " not asked this question";
@@ -770,10 +776,10 @@ function SM1(){
   var noPerc = formatPerc(noCount / (yesCount + noCount));
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-dark'>" + yesPerc + "</span> answered Yes <span class='text-tagalog'>[Oo]</span> | " +
-    yesCount.toString() + ((yesCount == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-light'>" + noPerc + "</span> answered No <span class='text-tagalog'>[Hindi]</span> | " + 
-    noCount.toString() + ((noCount == 1) ? " interviewee" : " interviewees") + "<br>" + 
+    "<p><span class='percText-dark'>" + yesPerc + "</span> yes <span class='text-tagalog'>[0o]</span> (" +
+    yesCount.toString() + ")<br>" +
+    "<span class='percText-light'>" + noPerc + "</span> no <span class='text-tagalog'>[Hindi]</span> (" + 
+    noCount.toString() + ")<br>" + 
     "(" + skipped.toString() + ((skipped == 1) ? " interviewee" : " interviewees") + " chose not to answer";
   if(topicSkipped > 0){
     thisInfoHtml += ", " + topicSkipped.toString() + " not asked this question";
@@ -1198,11 +1204,11 @@ function SM6(){
     var yesPerc = formatPerc(yesCount / (yesCount + noCount + skipCount)); 
     var noPerc = formatPerc(noCount / (yesCount + noCount + skipCount));
     var skipPerc = formatPerc(skipCount / (yesCount + noCount + skipCount));
-    thisInfoHtml = "<p><span class='percText-dark'>" + yesPerc + "</span> Yes <span class='text-tagalog'>[Oo]</span> (" +
+    thisInfoHtml = "<p><span class='percText-dark'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
       yesCount.toString() + ")<br>" +
-      "<span class='percText-light'>" + noPerc + "</span> No <span class='text-tagalog'>[Hindi]</span> (" + 
+      "<span class='percText-light'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> (" + 
       noCount.toString() + ")<br>" + 
-      "<span class='percText-light'>" + skipPerc + "</span> No response <span class='text-tagalog'>[Walang sagot]</span> (" + 
+      "<span class='percText-light'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
       skipCount.toString() + ")</p><br>";
     $(infoSelector).append(thisInfoHtml);
   });
@@ -1272,19 +1278,812 @@ function SM7(){
   var skipPerc = formatPerc(skipped / (yesCount + noCount + skipped));
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-dark'>" + yesPerc + "</span> Yes <span class='text-tagalog'>[Oo]</span> (" +
+    "<p><span class='percText-dark'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
     yesCount.toString() + ")<br>" +
-    "<span class='percText-light'>" + noPerc + "</span> No <span class='text-tagalog'>[Hindi]</span> (" + 
+    "<span class='percText-light'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> (" + 
     noCount.toString() + ")<br>" +
-    "<span class='percText-light'>" + skipPerc + "</span> No response <span class='text-tagalog'>[Walang sagot]</span> (" + 
+    "<span class='percText-light'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
     skipped.toString() + ")<br>";
   if(topicSkipped > 0){
     thisInfoHtml += "(" + topicSkipped.toString() + " not asked this question";
   }
   thisInfoHtml += ")</p><br>";
   $(infoSelector).append(thisInfoHtml);   
+  SM9();
+}
+
+function SM9(){
+  var questionID = "SM9";
+  var optionCount = 9;
+  var questionEnglish = "Who assisted with the delivery of  your last child?";
+  // var questionTagalog = "";
+  var skip = questionID + "-skip";
+  var totalCount = 0;
+  var topicSkipped = 0;
+  var answersEnglish = {
+    "SM9-A":"doctor",
+    "SM9-B":"nurse",
+    "SM9-C":"midwife",
+    "SM9-D":"trained traditional birth attendant",
+    "SM9-E":"trained community/ barangay health worker",
+    "SM9-F":"relative/friend",
+    "SM9-other":"other",
+    "SM9-none":"no one",
+    "SM9-skip":"no response"
+  };
+  var answersTagalog = {
+    "SM9-A":"duktor",
+    "SM9-B":"nars",
+    "SM9-C":"kumadrona",
+    "SM9-D":"hilot",
+    "SM9-E":"trained community/ barangay health worker",
+    "SM9-F":"kamag-anak o kaibigan",
+    "SM9-other":"ibang sagot",
+    "SM9-none":"wala",
+    "SM9-skip":"walang sagot"
+  };
+  var allResponses = [];
+  for (responseOption in answersEnglish){
+    allResponses[responseOption] = 0;
+  }
+  $.each(filteredData, function(surveyIndex, survey){
+    if (survey[skip] === "n/a"){
+      topicSkipped ++;
+    } else {
+      totalCount ++;
+      // counts for each of the responses
+      for (response in allResponses){
+        if (survey[response] === "TRUE"){
+          allResponses[response] ++;
+        }
+      };
+    } 
+  });
+  $("#infoWrapper").append('<div class="row"><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var infoSelector = "#" + questionID + "_info";
+  var thisInfoHtml = "";
+  thisInfoHtml = "<h4>" + questionEnglish +
+    // "<br><small>" + questionTagalog + "</small>"+
+    "</h4><br>"; 
+  $(infoSelector).append(thisInfoHtml);
+  $(infoSelector).append("<strong>" + totalCount.toString() + " respondents (multiple responses possible)</strong><br>");
+  for(response in allResponses){
+    var thisResponseCount = allResponses[response];
+    var thisResponsePerc = formatPerc(allResponses[response] / totalCount); 
+    var thisResponseEng = answersEnglish[response];
+    var thisResponseTag = answersTagalog[response];
+    thisHtml = thisResponsePerc + " - " + thisResponseEng;
+    if(thisResponseEng !== thisResponseTag){
+      thisHtml += " <span class='text-tagalog'>[" + thisResponseTag + "]</span>";
+    }
+    thisHtml += " ("+ thisResponseCount + ")<br>";
+    $(infoSelector).append(thisHtml);
+  }
+  $(infoSelector).append(topicSkipped.toString() + " - respondents not asked this question"); 
+  SM10();
+}
+
+function SM10(){
+  var questionID = "SM10";
+  var questionEnglish = "During pregnancy, women may encounter severe problems or illnesses and should go or be taken immediately to a health facility. What types of symptoms would cause you to seek immediate care at a health facility (right away)?";
+  var questionTagalog = "Sa panahon ng pagbubuntis , ang mga babae ay maaaring magkaroon ng problema o matinding karamdaman at kinakailangang pumunta o agarang dalhin sa sa isang pagamutan. Anong uri ng mga sintomas ang dahilan ng agarang pagkonsulta sa isang pagamutan?";
+  var answersEnglish = {
+    "SM10-A":"vaginal bleeding",
+    "SM10-B":"fast/difficult breathing",
+    "SM10-C":"high fever",
+    "SM10-D":"severe abdominal pain",
+    "SM10-E":"headache/blurred vision",
+    "SM10-F":"convulsions",
+    "SM10-G":"foul smelling discharge/fluid from vagina",
+    "SM10-H":"baby stops moving",
+    "SM10-I":"leaking brownish/greenish fluid from the vagina",
+    "SM10-other":"other",
+    "SM10-dk":"don't know",
+    "SM10-skip":"no response"
+  };
+  var answersTagalog = {
+    "SM10-A":"pagdurugo ng pwerta",
+    "SM10-B":"mabilis o hirap na paghinga",
+    "SM10-C":"mataas na lagnat",
+    "SM10-D":"matinding pananakit ng tiyan",
+    "SM10-E":"pananakit ng ulo o panlalabo ng mata",
+    "SM10-F":"kumbulsyon",
+    "SM10-G":"mabahong likido mula sa pwerta",
+    "SM10-H":"huminto ang paggalaw ng sanggol",
+    "SM10-I":"umaagos na kulay lupa at berdeng likido mula sa pwerta",
+    "SM10-other":"ibang sagot",
+    "SM10-dk":"hindi alam",
+    "SM10-skip":"walang sagot"
+  };
+  var optionCount = 9;
+  var atLeastThree = 0;
+  var lessThanThree = 0;
+  var dontKnow = 0;
+  var skipped = 0;
+  var dk = questionID + "-dk";
+  var skip = questionID + "-skip";
+  var answersArray = [];
+  for(var i = 0; i < optionCount; i++){
+    answersArray.push(questionID + "-" + alphabet[i]);
+  }
+  var allResponses = [];
+  for (responseOption in answersEnglish){
+    allResponses[responseOption] = 0;
+  }
+  $.each(filteredData, function(surveyIndex, survey){
+    // counts for each of the responses
+    for (response in allResponses){
+      if (survey[response] === "TRUE"){
+        allResponses[response] ++;
+      }
+    };
+    
+    // counts for analysis chart  
+    if (survey[dk] === "TRUE"){
+      dontKnow ++;
+      lessThanThree ++;
+    } else if (survey[skip] === "TRUE"){
+      skipped ++;
+    } else {
+      var thisTrueCount = 0;
+      $.each(answersArray, function(answerIndex, answer){
+        if (survey[answer] === "TRUE"){
+          thisTrueCount ++;
+        }
+      });
+      if (thisTrueCount >= 3){
+        atLeastThree ++;
+      } 
+      if (thisTrueCount < 3){
+        lessThanThree ++;
+      }
+    } 
+  });
+  var thisPieData = [
+    {
+      key: "at least 3",
+      y: atLeastThree,
+    },
+    {
+      key: "less than 3",
+      y: lessThanThree,
+    }
+  ];  
+  $("#infoWrapper").append('<div class="row"><div id="' + 
+    questionID + '" class="box-chart"><svg id="' +
+    questionID + '_chart"></svg></div><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var width = 180;
+  var chart = nv.models.pie().width(width - 60).height(width - 60)
+    .x(function(d) { return d.key }) 
+    .y(function(d) { return d.y })
+    .showLabels(true);
+  var chartSelector = "#" + questionID + "_chart";
+  d3.select(chartSelector)
+    .datum(thisPieData)
+    .transition().duration(1200)
+    .attr('width', width)
+    .attr('height', width)
+    .call(chart);
+  var el = $(".nv-pieLabels");
+  $.each(el, function(aIndex, a){
+    a.parentNode.appendChild(a);
+  });
+  var totalLessSkipped = filteredData.length - skipped;
+  var infoSelector = "#" + questionID + "_info";
+  var thisInfoHtml = "";
+  var atLeastThreePerc = formatPerc(atLeastThree / totalLessSkipped); 
+  var lessThanThreePerc = formatPerc(lessThanThree / totalLessSkipped);
+  var dontKnowPerc = formatPerc(dontKnow / totalLessSkipped);
+  thisInfoHtml = "<h4>" + questionEnglish +
+    "<br><small>" + questionTagalog + "</small></h4>" +
+    "<p><span class='percText-dark'>" + atLeastThreePerc + "</span> could identify at least three key responses" + 
+    " | " + atLeastThree.toString() + ((atLeastThree == 1) ? " interviewee" : " interviewees") + "<br>" +
+    "<span class='percText-light'>" +lessThanThreePerc + "</span> could identify less than three key responses or didn't know" + 
+    " | " + lessThanThree.toString() + ((lessThanThree == 1) ? " interviewee" : " interviewees") + "<br>" +
+    "(" + dontKnowPerc + " of total didn't know | " +
+    dontKnow.toString() + ((dontKnow == 1) ? " interviewee" : " interviewees") + ")<br>" +
+    "(" + skipped.toString() + ((skipped == 1) ? " interviewee" : " interviewees") + " chose not to answer)</p>";
+
+  $(infoSelector).append(thisInfoHtml);
+  $(infoSelector).append("<strong>Raw counts of responses</strong><br>");
+  for(response in allResponses){
+    var thisResponseCount = allResponses[response];
+    var thisResponseEng = answersEnglish[response];
+    var thisResponseTag = answersTagalog[response];
+    thisHtml = thisResponseCount + " - " + thisResponseEng + " <span class='text-tagalog'>[" + thisResponseTag + "]</span><br>";
+    $(infoSelector).append(thisHtml);
+  }
+  SM11();
+}
+
+function SM11(){
+  var questionID = "SM11";
+  var questionEnglish = "After your last child was born were you and your baby seen by anyone for postnatal care within the next two days?";
+  var questionTagalog = "Matapos ipanganak ang inyong bunsong anak, ikaw ba at ang iyong sanggol ay nakita, natignan ng isang health worker sa loob ng 2 araw?";
+  var yesCount = 0;
+  var noCount = 0;
+  var dontknowCount = 0;
+  var skipped = 0;
+  var topicSkipped = 0;
+  $.each(filteredData, function(surveyIndex, survey){
+    if (survey[questionID] === "yes"){
+      yesCount ++;
+    }
+    if (survey[questionID] === "no"){
+      noCount ++;
+    }
+    if (survey[questionID] === "dk"){
+      dontknowCount ++;
+    }
+    if (survey[questionID] === "skip"){
+      skipped ++;
+    }
+    if (survey[questionID] === "n/a"){
+      topicSkipped ++;
+    }
+  });
+  var thisPieData = [
+    {
+      key: "yes",
+      y: yesCount,
+    },
+    {
+      key: "no/dk",
+      y: noCount + dontknowCount,
+    },
+    {
+      key: "skip",
+      y: skipped,
+    }
+  ];
+  $("#infoWrapper").append('<div class="row"><div id="' + 
+    questionID + '" class="box-chart"><svg id="' +
+    questionID + '_chart"></svg></div><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var width = 180;
+  var chart = nv.models.pie().width(width - 60).height(width - 60)
+    .x(function(d) { return d.key }) 
+    .y(function(d) { return d.y })
+    .showLabels(true);
+  var chartSelector = "#" + questionID + "_chart";
+  d3.select(chartSelector)
+    .datum(thisPieData)
+    .transition().duration(1200)
+    .attr('width', width)
+    .attr('height', width)
+    .call(chart);
+  var el = $(".nv-pieLabels");
+  $.each(el, function(aIndex, a){
+    a.parentNode.appendChild(a);
+  });
+  var infoSelector = "#" + questionID + "_info";
+  var thisInfoHtml = "";
+  var nodk = noCount + dontknowCount;
+  var totalCount = yesCount + noCount + dontknowCount + skipped;
+  var yesPerc = formatPerc(yesCount / totalCount); 
+  var noPerc = formatPerc(nodk / totalCount);
+  var skipPerc = formatPerc(skipped / totalCount);
+  
+  thisInfoHtml = "<h4>" + questionEnglish +
+    "<br><small>" + questionTagalog + "</small></h4>" +
+    "<p><span class='percText-dark'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
+    yesCount.toString() + ")<br>" +
+    "<span class='percText-light'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> or don't know <span class='text-tagalog'>[hindi alam]</span> (" + 
+    nodk.toString() + ")<br>" + 
+    "<span class='percText-light'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
+    skipped.toString() + ")<br>";
+  if(topicSkipped > 0){
+    thisInfoHtml += "(" + topicSkipped.toString() + " not asked this question";
+  }
+  thisInfoHtml += ")</p><br>";
+  $(infoSelector).append(thisInfoHtml);   
+  SM12();
+}
+
+function SM12(){
+  var questionID = "SM12";
+  var optionCount = 4;
+  var questionEnglish = "Whom did you see?";
+  var questionTagalog = "Sino ang iyong kinonsulta?";
+  var skip = questionID + "-skip";
+  var totalCount = 0;
+  var topicSkipped = 0;
+  var answersEnglish = {
+    "SM9-A":"doctor or medical assistant",
+    "SM9-B":"nurse",
+    "SM9-C":"midwife",
+    "SM9-D":"trained traditional birth attendant",
+    "SM9-other":"other",
+    "SM9-dk":"don't know",
+    "SM9-skip":"no response"
+  };
+  var answersTagalog = {
+    "SM9-A":"duktor",
+    "SM9-B":"nars",
+    "SM9-C":"kumadrona",
+    "SM9-D":"hilot",
+    "SM9-other":"ibang sagot",
+    "SM9-dk":"hindi alam",
+    "SM9-skip":"walang sagot"
+  };
+  var allResponses = [];
+  for (responseOption in answersEnglish){
+    allResponses[responseOption] = 0;
+  }
+  $.each(filteredData, function(surveyIndex, survey){
+    if (survey[skip] === "n/a"){
+      topicSkipped ++;
+    } else {
+      totalCount ++;
+      // counts for each of the responses
+      for (response in allResponses){
+        if (survey[response] === "TRUE"){
+          allResponses[response] ++;
+        }
+      };
+    } 
+  });
+  $("#infoWrapper").append('<div class="row"><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var infoSelector = "#" + questionID + "_info";
+  var thisInfoHtml = "";
+  thisInfoHtml = "<h4>" + questionEnglish +
+    "<br><small>" + questionTagalog + "</small>"+
+    "</h4><br>"; 
+  $(infoSelector).append(thisInfoHtml);
+  $(infoSelector).append("<strong>" + totalCount.toString() + " respondents (multiple responses possible)</strong><br>");
+  for(response in allResponses){
+    var thisResponseCount = allResponses[response];
+    var thisResponsePerc = formatPerc(allResponses[response] / totalCount); 
+    var thisResponseEng = answersEnglish[response];
+    var thisResponseTag = answersTagalog[response];
+    thisHtml = thisResponsePerc + " - " + thisResponseEng;
+    if(thisResponseEng !== thisResponseTag){
+      thisHtml += " <span class='text-tagalog'>[" + thisResponseTag + "]</span>";
+    }
+    thisHtml += " ("+ thisResponseCount + ")<br>";
+    $(infoSelector).append(thisHtml);
+  }
+  $(infoSelector).append(topicSkipped.toString() + " - respondents not asked this question"); 
+  NB6();
+}
+
+function NB6(){
+  $(infoWrapper).append("<h3><span class='jumpto' id='newborn'></span>Topic: Care of a Newborn</h3><hr>");
+  var questionID = "NB6";
+  var questionEnglish = "Sometimes newborns have severe illnesses within the first month of life and should be taken immediately to a health facility. What types of symptoms would cause you to take your newborn to a health facility right away?";
+  var questionTagalog = "Minsan ang mga bagong panganak na saggol ay maaaring magkaroon ng matinding karamdaman sa loob lamang ng 1 buwan pagkapanganak kailangang madala agad sa isang pagamutan upang masuri. Anong uri ng mga sintomas ang dahilan ng agarang pagkonsulta sa isang pagamutan?";
+  var answersEnglish = {
+    "NB6-A":"convulsions",
+    "NB6-B":"high fever",
+    "NB6-C":"poor suckling or feeding",
+    "NB6-D":"fast/difficult breathing",
+    "NB6-E":"baby feels cold",
+    "NB6-F":"baby too small/too early",
+    "NB6-G":"yellow palms/soles/eyes",
+    "NB6-H":"swollen abdomen",
+    "NB6-I":"unconscious",
+    "NB6-J":"pus or redness of the umbilical stump, eyes or skin",
+    "NB6-other":"other",
+    "NB6-dk":"don't know",
+    "NB6-skip":"no response"
+  };
+  var answersTagalog = {
+    "NB6-A":"kumbulsyon",
+    "NB6-B":"mataas na lagnat",
+    "NB6-C":"hindi makasuso o makakain ng maayos",
+    "NB6-D":"mabilis/ hirap na paghinga",
+    "NB6-E":"nanlalamig",
+    "NB6-F":"sanggol ay maliit/maagang ipinanganak",
+    "NB6-G":"madilaw ang palad/talampakan/mata",
+    "NB6-H":"namamaga ang tiyan",
+    "NB6-I":"walang malay",
+    "NB6-J":"may nana o pamumula sa kanyang pusod, mata, o balat",
+    "NB6-other":"ibang kasagutan",
+    "NB6-dk":"hindi alam",
+    "NB6-skip":"walang sagot"
+  };
+  var optionCount = 10;
+  var atLeastThree = 0;
+  var lessThanThree = 0;
+  var dontKnow = 0;
+  var skipped = 0;
+  var dk = questionID + "-dk";
+  var skip = questionID + "-skip";
+  var answersArray = [];
+  for(var i = 0; i < optionCount; i++){
+    answersArray.push(questionID + "-" + alphabet[i]);
+  }
+  var allResponses = [];
+  for (responseOption in answersEnglish){
+    allResponses[responseOption] = 0;
+  }
+  $.each(filteredData, function(surveyIndex, survey){
+    // counts for each of the responses
+    for (response in allResponses){
+      if (survey[response] === "TRUE"){
+        allResponses[response] ++;
+      }
+    };
+    
+    // counts for analysis chart  
+    if (survey[dk] === "TRUE"){
+      dontKnow ++;
+      lessThanThree ++;
+    } else if (survey[skip] === "TRUE"){
+      skipped ++;
+    } else {
+      var thisTrueCount = 0;
+      $.each(answersArray, function(answerIndex, answer){
+        if (survey[answer] === "TRUE"){
+          thisTrueCount ++;
+        }
+      });
+      if (thisTrueCount >= 3){
+        atLeastThree ++;
+      } 
+      if (thisTrueCount < 3){
+        lessThanThree ++;
+      }
+    } 
+  });
+  var thisPieData = [
+    {
+      key: "at least 3",
+      y: atLeastThree,
+    },
+    {
+      key: "less than 3",
+      y: lessThanThree,
+    }
+  ];  
+  $("#infoWrapper").append('<div class="row"><div id="' + 
+    questionID + '" class="box-chart"><svg id="' +
+    questionID + '_chart"></svg></div><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var width = 180;
+  var chart = nv.models.pie().width(width - 60).height(width - 60)
+    .x(function(d) { return d.key }) 
+    .y(function(d) { return d.y })
+    .showLabels(true);
+  var chartSelector = "#" + questionID + "_chart";
+  d3.select(chartSelector)
+    .datum(thisPieData)
+    .transition().duration(1200)
+    .attr('width', width)
+    .attr('height', width)
+    .call(chart);
+  var el = $(".nv-pieLabels");
+  $.each(el, function(aIndex, a){
+    a.parentNode.appendChild(a);
+  });
+  var totalLessSkipped = filteredData.length - skipped;
+  var infoSelector = "#" + questionID + "_info";
+  var thisInfoHtml = "";
+  var atLeastThreePerc = formatPerc(atLeastThree / totalLessSkipped); 
+  var lessThanThreePerc = formatPerc(lessThanThree / totalLessSkipped);
+  var dontKnowPerc = formatPerc(dontKnow / totalLessSkipped);
+  thisInfoHtml = "<h4>" + questionEnglish +
+    "<br><small>" + questionTagalog + "</small></h4>" +
+    "<p><span class='percText-dark'>" + atLeastThreePerc + "</span> could identify at least three key responses" + 
+    " | " + atLeastThree.toString() + ((atLeastThree == 1) ? " interviewee" : " interviewees") + "<br>" +
+    "<span class='percText-light'>" +lessThanThreePerc + "</span> could identify less than three key responses or didn't know" + 
+    " | " + lessThanThree.toString() + ((lessThanThree == 1) ? " interviewee" : " interviewees") + "<br>" +
+    "(" + dontKnowPerc + " of total didn't know | " +
+    dontKnow.toString() + ((dontKnow == 1) ? " interviewee" : " interviewees") + ")<br>" +
+    "(" + skipped.toString() + ((skipped == 1) ? " interviewee" : " interviewees") + " chose not to answer)</p>";
+
+  $(infoSelector).append(thisInfoHtml);
+  $(infoSelector).append("<strong>Raw counts of responses</strong><br>");
+  for(response in allResponses){
+    var thisResponseCount = allResponses[response];
+    var thisResponseEng = answersEnglish[response];
+    var thisResponseTag = answersTagalog[response];
+    thisHtml = thisResponseCount + " - " + thisResponseEng + " <span class='text-tagalog'>[" + thisResponseTag + "]</span><br>";
+    $(infoSelector).append(thisHtml);
+  }
+  NB2();
+}
+
+function NB2(){
+  var questionID = "NB2";
+  var questionEnglish = "Did you breastfeed your last baby?";
+  // var questionTagalog = "";
+  var yesCount = 0;
+  var noCount = 0;
+  var skipped = 0;
+  var topicSkipped = 0;
+  $.each(filteredData, function(surveyIndex, survey){
+    if (survey[questionID] === "yes"){
+      yesCount ++;
+    }
+    if (survey[questionID] === "no"){
+      noCount ++;
+    }
+    if (survey[questionID] === "skip"){
+      skipped ++;
+    }
+    if (survey[questionID] === "n/a"){
+      topicSkipped ++;
+    }
+  });
+  var thisPieData = [
+    {
+      key: "yes",
+      y: yesCount,
+    },
+    {
+      key: "no",
+      y: noCount,
+    },
+    {
+      key: "skip",
+      y: skipped,
+    }
+  ];
+  $("#infoWrapper").append('<div class="row"><div id="' + 
+    questionID + '" class="box-chart"><svg id="' +
+    questionID + '_chart"></svg></div><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var width = 180;
+  var chart = nv.models.pie().width(width - 60).height(width - 60)
+    .x(function(d) { return d.key }) 
+    .y(function(d) { return d.y })
+    .showLabels(true);
+  var chartSelector = "#" + questionID + "_chart";
+  d3.select(chartSelector)
+    .datum(thisPieData)
+    .transition().duration(1200)
+    .attr('width', width)
+    .attr('height', width)
+    .call(chart);
+  var el = $(".nv-pieLabels");
+  $.each(el, function(aIndex, a){
+    a.parentNode.appendChild(a);
+  });
+  var infoSelector = "#" + questionID + "_info";
+  var thisInfoHtml = "";
+  var totalCount = yesCount + noCount + skipped;
+  var yesPerc = formatPerc(yesCount / totalCount); 
+  var noPerc = formatPerc(noCount / totalCount);
+  var skipPerc = formatPerc(skipped / totalCount);
+  
+  thisInfoHtml = "<h4>" + questionEnglish +
+    // "<br><small>" + questionTagalog + "</small>"+
+    "</h4>" +
+    "<p><span class='percText-dark'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
+    yesCount.toString() + ")<br>" +
+    "<span class='percText-light'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> (" + 
+    noCount.toString() + ")<br>" + 
+    "<span class='percText-light'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
+    skipped.toString() + ")<br>";
+  if(topicSkipped > 0){
+    thisInfoHtml += "(" + topicSkipped.toString() + " not asked this question";
+  }
+  thisInfoHtml += ")</p><br>";
+  $(infoSelector).append(thisInfoHtml);   
+  NB4();
+}
+
+function NB4(){
+  var questionID = "NB4";
+  var questionEnglish = "Did you give the baby the first liquid (Colostrum) that came from your breasts?";
+  var questionTagalog = "Binigyan mo ba ang sanggol ng unang patak ng iyong gatas (Colostrum)?";
+  var yesCount = 0;
+  var noCount = 0;
+  var dontknowCount = 0;
+  var skipped = 0;
+  var topicSkipped = 0;
+  $.each(filteredData, function(surveyIndex, survey){
+    if (survey[questionID] === "yes"){
+      yesCount ++;
+    }
+    if (survey[questionID] === "no"){
+      noCount ++;
+    }
+    if (survey[questionID] === "dk"){
+      dontknowCount ++;
+    }
+    if (survey[questionID] === "skip"){
+      skipped ++;
+    }
+    if (survey[questionID] === "n/a"){
+      topicSkipped ++;
+    }
+  });
+  var thisPieData = [
+    {
+      key: "yes",
+      y: yesCount,
+    },
+    {
+      key: "no/dk",
+      y: noCount + dontknowCount,
+    },
+    {
+      key: "skip",
+      y: skipped,
+    }
+  ];
+  $("#infoWrapper").append('<div class="row"><div id="' + 
+    questionID + '" class="box-chart"><svg id="' +
+    questionID + '_chart"></svg></div><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var width = 180;
+  var chart = nv.models.pie().width(width - 60).height(width - 60)
+    .x(function(d) { return d.key }) 
+    .y(function(d) { return d.y })
+    .showLabels(true);
+  var chartSelector = "#" + questionID + "_chart";
+  d3.select(chartSelector)
+    .datum(thisPieData)
+    .transition().duration(1200)
+    .attr('width', width)
+    .attr('height', width)
+    .call(chart);
+  var el = $(".nv-pieLabels");
+  $.each(el, function(aIndex, a){
+    a.parentNode.appendChild(a);
+  });
+  var infoSelector = "#" + questionID + "_info";
+  var thisInfoHtml = "";
+  var nodk = noCount + dontknowCount;
+  var totalCount = yesCount + noCount + dontknowCount + skipped;
+  var yesPerc = formatPerc(yesCount / totalCount); 
+  var noPerc = formatPerc(nodk / totalCount);
+  var skipPerc = formatPerc(skipped / totalCount);
+  
+  thisInfoHtml = "<h4>" + questionEnglish +
+    "<br><small>" + questionTagalog + "</small></h4>" +
+    "<p><span class='percText-dark'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
+    yesCount.toString() + ")<br>" +
+    "<span class='percText-light'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> or don't know <span class='text-tagalog'>[hindi alam]</span> (" + 
+    nodk.toString() + ")<br>" + 
+    "<span class='percText-light'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
+    skipped.toString() + ")<br>";
+  if(topicSkipped > 0){
+    thisInfoHtml += "(" + topicSkipped.toString() + " not asked this question";
+  }
+  thisInfoHtml += ")</p><br>";
+  $(infoSelector).append(thisInfoHtml);
+  NB5();   
+}
+
+function NB5(){
+  var questionID = "NB5";
+  var questionEnglish = "In the first three days after delivery, was the baby given anything to drink other than breast milk?";
+  var questionTagalog = "Sa unang tatlong araw matapos mong manganak, binigyan mo ba ng anumang/ibang inumin ang iyong sanggol maliban sa iyong gatas?";
+  var yesCount = 0;
+  var noCount = 0;
+  var dontknowCount = 0;
+  var skipped = 0;
+  var topicSkipped = 0;
+  $.each(filteredData, function(surveyIndex, survey){
+    if (survey[questionID] === "yes"){
+      yesCount ++;
+    }
+    if (survey[questionID] === "no"){
+      noCount ++;
+    }
+    if (survey[questionID] === "dk"){
+      dontknowCount ++;
+    }
+    if (survey[questionID] === "skip"){
+      skipped ++;
+    }
+    if (survey[questionID] === "n/a"){
+      topicSkipped ++;
+    }
+  });
+  var thisPieData = [
+    {
+      key: "yes",
+      y: yesCount,
+    },
+    {
+      key: "no/dk",
+      y: noCount + dontknowCount,
+    },
+    {
+      key: "skip",
+      y: skipped,
+    }
+  ];
+  $("#infoWrapper").append('<div class="row"><div id="' + 
+    questionID + '" class="box-chart"><svg id="' +
+    questionID + '_chart"></svg></div><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var width = 180;
+  var chart = nv.models.pie().width(width - 60).height(width - 60)
+    .x(function(d) { return d.key }) 
+    .y(function(d) { return d.y })
+    .showLabels(true);
+  var chartSelector = "#" + questionID + "_chart";
+  d3.select(chartSelector)
+    .datum(thisPieData)
+    .transition().duration(1200)
+    .attr('width', width)
+    .attr('height', width)
+    .call(chart);
+  var el = $(".nv-pieLabels");
+  $.each(el, function(aIndex, a){
+    a.parentNode.appendChild(a);
+  });
+  var infoSelector = "#" + questionID + "_info";
+  var thisInfoHtml = "";
+  var nodk = noCount + dontknowCount;
+  var totalCount = yesCount + noCount + dontknowCount + skipped;
+  var yesPerc = formatPerc(yesCount / totalCount); 
+  var noPerc = formatPerc(nodk / totalCount);
+  var skipPerc = formatPerc(skipped / totalCount);
+  
+  thisInfoHtml = "<h4>" + questionEnglish +
+    "<br><small>" + questionTagalog + "</small></h4>" +
+    "<p><small><strong>Note:</strong> survey design error meant all section respondents were asked this question and not just those who answered <i>yes</i> to <i>Did you breastfeed your last baby?</i></small></p>"+
+    "<p><span class='percText-dark'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
+    yesCount.toString() + ")<br>" +
+    "<span class='percText-light'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> or don't know <span class='text-tagalog'>[hindi alam]</span> (" + 
+    nodk.toString() + ")<br>" + 
+    "<span class='percText-light'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
+    skipped.toString() + ")<br>";
+  if(topicSkipped > 0){
+    thisInfoHtml += "(" + topicSkipped.toString() + " not asked this question";
+  }
+  thisInfoHtml += ")</p><br>";
+  $(infoSelector).append(thisInfoHtml);
+  NU2();
+}
+
+function NU2(){
+  var questionID = "NU2";
+  var questionEnglish = "For how many months did you breastfeed your last baby?";
+  var questionTagalog = "Ilang buwan mo pinasuso ng iyong gatas ang iyong bunsong anak?";
+  var monthResponses = [];
+  var dkCount = 0;
+  var noResponseCount = 0;
+  var notAskedCount = 0;
+  $.each(filteredData, function(surveyIndex, survey){
+    var thisAnswer = survey[questionID];
+    if (thisAnswer == "999"){
+      dkCount ++;
+    } else if (thisAnswer == "777") {
+      noResponseCount ++;
+    } else if (thisAnswer == "n/a"){
+      notAskedCount ++;
+    } else {
+      if(isFinite(parseInt(thisAnswer, 10)) == true){
+        monthResponses.push(parseInt(thisAnswer, 10));
+      }
+    }
+  });
+  var maxMonths = Math.max.apply(Math,monthResponses);
+  var minMonths = Math.min.apply(Math,monthResponses);
+  var sum = 0;
+  for( var i = 0; i < monthResponses.length; i++ ){
+      sum += monthResponses[i];
+  }
+  var avgMonths = d3.round(sum/monthResponses.length, 2);
+  $("#infoWrapper").append('<div class="row"><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var infoSelector = "#" + questionID + "_info";
+  var thisInfoHtml = "";
+  thisInfoHtml = "<h4>" + questionEnglish +
+    "<br><small>" + questionTagalog + "</small></h4>"+
+    "<strong>" + monthResponses.length.toString() + " respondents providing # of months</strong><br>" +
+    "Average months: " + avgMonths.toString() + "<br>" +
+    "Min: " + minMonths.toString() + " / Max: " + maxMonths.toString() + "<br>"+
+    "(" + dkCount.toString() + " don't know, " + noResponseCount.toString() + " no response, " + 
+    notAskedCount.toString() + " not asked this question)";
+  $(infoSelector).append(thisInfoHtml);
   WS1();
 }
+
+
+
+
+
 
 
 
@@ -1350,341 +2149,6 @@ function WS1(){
 
 }
 
-
-
-// $(infoWrapper).append("<h3><span class='jumpto' id='safemotherhood'></span>Topic: Safe Motherhood</h3><hr>");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function selectMultiple(question) {
-  var questionID = question["questionID"];
-  var optionCount = question["optionCount"];
-  var dk = questionID + "-dk";
-  var skip = questionID + "-skip";
-  var answersArray = [];
-  var notAskedCount = 0;
-  var askedCount = 0;
-  for(var i = 0; i < optionCount; i++){
-    answersArray.push(questionID + "-" + alphabet[i]);
-  }
-  var allResponses = [];
-  for (responseOption in question["answersEnglish"]){
-    allResponses[responseOption] = 0;
-  }
-  $.each(filteredData, function(surveyIndex, survey){
-    // topic skipped?
-    if(survey[skip] === "n/a"){
-      notAskedCount ++;
-    } else {
-      askedCount ++;
-      // counts for each of the responses
-      for (response in allResponses){
-        if (survey[response] === "TRUE"){
-          allResponses[response] ++;          
-        }
-      };
-    }  
-  });
-  
-  $("#infoWrapper").append('<div class="row"><div id="'+
-    questionID + '_info" class="box-info"></div></div><hr>');
-  var infoSelector = "#" + questionID + "_info";
-  var thisInfoHtml = "";
-
-  thisInfoHtml = "<h4>" + question["questionEnglish"] +
-    "<br><small>" + question["questionTagalog"] + "</small></h4>";
-
-  $(infoSelector).append(thisInfoHtml);
-  $(infoSelector).append("<strong>" + askedCount.toString() + " respondents (mulitple responses possible)</strong><br>");
-  for(response in allResponses){
-    var thisResponseCount = allResponses[response];
-    var thisResponsePerc = formatPerc(allResponses[response] / askedCount); 
-    var thisResponseEng = question["answersEnglish"][response];
-    var thisResponseTag = question["answersTagalog"][response];
-    thisHtml = thisResponsePerc + " - " + thisResponseEng;
-    if(thisResponseEng !== thisResponseTag){
-      thisHtml += " <span class='text-tagalog'>[" + thisResponseTag + "]</span>";
-    }
-    thisHtml += " ("+ thisResponseCount + ")<br>";
-    $(infoSelector).append(thisHtml);
-  }
-  $(infoSelector).append(notAskedCount + " - respondents not asked this question");  
-}
-
-function keyIntervention(question){
-  var questionID = question["questionID"];
-  var know = 0;
-  var other = 0;
-  var dk = 0;
-  var skip = 0;
-  var notAsked = 0;
-  $.each(filteredData, function(surveyIndex, survey){
-    if (survey[questionID] === "A"){
-      know ++;
-    }
-    if (survey[questionID] === "other"){
-      other ++;
-    }
-    if (survey[questionID] === "dk"){
-      dk ++;
-    }
-    if (survey[questionID] === "skip"){
-      skip ++;
-    }
-    if (survey[questionID] === "n/a"){
-      notAsked ++;
-    }
-  });
-  var thisPieData = [
-    {
-      key: "know",
-      y: know,
-    },
-    {
-      key: "other",
-      y: other,
-    },
-    {
-      key: "dk",
-      y: dk,
-    }
-  ];
-  $("#infoWrapper").append('<div class="row"><div id="' + 
-    questionID + '" class="box-chart"><svg id="' +
-    questionID + '_chart"></svg></div><div id="'+
-    questionID + '_info" class="box-info"></div></div><hr>');
-  var width = 180;
-  var chart = nv.models.pie().width(width - 60).height(width - 60)
-    .x(function(d) { return d.key }) 
-    .y(function(d) { return d.y })
-    .showLabels(true);
-  var chartSelector = "#" + questionID + "_chart";
-  d3.select(chartSelector)
-    .datum(thisPieData)
-    .transition().duration(1200)
-    .attr('width', width)
-    .attr('height', width)
-    .call(chart);
-  var el = $(".nv-pieLabels");
-  $.each(el, function(aIndex, a){
-    a.parentNode.appendChild(a);
-  });
-  var infoSelector = "#" + questionID + "_info";
-  var thisInfoHtml = "";
-  
-  var knowPerc = formatPerc(know / (know + other + dk)); 
-  var otherPerc = formatPerc(other / (know + other + dk));
-  var dkPerc = formatPerc(dk / (know + other + dk));
-  thisInfoHtml = "<h4>" + question["questionEnglish"] +
-    "<br><small>" + question["questionTagalog"] + "</small></h4>" +
-    "<p>Of those attending a training program to learn basic first aid:<br>"+
-    "<span class='percText-dark'>" + knowPerc + "</span> responded " + question["answersEnglish"]["A"] +
-    " <span class='text-tagalog'>[" + question["answersTagalog"]["A"] + "]</span> | " +
-    know.toString() + ((know == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-light'>" + otherPerc + "</span> gave some other answer | " + 
-    other.toString() + ((other == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-light'>" + dkPerc + "</span> don't know <span class='text-tagalog'>[hindi alam]</span> | " + 
-    dk.toString() + ((dk == 1) ? " interviewee" : " interviewees") + "<br>" +
-    ((skip > 0) ? "(" + skip.toString() + ((skip == 1) ? " interviewee" : " interviewees") + " chose not to answer <span class='text-tagalog'>[walang sagot]</span>)</p>" : "") + 
-    "(" + notAsked.toString() + ((notAsked == 1) ? " interviewee" : " interviewees") + " have not attended a training";
-  thisInfoHtml += ")</p><br>";
-  $(infoSelector).append(thisInfoHtml)
-}
-
-function atLeastThree(question) {
-  //if not a required section the "not asked" bit needs to be incorporated into this
-  var questionID = question["questionID"];
-  var optionCount = question["optionCount"];
-  var atLeastThree = 0;
-  var lessThanThree = 0;
-  var dontKnow = 0;
-  var skipped = 0;
-  var dk = questionID + "-dk";
-  var skip = questionID + "-skip";
-  var answersArray = [];
-  for(var i = 0; i < optionCount; i++){
-    answersArray.push(questionID + "-" + alphabet[i]);
-  }
-  var allResponses = [];
-  for (responseOption in question["answersEnglish"]){
-    allResponses[responseOption] = 0;
-  }
-  $.each(filteredData, function(surveyIndex, survey){
-    // counts for each of the responses
-    for (response in allResponses){
-      if (survey[response] === "TRUE"){
-        allResponses[response] ++;
-      }
-    };
-    
-    // counts for analysis chart  
-    if (survey[dk] === "TRUE"){
-      dontKnow ++;
-      lessThanThree ++;
-    } else if (survey[skip] === "TRUE"){
-      skipped ++;
-    } else {
-      var thisTrueCount = 0;
-      $.each(answersArray, function(answerIndex, answer){
-        if (survey[answer] === "TRUE"){
-          thisTrueCount ++;
-        }
-      });
-      if (thisTrueCount >= 3){
-        atLeastThree ++;
-      } 
-      if (thisTrueCount < 3){
-        lessThanThree ++;
-      }
-    } 
-  });
-  var thisPieData = [
-    {
-      key: "At least 3",
-      y: atLeastThree,
-    },
-    {
-      key: "Less than 3",
-      y: lessThanThree,
-    }
-  ];  
-  $("#infoWrapper").append('<div class="row"><div id="' + 
-    questionID + '" class="box-chart"><svg id="' +
-    questionID + '_chart"></svg></div><div id="'+
-    questionID + '_info" class="box-info"></div></div><hr>');
-  var width = 180;
-  var chart = nv.models.pie().width(width - 60).height(width - 60)
-    .x(function(d) { return d.key }) 
-    .y(function(d) { return d.y })
-    .showLabels(true);
-  var chartSelector = "#" + questionID + "_chart";
-  d3.select(chartSelector)
-    .datum(thisPieData)
-    .transition().duration(1200)
-    .attr('width', width)
-    .attr('height', width)
-    .call(chart);
-  var el = $(".nv-pieLabels");
-  $.each(el, function(aIndex, a){
-    a.parentNode.appendChild(a);
-  });
-  var totalLessSkipped = filteredData.length - skipped;
-  var infoSelector = "#" + questionID + "_info";
-  var thisInfoHtml = "";
-  var atLeastThreePerc = formatPerc(atLeastThree / totalLessSkipped); 
-  var lessThanThreePerc = formatPerc(lessThanThree / totalLessSkipped);
-  var dontKnowPerc = formatPerc(dontKnow / totalLessSkipped);
-  thisInfoHtml = "<h4>" + question["questionEnglish"] +
-    "<br><small>" + question["questionTagalog"] + "</small></h4>" +
-    "<p><span class='percText-dark'>" + atLeastThreePerc + "</span> could identify at least three key responses" + 
-    " | " + atLeastThree.toString() + ((atLeastThree == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-light'>" +lessThanThreePerc + "</span> could identify less than three key responses or didn't know" + 
-    " | " + lessThanThree.toString() + ((lessThanThree == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "(" + dontKnowPerc + " of total didn't know | " +
-    dontKnow.toString() + ((dontKnow == 1) ? " interviewee" : " interviewees") + ")<br>" +
-    "(" + skipped.toString() + ((skipped == 1) ? " interviewee" : " interviewees") + " chose not to answer)</p>";
-
-  $(infoSelector).append(thisInfoHtml);
-  $(infoSelector).append("<strong>Raw counts of responses</strong><br>");
-  for(response in allResponses){
-    var thisResponseCount = allResponses[response];
-    var thisResponseEng = question["answersEnglish"][response];
-    var thisResponseTag = question["answersTagalog"][response];
-    thisHtml = thisResponseCount + " - " + thisResponseEng + " <span class='text-tagalog'>[" + thisResponseTag + "]</span><br>";
-    $(infoSelector).append(thisHtml);
-  }  
-}
-
-
-
-function yesNo(question) {
-  var questionID = question["questionID"];
-  var yesCount = 0;
-  var noCount = 0;
-  var skipped = 0;
-  var topicSkipped = 0;
-  $.each(filteredData, function(surveyIndex, survey){
-    if (survey[questionID] === "yes"){
-      yesCount ++;
-    }
-    if (survey[questionID] === "no"){
-      noCount ++;
-    }
-    if (survey[questionID] === "skip"){
-      skipped ++;
-    }
-    if (survey[questionID] === "n/a"){
-      topicSkipped ++;
-    }
-  });
-  var thisPieData = [
-    {
-      key: "Yes",
-      y: yesCount,
-    },
-    {
-      key: "No",
-      y: noCount,
-    }
-  ];
-  $("#infoWrapper").append('<div class="row"><div id="' + 
-    questionID + '" class="box-chart"><svg id="' +
-    questionID + '_chart"></svg></div><div id="'+
-    questionID + '_info" class="box-info"></div></div><hr>');
-  var width = 180;
-  var chart = nv.models.pie().width(width - 60).height(width - 60)
-    .x(function(d) { return d.key }) 
-    .y(function(d) { return d.y })
-    .showLabels(true);
-  var chartSelector = "#" + questionID + "_chart";
-  d3.select(chartSelector)
-    .datum(thisPieData)
-    .transition().duration(1200)
-    .attr('width', width)
-    .attr('height', width)
-    .call(chart);
-  var el = $(".nv-pieLabels");
-  $.each(el, function(aIndex, a){
-    a.parentNode.appendChild(a);
-  });
-  var infoSelector = "#" + questionID + "_info";
-  var thisInfoHtml = "";
-  var totalLessSkipped = filteredData.length - skipped;
-  var yesPerc = formatPerc(yesCount / totalLessSkipped); 
-  var noPerc = formatPerc(noCount / totalLessSkipped);
-  thisInfoHtml = "<h4>" + question["questionEnglish"] +
-    "<br><small>" + question["questionTagalog"] + "</small></h4>" +
-    "<p><span class='percText-dark'>" + yesPerc + "</span> answered Yes / Oo | " +
-    yesCount.toString() + ((yesCount == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-light'>" + noPerc + "</span> answered No / Hindi | " + 
-    noCount.toString() + ((noCount == 1) ? " interviewee" : " interviewees") + "<br>" + 
-    "(" + skipped.toString() + ((skipped == 1) ? " interviewee" : " interviewees") + " chose not to answer";
-  if(topicSkipped > 0){
-    thisInfoHtml += " and " + topicSkipped.toString() + " not asked this question";
-  }
-  thisInfoHtml += ")</p><br>";
-  $(infoSelector).append(thisInfoHtml);   
-}
-
-function selectOne(question) {
-  
-}
 
 
 getSurveyData();
