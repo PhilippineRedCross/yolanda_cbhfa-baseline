@@ -12,6 +12,15 @@ body {
   display: block; 
 }
 
+.logo-ifrc{
+  height:100%;
+  background: #fff;
+}
+.logo-prc{
+  height: 60px;
+  margin-right: 20px; 
+}
+
 .nav-admin{
   height: 85px;
   position: fixed;
@@ -47,12 +56,16 @@ svg {
   height: auto;
   padding: 30px;
 }
-.percText-dark {
-  color: #1f77b4;
+.percText-1 {
+  color: #4393c3;
   font-weight: 900;
 }
-.percText-light {
-  color: #aec7e8;
+.percText-2 {
+  color: #f4a582;
+  font-weight: 900;
+}
+.percText-3 {
+  color: #fddbc7;
   font-weight: 900;
 }
 .box-chart {
@@ -73,7 +86,3 @@ svg {
 .btn:focus, .btn:active {
   outline: 0 !important;
 }
-
-
-
-

@@ -2,6 +2,10 @@ var surveyData = [];
 var filteredData = [];
 var alphabet = ["A","B","C","D","E","F","G","H","I","J","K","L","M"];
 
+// var pieColors = ["#7fc97f","#fdc086","#ffff99"];
+// var pieColors = ["#66c2a5", "#fdae61", "#ffffbf"];
+var pieColors = ["#4393c3","#f4a582","#fddbc7"];
+
 var activeProvince = "ALL";
 var activeMunicipality = "ALL";
 var activeBarangay = "ALL";
@@ -126,16 +130,19 @@ function analyzeData() {
   FA1();
 }
 
-// yesNo
+
 function FA1(){
+  // yesNo Required question
   $(infoWrapper).append("<h3><span class='jumpto' id='firstaid'></span>Topic: First Aid</h3><hr>");
   var questionID = "cbhfa-FA1";
-  var questionEnglish = "Have you ever attended any training program to learn basic first aid? (required)";
+  var questionEnglish = "Have you ever attended any training program to learn basic first aid?";
   var questionTagalog = "Nakadalo ka na ba ng pagsasanay patungkol sa paunang lunas?";
   var yesCount = 0;
   var noCount = 0;
   var skipped = 0;
+  var totalCount = 0;
   $.each(filteredData, function(surveyIndex, survey){
+    totalCount++;
     if (survey[questionID] === "yes"){
       yesCount ++;
     }
@@ -152,8 +159,8 @@ function FA1(){
       y: yesCount,
     },
     {
-      key: "no",
-      y: noCount,
+      key: "no/skip",
+      y: noCount + skipped,
     }
   ];
   $("#infoWrapper").append('<div class="row"><div id="' + 
@@ -164,6 +171,7 @@ function FA1(){
   var chart = nv.models.pie().width(width - 60).height(width - 60)
     .x(function(d) { return d.key }) 
     .y(function(d) { return d.y })
+    .color(pieColors)
     .showLabels(true);
   var chartSelector = "#" + questionID + "_chart";
   d3.select(chartSelector)
@@ -178,16 +186,18 @@ function FA1(){
   });
   var infoSelector = "#" + questionID + "_info";
   var thisInfoHtml = "";
-  var yesPerc = formatPerc(yesCount / (yesCount + noCount)); 
-  var noPerc = formatPerc(noCount / (yesCount + noCount));
+  var yesPerc = formatPerc(yesCount / totalCount); 
+  var noPerc = formatPerc(noCount / totalCount);
+  var skipPerc = formatPerc(skipped / totalCount);
+  var noskipPerc = formatPerc( (noCount+skipped) / totalCount);
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-dark'>" + yesPerc + "</span> answered Yes <span class='text-tagalog'>[Oo]</span> | " +
-    yesCount.toString() + ((yesCount == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-light'>" + noPerc + "</span> answered No <span class='text-tagalog'>[Hindi]</span> | " + 
-    noCount.toString() + ((noCount == 1) ? " interviewee" : " interviewees") + "<br>" + 
-    "(" + skipped.toString() + ((skipped == 1) ? " interviewee" : " interviewees") + " chose not to answer";
-  thisInfoHtml += ")</p><br>";
+    "<p><strong>" + totalCount + " respondents (required question)</strong><br>" +
+    "<span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
+    yesCount.toString() + ")<br>" +
+    "<span class='percText-2'>" + noskipPerc + "</span> no <span class='text-tagalog'>[hindi]</span> (" + 
+    noPerc + ", " + noCount.toString() + ") or" + 
+    " no response <span class='text-tagalog'>[walang sagot]</span> ("+ skipPerc + ", " + skipped.toString()+")</p><br>";
   $(infoSelector).append(thisInfoHtml);
   FA2();     
 }
@@ -199,15 +209,26 @@ function FA2() {
   var less2years = 0;
   var more2years = 0;
   var noTraining = 0;
+  var dontKnow = 0;
+  var noResponse = 0;
+  var totalAttended = 0;
   $.each(filteredData, function(surveyIndex, survey){
-    if (survey[questionID] === "years"){
-      more2years ++;
-    }
-    if (survey[questionID] === "months"){
-      less2years ++;
-    }
     if (survey[questionID] === "n/a"){
       noTraining ++;
+    } else {
+      totalAttended ++;
+      if (survey[questionID] === "years"){
+        more2years ++;
+      }
+      if (survey[questionID] === "months"){
+        less2years ++;
+      }
+      if (survey[questionID] === "dk"){
+        dontKnow ++;
+      }
+      if (survey[questionID] === "skip"){
+        noResponse ++;
+      }
     }
   });
   var thisPieData = [
@@ -218,6 +239,10 @@ function FA2() {
     {
       key: "<2 yrs",
       y: less2years,
+    },
+    {
+      key: "dk/skip",
+      y: dontKnow + noResponse,
     }
   ];
   $("#infoWrapper").append('<div class="row"><div id="' + 
@@ -228,6 +253,7 @@ function FA2() {
   var chart = nv.models.pie().width(width - 60).height(width - 60)
     .x(function(d) { return d.key }) 
     .y(function(d) { return d.y })
+    .color(pieColors)
     .showLabels(true);
   var chartSelector = "#" + questionID + "_chart";
   d3.select(chartSelector)
@@ -242,23 +268,29 @@ function FA2() {
   });
   var infoSelector = "#" + questionID + "_info";
   var thisInfoHtml = "";
-  
-  var more2Perc = formatPerc(more2years / (more2years + less2years)); 
-  var less2Perc = formatPerc(less2years / (more2years + less2years));
+  var more2Perc = formatPerc(more2years / totalAttended); 
+  var less2Perc = formatPerc(less2years / totalAttended);
+  var dkPerc = formatPerc(dontKnow / totalAttended);
+  var noResponsePerc = formatPerc(noResponse / totalAttended);
+  var dkskipPerc = formatPerc( (dontKnow + noResponse) /totalAttended);
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p>Of those attending a training program to learn basic first aid:<br>"+
-    "<span class='percText-dark'>" + less2Perc + "</span> did so in the last 2 years | " +
-    less2years.toString() + ((less2years == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-light'>" + more2Perc + "</span> did so more than 2 years ago | " + 
-    more2years.toString() + ((more2years == 1) ? " interviewee" : " interviewees") + "<br>" + 
-    "(" + noTraining.toString() + ((noTraining == 1) ? " interviewee has" : " interviewees have") + " not attended a training";
-  thisInfoHtml += ")</p><br>";
+    "<p><strong>Of the " + totalAttended.toString() + " respondents attending a training program to learn basic first aid:</strong><br>"+
+    "<span class='percText-1'>" + less2Perc + "</span> did so in the last 2 years (" +
+    less2years.toString() + ")<br>" +
+    "<span class='percText-2'>" + more2Perc + "</span> did so more than 2 years ago (" + 
+    more2years.toString() + ")<br>" + 
+    "<span class='percText-3'>" + dkskipPerc + "</span> don't know <span class='text-tagalog'>[hindi alam]</span> (" + 
+    dkPerc + ", " + dontKnow.toString() + ") or no response <span class='text-tagalog'>[walang sagot]</span> (" + 
+    noResponsePerc + ", " + noResponse.toString() + ")<br>" + 
+    "(" + noTraining.toString() + ((noTraining == 1) ? " respondent has" : " respondents have") + " not attended a training" +
+      ")</p><br>";
   $(infoSelector).append(thisInfoHtml)
   FA5();
 }
 
 function FA5(){
+  // does respondent know the key intervention?
   var questionID = "cbhfa-FA5";
   var questionEnglish = "What will be your first action if you see someone is bleeding?";
   var questionTagalog = "Ano ang iyong magiging unang pagkilos o gagawing pangunang lunas kapag ikaw ay makakakita ng taong nagdurugo?";
@@ -269,21 +301,24 @@ function FA5(){
   var dk = 0;
   var skip = 0;
   var notAsked = 0;
+  var totalAttended = 0;
   $.each(filteredData, function(surveyIndex, survey){
-    if (survey[questionID] === "A"){
-      know ++;
-    }
-    if (survey[questionID] === "other"){
-      other ++;
-    }
-    if (survey[questionID] === "dk"){
-      dk ++;
-    }
-    if (survey[questionID] === "skip"){
-      skip ++;
-    }
     if (survey[questionID] === "n/a"){
       notAsked ++;
+    } else { 
+      totalAttended ++;
+      if (survey[questionID] === "A"){
+        know ++;
+      }
+      if (survey[questionID] === "other"){
+        other ++;
+      }
+      if (survey[questionID] === "dk"){
+        dk ++;
+      }
+      if (survey[questionID] === "skip"){
+        skip ++;
+      }
     }
   });
   var thisPieData = [
@@ -296,8 +331,8 @@ function FA5(){
       y: other,
     },
     {
-      key: "dk",
-      y: dk,
+      key: "dk/skip",
+      y: dk + skip,
     }
   ];
   $("#infoWrapper").append('<div class="row"><div id="' + 
@@ -308,6 +343,7 @@ function FA5(){
   var chart = nv.models.pie().width(width - 60).height(width - 60)
     .x(function(d) { return d.key }) 
     .y(function(d) { return d.y })
+    .color(pieColors)
     .showLabels(true);
   var chartSelector = "#" + questionID + "_chart";
   d3.select(chartSelector)
@@ -322,27 +358,30 @@ function FA5(){
   });
   var infoSelector = "#" + questionID + "_info";
   var thisInfoHtml = "";
-  var knowPerc = formatPerc(know / (know + other + dk)); 
-  var otherPerc = formatPerc(other / (know + other + dk));
-  var dkPerc = formatPerc(dk / (know + other + dk));
+  var knowPerc = formatPerc(know / totalAttended); 
+  var otherPerc = formatPerc(other / totalAttended);
+  var dkPerc = formatPerc(dk / totalAttended);
+  var skipPerc = formatPerc(skip / totalAttended);
+  var dkskipPerc = formatPerc( (dk + skip) / totalAttended);
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p>Of those attending a training program to learn basic first aid:<br>"+
-    "<span class='percText-dark'>" + knowPerc + "</span> responded " + keyInterventionEnglish +
-    " <span class='text-tagalog'>[" + keyInterventionTagalog + "]</span> | " +
-    know.toString() + ((know == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-light'>" + otherPerc + "</span> gave some other answer | " + 
-    other.toString() + ((other == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-light'>" + dkPerc + "</span> don't know <span class='text-tagalog'>[hindi alam]</span> | " + 
-    dk.toString() + ((dk == 1) ? " interviewee" : " interviewees") + "<br>" +
-    ((skip > 0) ? "(" + skip.toString() + ((skip == 1) ? " interviewee" : " interviewees") + " chose not to answer <span class='text-tagalog'>[walang sagot]</span>)</p>" : "") + 
-    "(" + notAsked.toString() + ((notAsked == 1) ? " interviewee" : " interviewees") + " have not attended a training";
+    "<p><strong>Of the " + totalAttended.toString() + " respondents attending a training program to learn basic first aid:</strong><br>"+
+    "<span class='percText-1'>" + knowPerc + "</span> " + keyInterventionEnglish +
+    " <span class='text-tagalog'>[" + keyInterventionTagalog + "]</span> (" +
+    know.toString() + ")<br>" +
+    "<span class='percText-2'>" + otherPerc + "</span> gave some other answer (" + 
+    other.toString() + ")<br>" +
+    "<span class='percText-3'>" + dkskipPerc + "</span> don't know <span class='text-tagalog'>[hindi alam]</span> (" + 
+    dkPerc + ", " + dk.toString() + ") or no response <span class='text-tagalog'>[walang sagot]</span> (" + 
+    skipPerc + ", " + skip.toString() + ")<br>" + 
+    "(" + notAsked.toString() + ((notAsked == 1) ? " respondent" : " respondents") + " have not attended a training";
   thisInfoHtml += ")</p><br>";
   $(infoSelector).append(thisInfoHtml);
   FA6();
 }
 
 function FA6(){
+  // does respondent know the key intervention?
   var questionID = "cbhfa-FA6";
   var questionEnglish = "What will be your first action if you see someone has been burnt?";
   var questionTagalog = "Ano ang iyong magiging unang tugon/aksyon kapag nakakita ka ng taong napaso?";
@@ -353,21 +392,24 @@ function FA6(){
   var dk = 0;
   var skip = 0;
   var notAsked = 0;
+  var totalAttended = 0;
   $.each(filteredData, function(surveyIndex, survey){
-    if (survey[questionID] === "A"){
-      know ++;
-    }
-    if (survey[questionID] === "other"){
-      other ++;
-    }
-    if (survey[questionID] === "dk"){
-      dk ++;
-    }
-    if (survey[questionID] === "skip"){
-      skip ++;
-    }
     if (survey[questionID] === "n/a"){
       notAsked ++;
+    } else {
+      totalAttended ++;
+      if (survey[questionID] === "A"){
+        know ++;
+      }
+      if (survey[questionID] === "other"){
+        other ++;
+      }
+      if (survey[questionID] === "dk"){
+        dk ++;
+      }
+      if (survey[questionID] === "skip"){
+        skip ++;
+      }
     }
   });
   var thisPieData = [
@@ -380,8 +422,8 @@ function FA6(){
       y: other,
     },
     {
-      key: "dk",
-      y: dk,
+      key: "dk/skip",
+      y: dk + skip,
     }
   ];
   $("#infoWrapper").append('<div class="row"><div id="' + 
@@ -392,6 +434,7 @@ function FA6(){
   var chart = nv.models.pie().width(width - 60).height(width - 60)
     .x(function(d) { return d.key }) 
     .y(function(d) { return d.y })
+    .color(pieColors)
     .showLabels(true);
   var chartSelector = "#" + questionID + "_chart";
   d3.select(chartSelector)
@@ -406,36 +449,40 @@ function FA6(){
   });
   var infoSelector = "#" + questionID + "_info";
   var thisInfoHtml = "";
-  var knowPerc = formatPerc(know / (know + other + dk)); 
-  var otherPerc = formatPerc(other / (know + other + dk));
-  var dkPerc = formatPerc(dk / (know + other + dk));
+  var knowPerc = formatPerc(know / totalAttended); 
+  var otherPerc = formatPerc(other / totalAttended);
+  var dkPerc = formatPerc(dk / totalAttended);
+  var skipPerc = formatPerc(skip / totalAttended);
+  var dkskipPerc = formatPerc( (dk + skip) / totalAttended);
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p>Of those attending a training program to learn basic first aid:<br>"+
-    "<span class='percText-dark'>" + knowPerc + "</span> responded " + keyInterventionEnglish +
-    " <span class='text-tagalog'>[" + keyInterventionTagalog + "]</span> | " +
-    know.toString() + ((know == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-light'>" + otherPerc + "</span> gave some other answer | " + 
-    other.toString() + ((other == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-light'>" + dkPerc + "</span> don't know <span class='text-tagalog'>[hindi alam]</span> | " + 
-    dk.toString() + ((dk == 1) ? " interviewee" : " interviewees") + "<br>" +
-    ((skip > 0) ? "(" + skip.toString() + ((skip == 1) ? " interviewee" : " interviewees") + " chose not to answer <span class='text-tagalog'>[walang sagot]</span>)</p>" : "") + 
-    "(" + notAsked.toString() + ((notAsked == 1) ? " interviewee" : " interviewees") + " have not attended a training";
+    "<p><strong>Of the " + totalAttended.toString() + " respondents attending a training program to learn basic first aid:</strong><br>"+
+    "<span class='percText-1'>" + knowPerc + "</span> " + keyInterventionEnglish +
+    " <span class='text-tagalog'>[" + keyInterventionTagalog + "]</span> (" +
+    know.toString() + ")<br>" +
+    "<span class='percText-2'>" + otherPerc + "</span> gave some other answer (" + 
+    other.toString() + ")<br>" +
+    "<span class='percText-3'>" + dkskipPerc + "</span> don't know <span class='text-tagalog'>[hindi alam]</span> (" + 
+    dkPerc + ", " + dk.toString() + ") or no response <span class='text-tagalog'>[walang sagot]</span> (" + 
+    skipPerc + ", " + skip.toString() + ")<br>" +  
+    "(" + notAsked.toString() + ((notAsked == 1) ? " respondent" : " respondents") + " have not attended a training";
   thisInfoHtml += ")</p><br>";
   $(infoSelector).append(thisInfoHtml);
   FA7();
 }
 
 function FA7(){
+  // yesnodk, required!
   var questionID = "cbhfa-FA7";
-  var questionEnglish = "Did you at any occasion in the last year injure yourself and was given first aid by a volunteer? (required)";
+  var questionEnglish = "Did you at any occasion in the last year injure yourself and was given first aid by a volunteer?";
   var questionTagalog = "Mayroon bang naging pagkakataon kung saan nasaktan mo ang iyong sarili at nilapatan ka ng pangunang lunas ng isang volunteer?";
   var yesCount = 0;
   var noCount = 0;
   var dkCount = 0;
   var skipped = 0;
-  var topicSkipped = 0;
+  var totalCount = 0;
   $.each(filteredData, function(surveyIndex, survey){
+    totalCount++;
     if (survey[questionID] === "yes"){
       yesCount ++;
     }
@@ -447,9 +494,6 @@ function FA7(){
     }
     if (survey[questionID] === "skip"){
       skipped ++;
-    }
-    if (survey[questionID] === "n/a"){
-      topicSkipped ++;
     }
   });
   var thisPieData = [
@@ -474,6 +518,7 @@ function FA7(){
   var chart = nv.models.pie().width(width - 60).height(width - 60)
     .x(function(d) { return d.key }) 
     .y(function(d) { return d.y })
+    .color(pieColors)
     .showLabels(true);
   var chartSelector = "#" + questionID + "_chart";
   d3.select(chartSelector)
@@ -489,28 +534,30 @@ function FA7(){
   var infoSelector = "#" + questionID + "_info";
   var thisInfoHtml = "";
   var nodk = noCount + dkCount;
-  var totalCount = yesCount + noCount + dkCount + skipped;
   var yesPerc = formatPerc(yesCount / totalCount); 
-  var noPerc = formatPerc(nodk / totalCount);
+  var nodkPerc = formatPerc(nodk / totalCount);
+  var noPerc = formatPerc(noCount / totalCount);
+  var dkPerc =formatPerc(dkCount / totalCount);
   var skipPerc = formatPerc(skipped / totalCount);
-
-
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-dark'>" + yesPerc + "</span> Yes <span class='text-tagalog'>[Oo]</span> (" +
+    "<p><strong>" + totalCount + " respondents (required question)</strong><br>" +
+    "<span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
     yesCount.toString() + ")<br>" +
-    "<span class='percText-light'>" + noPerc + "</span> No <span class='text-tagalog'>[Hindi]</span> or Don't know <span class='text-tagalog'>[Hindi alam]</span> (" + 
-    nodk.toString() + ")<br>" + 
-    "<span class='percText-light'>" + skipPerc + "</span> No response <span class='text-tagalog'>[Walang sagot]</span> (" + 
+    "<span class='percText-2'>" + nodkPerc + "</span> no <span class='text-tagalog'>[hindi]</span> (" + 
+    noPerc + ", " +noCount.toString() + ") or don't know <span class='text-tagalog'>[hindi alam]</span> (" + 
+    dkPerc + ", " + dkCount.toString() + ")<br>" + 
+    "<span class='percText-3'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
     skipped.toString() + ")<br>";
   $(infoSelector).append(thisInfoHtml);   
   CM1();
 }
 
 function CM1(){
+  // know >3  or  <3/dont know, required!
   $(infoWrapper).append("<h3><span class='jumpto' id='majoremergencies'></span>Topic: Community Mobilization in Major Emergencies</h3></div><hr>");
   var questionID = "CM1";
-  var questionEnglish = "What would you do to respond safely to a disaster?  (required)";
+  var questionEnglish = "What would you do to respond safely to a disaster?";
   var questionTagalog = "Ano ang iyong gagawin upang makatugon ng ligtas sa isang kalamidad?";
   var answersEnglish = {
     "CM1-A":"listen to the media and other reliable sources and follow advice",
@@ -545,6 +592,7 @@ function CM1(){
   var lessThanThree = 0;
   var dontKnow = 0;
   var skipped = 0;
+  var totalCount = 0;
   var dk = questionID + "-dk";
   var skip = questionID + "-skip";
   var answersArray = [];
@@ -556,6 +604,7 @@ function CM1(){
     allResponses[responseOption] = 0;
   }
   $.each(filteredData, function(surveyIndex, survey){
+    totalCount++;
     // counts for each of the responses
     for (response in allResponses){
       if (survey[response] === "TRUE"){
@@ -566,7 +615,6 @@ function CM1(){
     // counts for analysis chart  
     if (survey[dk] === "TRUE"){
       dontKnow ++;
-      lessThanThree ++;
     } else if (survey[skip] === "TRUE"){
       skipped ++;
     } else {
@@ -591,7 +639,11 @@ function CM1(){
     },
     {
       key: "less than 3",
-      y: lessThanThree,
+      y: lessThanThree + dontKnow,
+    },
+    {
+      key: "skipped",
+      y: skipped,
     }
   ];  
   $("#infoWrapper").append('<div class="row"><div id="' + 
@@ -602,6 +654,7 @@ function CM1(){
   var chart = nv.models.pie().width(width - 60).height(width - 60)
     .x(function(d) { return d.key }) 
     .y(function(d) { return d.y })
+    .color(pieColors)
     .showLabels(true);
   var chartSelector = "#" + questionID + "_chart";
   d3.select(chartSelector)
@@ -614,21 +667,23 @@ function CM1(){
   $.each(el, function(aIndex, a){
     a.parentNode.appendChild(a);
   });
-  var totalLessSkipped = filteredData.length - skipped;
   var infoSelector = "#" + questionID + "_info";
   var thisInfoHtml = "";
-  var atLeastThreePerc = formatPerc(atLeastThree / totalLessSkipped); 
-  var lessThanThreePerc = formatPerc(lessThanThree / totalLessSkipped);
-  var dontKnowPerc = formatPerc(dontKnow / totalLessSkipped);
+  var atLeastThreePerc = formatPerc(atLeastThree / totalCount); 
+  var lessThanThreePerc = formatPerc(lessThanThree / totalCount);
+  var dontKnowPerc = formatPerc(dontKnow / totalCount);
+  var lessThreeDontKnowPerc = formatPerc((lessThanThree + dontKnow)/totalCount);
+  var noResponsePerc = formatPerc(skipped / totalCount);
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-dark'>" + atLeastThreePerc + "</span> could identify at least three key responses" + 
-    " | " + atLeastThree.toString() + ((atLeastThree == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-light'>" +lessThanThreePerc + "</span> could identify less than three key responses or didn't know" + 
-    " | " + lessThanThree.toString() + ((lessThanThree == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "(" + dontKnowPerc + " of total didn't know | " +
-    dontKnow.toString() + ((dontKnow == 1) ? " interviewee" : " interviewees") + ")<br>" +
-    "(" + skipped.toString() + ((skipped == 1) ? " interviewee" : " interviewees") + " chose not to answer)</p>";
+    "<p><strong>" + totalCount + " respondents (required question)</strong><br>" +
+    "<span class='percText-1'>" + atLeastThreePerc + "</span> could identify at least three key responses" + 
+    " (" + atLeastThree.toString() + ")<br>" +
+    "<span class='percText-2'>" +lessThreeDontKnowPerc + "</span> could identify less than three key responses ("+
+    lessThanThreePerc + ", " + lessThanThree.toString()  + ") or didn't know" + 
+    " (" + dontKnowPerc + ", " + dontKnow.toString() + ")<br>" +
+    "<span class='percText-3'>" + noResponsePerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> ("+
+    skipped.toString() + ")</p><br>";
 
   $(infoSelector).append(thisInfoHtml);
   $(infoSelector).append("<strong>Raw counts of responses</strong><br>");
@@ -643,15 +698,18 @@ function CM1(){
 }
 
 function CM2(){
+  // yesnodk, required!
   var questionID = "cbhfa-CM2";
-  var questionEnglish = "Did you receive psychosocial support from a volunteer following the disaster? (required)";
+  var questionEnglish = "Did you receive psychosocial support from a volunteer following the disaster?";
   var questionTagalog = "Nakatanggap ka ba ng psychosocial support mula sa isang volunteer matapos ang isang kalamidad?";
   var yesCount = 0;
   var noCount = 0;
   var dkCount = 0;
   var skipped = 0;
-  var topicSkipped = 0;
+  // var topicSkipped = 0;
+  var totalCount = 0;
   $.each(filteredData, function(surveyIndex, survey){
+    totalCount ++;
     if (survey[questionID] === "yes"){
       yesCount ++;
     }
@@ -664,9 +722,9 @@ function CM2(){
     if (survey[questionID] === "skip"){
       skipped ++;
     }
-    if (survey[questionID] === "n/a"){
-      topicSkipped ++;
-    }
+    // if (survey[questionID] === "n/a"){
+    //   topicSkipped ++;
+    // }
   });
   var thisPieData = [
     {
@@ -674,9 +732,14 @@ function CM2(){
       y: yesCount,
     },
     {
-      key: "no",
+      key: "no/dk",
       y: noCount + dkCount,
+    },
+    {
+      key: "skip",
+      y: skipped,
     }
+
   ];
   $("#infoWrapper").append('<div class="row"><div id="' + 
     questionID + '" class="box-chart"><svg id="' +
@@ -686,6 +749,7 @@ function CM2(){
   var chart = nv.models.pie().width(width - 60).height(width - 60)
     .x(function(d) { return d.key }) 
     .y(function(d) { return d.y })
+    .color(pieColors)
     .showLabels(true);
   var chartSelector = "#" + questionID + "_chart";
   d3.select(chartSelector)
@@ -700,19 +764,22 @@ function CM2(){
   });
   var infoSelector = "#" + questionID + "_info";
   var thisInfoHtml = "";
-  var yesPerc = formatPerc(yesCount / (yesCount + noCount + dkCount)); 
-  var noPerc = formatPerc(noCount / (yesCount + noCount + dkCount));
+  var yesPerc = formatPerc(yesCount / totalCount); 
+  var noPerc = formatPerc(noCount / totalCount);
+  var dkPerc = formatPerc(dkCount / totalCount);
+  var nodkPerc = formatPerc((noCount + dkCount) / totalCount);
+  var noResponsePerc = formatPerc(skipped / totalCount);
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-dark'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
+    "<p><strong>" + totalCount + " respondents (required question)</strong><br>" +
+    "<p><span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
     yesCount.toString() + ")<br>" +
-    "<span class='percText-light'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> or don't know <span class='text-tagalog'>[hindi alam]</span> (" + 
-    noCount.toString() + ")<br>" + 
-    "(" + skipped.toString() + ((skipped == 1) ? " interviewee" : " interviewees") + " chose not to answer";
-  if(topicSkipped > 0){
-    thisInfoHtml += " and " + topicSkipped.toString() + " not asked this question";
-  }
-  thisInfoHtml += ")</p><br>";
+    "<span class='percText-2'>" + nodkPerc + "</span> no <span class='text-tagalog'>[hindi]</span> ("+
+    noPerc + ", " + noCount.toString() + ") or don't know <span class='text-tagalog'>[hindi alam]</span> (" + 
+    dkPerc + ", " + dkCount.toString() + ")<br>" + 
+    "<span class='percText-3'>" + noResponsePerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> ("+
+    skipped.toString() + ")</p>";
+  // if(topicSkipped > 0){}
   $(infoSelector).append(thisInfoHtml);   
   SM1();
 }
@@ -758,6 +825,7 @@ function SM1(){
   var chart = nv.models.pie().width(width - 60).height(width - 60)
     .x(function(d) { return d.key }) 
     .y(function(d) { return d.y })
+    .color(pieColors)
     .showLabels(true);
   var chartSelector = "#" + questionID + "_chart";
   d3.select(chartSelector)
@@ -776,9 +844,9 @@ function SM1(){
   var noPerc = formatPerc(noCount / (yesCount + noCount));
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-dark'>" + yesPerc + "</span> yes <span class='text-tagalog'>[0o]</span> (" +
+    "<p><span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[0o]</span> (" +
     yesCount.toString() + ")<br>" +
-    "<span class='percText-light'>" + noPerc + "</span> no <span class='text-tagalog'>[Hindi]</span> (" + 
+    "<span class='percText-2'>" + noPerc + "</span> no <span class='text-tagalog'>[Hindi]</span> (" + 
     noCount.toString() + ")<br>" + 
     "(" + skipped.toString() + ((skipped == 1) ? " interviewee" : " interviewees") + " chose not to answer";
   if(topicSkipped > 0){
@@ -939,11 +1007,11 @@ function SM3(){
   var privatePerc = formatPerc(privateCare / totalCount);
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-dark'>" + homePerc + "</span> received care in home" + 
+    "<p><span class='percText-1'>" + homePerc + "</span> received care in home" + 
     " | " + homeCare.toString() + ((homeCare == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-dark'>" + publicPerc + "</span> received care at a public facility" + 
+    "<span class='percText-1'>" + publicPerc + "</span> received care at a public facility" + 
     " | " + publicCare.toString() + ((publicCare == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-dark'>" + privatePerc + "</span> received care at a private facility" + 
+    "<span class='percText-1'>" + privatePerc + "</span> received care at a private facility" + 
     " | " + privateCare.toString() + ((privateCare == 1) ? " interviewee" : " interviewees") + "<br>" +
     "(respondents may have received care in more than one sector)<br>";
   $(infoSelector).append(thisInfoHtml);
@@ -1157,6 +1225,7 @@ function SM6(){
     var chart = nv.models.pie().width(width - 60).height(width - 60)
       .x(function(d) { return d.key }) 
       .y(function(d) { return d.y })
+      .color(pieColors)
       .showLabels(true);
     var chartSelector = "#" + questionID + "_chart";
     var thisPieData = [];
@@ -1204,11 +1273,11 @@ function SM6(){
     var yesPerc = formatPerc(yesCount / (yesCount + noCount + skipCount)); 
     var noPerc = formatPerc(noCount / (yesCount + noCount + skipCount));
     var skipPerc = formatPerc(skipCount / (yesCount + noCount + skipCount));
-    thisInfoHtml = "<p><span class='percText-dark'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
+    thisInfoHtml = "<p><span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
       yesCount.toString() + ")<br>" +
-      "<span class='percText-light'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> (" + 
+      "<span class='percText-2'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> (" + 
       noCount.toString() + ")<br>" + 
-      "<span class='percText-light'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
+      "<span class='percText-3'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
       skipCount.toString() + ")</p><br>";
     $(infoSelector).append(thisInfoHtml);
   });
@@ -1259,6 +1328,7 @@ function SM7(){
   var chart = nv.models.pie().width(width - 60).height(width - 60)
     .x(function(d) { return d.key }) 
     .y(function(d) { return d.y })
+    .color(pieColors)
     .showLabels(true);
   var chartSelector = "#" + questionID + "_chart";
   d3.select(chartSelector)
@@ -1278,11 +1348,11 @@ function SM7(){
   var skipPerc = formatPerc(skipped / (yesCount + noCount + skipped));
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-dark'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
+    "<p><span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
     yesCount.toString() + ")<br>" +
-    "<span class='percText-light'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> (" + 
+    "<span class='percText-2'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> (" + 
     noCount.toString() + ")<br>" +
-    "<span class='percText-light'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
+    "<span class='percText-3'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
     skipped.toString() + ")<br>";
   if(topicSkipped > 0){
     thisInfoHtml += "(" + topicSkipped.toString() + " not asked this question";
@@ -1458,6 +1528,7 @@ function SM10(){
   var chart = nv.models.pie().width(width - 60).height(width - 60)
     .x(function(d) { return d.key }) 
     .y(function(d) { return d.y })
+    .color(pieColors)
     .showLabels(true);
   var chartSelector = "#" + questionID + "_chart";
   d3.select(chartSelector)
@@ -1478,9 +1549,9 @@ function SM10(){
   var dontKnowPerc = formatPerc(dontKnow / totalLessSkipped);
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-dark'>" + atLeastThreePerc + "</span> could identify at least three key responses" + 
+    "<p><span class='percText-1'>" + atLeastThreePerc + "</span> could identify at least three key responses" + 
     " | " + atLeastThree.toString() + ((atLeastThree == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-light'>" +lessThanThreePerc + "</span> could identify less than three key responses or didn't know" + 
+    "<span class='percText-2'>" +lessThanThreePerc + "</span> could identify less than three key responses or didn't know" + 
     " | " + lessThanThree.toString() + ((lessThanThree == 1) ? " interviewee" : " interviewees") + "<br>" +
     "(" + dontKnowPerc + " of total didn't know | " +
     dontKnow.toString() + ((dontKnow == 1) ? " interviewee" : " interviewees") + ")<br>" +
@@ -1546,6 +1617,7 @@ function SM11(){
   var chart = nv.models.pie().width(width - 60).height(width - 60)
     .x(function(d) { return d.key }) 
     .y(function(d) { return d.y })
+    .color(pieColors)
     .showLabels(true);
   var chartSelector = "#" + questionID + "_chart";
   d3.select(chartSelector)
@@ -1568,11 +1640,11 @@ function SM11(){
   
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-dark'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
+    "<p><span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
     yesCount.toString() + ")<br>" +
-    "<span class='percText-light'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> or don't know <span class='text-tagalog'>[hindi alam]</span> (" + 
+    "<span class='percText-2'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> or don't know <span class='text-tagalog'>[hindi alam]</span> (" + 
     nodk.toString() + ")<br>" + 
-    "<span class='percText-light'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
+    "<span class='percText-3'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
     skipped.toString() + ")<br>";
   if(topicSkipped > 0){
     thisInfoHtml += "(" + topicSkipped.toString() + " not asked this question";
@@ -1747,6 +1819,7 @@ function NB6(){
   var chart = nv.models.pie().width(width - 60).height(width - 60)
     .x(function(d) { return d.key }) 
     .y(function(d) { return d.y })
+    .color(pieColors)
     .showLabels(true);
   var chartSelector = "#" + questionID + "_chart";
   d3.select(chartSelector)
@@ -1767,9 +1840,9 @@ function NB6(){
   var dontKnowPerc = formatPerc(dontKnow / totalLessSkipped);
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-dark'>" + atLeastThreePerc + "</span> could identify at least three key responses" + 
+    "<p><span class='percText-1'>" + atLeastThreePerc + "</span> could identify at least three key responses" + 
     " | " + atLeastThree.toString() + ((atLeastThree == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-light'>" +lessThanThreePerc + "</span> could identify less than three key responses or didn't know" + 
+    "<span class='percText-2'>" +lessThanThreePerc + "</span> could identify less than three key responses or didn't know" + 
     " | " + lessThanThree.toString() + ((lessThanThree == 1) ? " interviewee" : " interviewees") + "<br>" +
     "(" + dontKnowPerc + " of total didn't know | " +
     dontKnow.toString() + ((dontKnow == 1) ? " interviewee" : " interviewees") + ")<br>" +
@@ -1831,6 +1904,7 @@ function NB2(){
   var chart = nv.models.pie().width(width - 60).height(width - 60)
     .x(function(d) { return d.key }) 
     .y(function(d) { return d.y })
+    .color(pieColors)
     .showLabels(true);
   var chartSelector = "#" + questionID + "_chart";
   d3.select(chartSelector)
@@ -1853,11 +1927,11 @@ function NB2(){
   thisInfoHtml = "<h4>" + questionEnglish +
     // "<br><small>" + questionTagalog + "</small>"+
     "</h4>" +
-    "<p><span class='percText-dark'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
+    "<p><span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
     yesCount.toString() + ")<br>" +
-    "<span class='percText-light'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> (" + 
+    "<span class='percText-2'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> (" + 
     noCount.toString() + ")<br>" + 
-    "<span class='percText-light'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
+    "<span class='percText-3'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
     skipped.toString() + ")<br>";
   if(topicSkipped > 0){
     thisInfoHtml += "(" + topicSkipped.toString() + " not asked this question";
@@ -1915,6 +1989,7 @@ function NB4(){
   var chart = nv.models.pie().width(width - 60).height(width - 60)
     .x(function(d) { return d.key }) 
     .y(function(d) { return d.y })
+    .color(pieColors)
     .showLabels(true);
   var chartSelector = "#" + questionID + "_chart";
   d3.select(chartSelector)
@@ -1937,11 +2012,11 @@ function NB4(){
   
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-dark'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
+    "<p><span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
     yesCount.toString() + ")<br>" +
-    "<span class='percText-light'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> or don't know <span class='text-tagalog'>[hindi alam]</span> (" + 
+    "<span class='percText-2'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> or don't know <span class='text-tagalog'>[hindi alam]</span> (" + 
     nodk.toString() + ")<br>" + 
-    "<span class='percText-light'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
+    "<span class='percText-3'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
     skipped.toString() + ")<br>";
   if(topicSkipped > 0){
     thisInfoHtml += "(" + topicSkipped.toString() + " not asked this question";
@@ -1999,6 +2074,7 @@ function NB5(){
   var chart = nv.models.pie().width(width - 60).height(width - 60)
     .x(function(d) { return d.key }) 
     .y(function(d) { return d.y })
+    .color(pieColors)
     .showLabels(true);
   var chartSelector = "#" + questionID + "_chart";
   d3.select(chartSelector)
@@ -2022,11 +2098,11 @@ function NB5(){
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
     "<p><small><strong>Note:</strong> survey design error meant all section respondents were asked this question and not just those who answered <i>yes</i> to <i>Did you breastfeed your last baby?</i></small></p>"+
-    "<p><span class='percText-dark'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
+    "<p><span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
     yesCount.toString() + ")<br>" +
-    "<span class='percText-light'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> or don't know <span class='text-tagalog'>[hindi alam]</span> (" + 
+    "<span class='percText-2'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> or don't know <span class='text-tagalog'>[hindi alam]</span> (" + 
     nodk.toString() + ")<br>" + 
-    "<span class='percText-light'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
+    "<span class='percText-2'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
     skipped.toString() + ")<br>";
   if(topicSkipped > 0){
     thisInfoHtml += "(" + topicSkipped.toString() + " not asked this question";
