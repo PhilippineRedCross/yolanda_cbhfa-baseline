@@ -642,7 +642,7 @@ function CM1(){
       y: lessThanThree + dontKnow,
     },
     {
-      key: "skipped",
+      key: "skip",
       y: skipped,
     }
   ];  
@@ -668,34 +668,34 @@ function CM1(){
     a.parentNode.appendChild(a);
   });
   var infoSelector = "#" + questionID + "_info";
-  var thisInfoHtml = "";
   var atLeastThreePerc = formatPerc(atLeastThree / totalCount); 
   var lessThanThreePerc = formatPerc(lessThanThree / totalCount);
   var dontKnowPerc = formatPerc(dontKnow / totalCount);
   var lessThreeDontKnowPerc = formatPerc((lessThanThree + dontKnow)/totalCount);
   var noResponsePerc = formatPerc(skipped / totalCount);
-  thisInfoHtml = "<h4>" + questionEnglish +
+  var thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
     "<p><strong>" + totalCount + " respondents (required question)</strong><br>" +
     "<span class='percText-1'>" + atLeastThreePerc + "</span> could identify at least three key responses" + 
     " (" + atLeastThree.toString() + ")<br>" +
     "<span class='percText-2'>" +lessThreeDontKnowPerc + "</span> could identify less than three key responses ("+
-    lessThanThreePerc + ", " + lessThanThree.toString()  + ") or didn't know" + 
+    lessThanThreePerc + ", " + lessThanThree.toString()  + ") or don't know <span class='text-tagalog'>[walang sagot]</span> " + 
     " (" + dontKnowPerc + ", " + dontKnow.toString() + ")<br>" +
     "<span class='percText-3'>" + noResponsePerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> ("+
-    skipped.toString() + ")</p><br>";
-
+    skipped.toString() + ")</p>";
   $(infoSelector).append(thisInfoHtml);
-  $(infoSelector).append("<strong>Raw counts of responses</strong><br>");
+  $(infoSelector).append("<strong>Raw counts of responses (multiple responses possible)</strong><br>");
   for(response in allResponses){
     var thisResponseCount = allResponses[response];
+    var thisResponsePerc = formatPerc(allResponses[response] / totalCount); 
     var thisResponseEng = answersEnglish[response];
     var thisResponseTag = answersTagalog[response];
-    thisHtml = thisResponseCount + " - " + thisResponseEng + " <span class='text-tagalog'>[" + thisResponseTag + "]</span><br>";
+    var thisHtml = thisResponsePerc + " - " + thisResponseEng + " <span class='text-tagalog'>[" + thisResponseTag + "]</span> ("+ thisResponseCount +")<br>";
     $(infoSelector).append(thisHtml);
   }
   CM2(); 
 }
+
 
 function CM2(){
   // yesnodk, required!
@@ -793,18 +793,21 @@ function SM1(){
   var noCount = 0;
   var skipped = 0;
   var topicSkipped = 0;
+  var totalCount = 0;
   $.each(filteredData, function(surveyIndex, survey){
-    if (survey[questionID] === "yes"){
-      yesCount ++;
-    }
-    if (survey[questionID] === "no"){
-      noCount ++;
-    }
-    if (survey[questionID] === "skip"){
-      skipped ++;
-    }
     if (survey[questionID] === "n/a"){
       topicSkipped ++;
+    } else {
+      totalCount ++;
+      if (survey[questionID] === "yes"){
+        yesCount ++;
+      }
+      if (survey[questionID] === "no"){
+        noCount ++;
+      }
+      if (survey[questionID] === "skip"){
+        skipped ++;
+      }
     }
   });
   var thisPieData = [
@@ -815,6 +818,10 @@ function SM1(){
     {
       key: "no",
       y: noCount,
+    },
+    {
+      key: "skip",
+      y: skipped,
     }
   ];
   $("#infoWrapper").append('<div class="row"><div id="' + 
@@ -839,18 +846,20 @@ function SM1(){
     a.parentNode.appendChild(a);
   });
   var infoSelector = "#" + questionID + "_info";
-  var thisInfoHtml = "";
-  var yesPerc = formatPerc(yesCount / (yesCount + noCount)); 
-  var noPerc = formatPerc(noCount / (yesCount + noCount));
-  thisInfoHtml = "<h4>" + questionEnglish +
+  var yesPerc = formatPerc(yesCount / totalCount); 
+  var noPerc = formatPerc(noCount / totalCount);
+  var noResponsePerc = formatPerc(skipped / totalCount);
+  var thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[0o]</span> (" +
+    "<p><strong>" + totalCount + " respondents</strong><br>" +
+    "<span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
     yesCount.toString() + ")<br>" +
-    "<span class='percText-2'>" + noPerc + "</span> no <span class='text-tagalog'>[Hindi]</span> (" + 
+    "<span class='percText-2'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> (" + 
     noCount.toString() + ")<br>" + 
-    "(" + skipped.toString() + ((skipped == 1) ? " interviewee" : " interviewees") + " chose not to answer";
+    "<span class='percText-3'>" + noResponsePerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
+    skipped.toString() + ")<br>";
   if(topicSkipped > 0){
-    thisInfoHtml += ", " + topicSkipped.toString() + " not asked this question";
+    thisInfoHtml += "(" + topicSkipped.toString() + " not asked this question";
   }
   thisInfoHtml += ")</p><br>";
   $(infoSelector).append(thisInfoHtml);   
@@ -926,7 +935,7 @@ function SM2(){
     thisHtml += " ("+ thisResponseCount + ")<br>";
     $(infoSelector).append(thisHtml);
   }
-  $(infoSelector).append(notAskedCount + " - respondents not asked this question");  
+  $(infoSelector).append("(" + notAskedCount + " not asked this question)");  
   SM3();
 }
 
@@ -1007,15 +1016,15 @@ function SM3(){
   var privatePerc = formatPerc(privateCare / totalCount);
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-1'>" + homePerc + "</span> received care in home" + 
-    " | " + homeCare.toString() + ((homeCare == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-1'>" + publicPerc + "</span> received care at a public facility" + 
-    " | " + publicCare.toString() + ((publicCare == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-1'>" + privatePerc + "</span> received care at a private facility" + 
-    " | " + privateCare.toString() + ((privateCare == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "(respondents may have received care in more than one sector)<br>";
+    "<p><strong>" + totalCount + " respondents (may have received care in more than one sector)</strong><br>" +
+    "<span class='percText-other1'>" + homePerc + "</span> received care in home" + 
+    " (" + homeCare.toString() + ")<br>" +
+    "<span class='percText-other1'>" + publicPerc + "</span> received care at a public facility" + 
+    " (" + publicCare.toString() + ")<br>" +
+    "<span class='percText-other1'>" + privatePerc + "</span> received care at a private facility" + 
+    " (" + privateCare.toString() + ")</p>";
   $(infoSelector).append(thisInfoHtml);
-  $(infoSelector).append("<strong>" + totalCount.toString() + " respondents (multiple responses possible)</strong><br>");
+  $(infoSelector).append("<strong>Raw counts of responses (multiple responses possible)</strong><br>");
   for(response in allResponses){
     var thisResponseCount = allResponses[response];
     var thisResponsePerc = formatPerc(allResponses[response] / totalCount); 
@@ -1028,7 +1037,7 @@ function SM3(){
     thisHtml += " ("+ thisResponseCount + ")<br>";
     $(infoSelector).append(thisHtml);
   }
-  $(infoSelector).append(topicSkipped.toString() + " - respondents not asked this question"); 
+  $(infoSelector).append("(" + topicSkipped.toString() + " not asked this question)"); 
   SM4();
 }
 
@@ -1070,7 +1079,7 @@ function SM4(){
     "<strong>" + monthResponses.length.toString() + " respondents providing # of months</strong><br>" +
     "Average months: " + avgMonths.toString() + "<br>" +
     "Min: " + minMonths.toString() + " / Max: " + maxMonths.toString() + "<br>"+
-    "(" + dkCount.toString() + " don't know, " + noResponseCount.toString() + " no response, " + 
+    "(" + dkCount.toString() + " don't know <span class='text-tagalog'>[hindi alam]</span>, " + noResponseCount.toString() + " no response <span class='text-tagalog'>[walang sagot]</span>, " + 
     notAskedCount.toString() + " not asked this question)";
   $(infoSelector).append(thisInfoHtml);
   SM5();
@@ -1114,7 +1123,7 @@ function SM5(){
     "<strong>" + numberResponses.length.toString() + " respondents providing # of times</strong><br>" +
     "Average Times: " + avgTimes.toString() + "<br>" +
     "Min: " + minTimes.toString() + " / Max: " + maxTimes.toString() + "<br>"+
-    "(" + dkCount.toString() + " don't know, " + noResponseCount.toString() + " no response, " + 
+    "(" + dkCount.toString() + " don't know <span class='text-tagalog'>[hindi alam]</span>, " + noResponseCount.toString() + " no response <span class='text-tagalog'>[walang sagot]</span>, " + 
     notAskedCount.toString() + " not asked this question)";
   $(infoSelector).append(thisInfoHtml);
   SM6();
@@ -1343,12 +1352,14 @@ function SM7(){
   });
   var infoSelector = "#" + questionID + "_info";
   var thisInfoHtml = "";
-  var yesPerc = formatPerc(yesCount / (yesCount + noCount + skipped)); 
-  var noPerc = formatPerc(noCount / (yesCount + noCount + skipped));
-  var skipPerc = formatPerc(skipped / (yesCount + noCount + skipped));
+  var totalCount = yesCount + noCount + skipped;
+  var yesPerc = formatPerc(yesCount / totalCount); 
+  var noPerc = formatPerc(noCount / totalCount);
+  var skipPerc = formatPerc(skipped / totalCount);
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
+    "<p><strong>" + totalCount + " respondents </strong><br>" +
+    "<span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
     yesCount.toString() + ")<br>" +
     "<span class='percText-2'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> (" + 
     noCount.toString() + ")<br>" +
@@ -1430,9 +1441,10 @@ function SM9(){
     thisHtml += " ("+ thisResponseCount + ")<br>";
     $(infoSelector).append(thisHtml);
   }
-  $(infoSelector).append(topicSkipped.toString() + " - respondents not asked this question"); 
+  $(infoSelector).append("(" + topicSkipped.toString() + " not asked this question)"); 
   SM10();
 }
+
 
 function SM10(){
   var questionID = "SM10";
@@ -1471,6 +1483,8 @@ function SM10(){
   var lessThanThree = 0;
   var dontKnow = 0;
   var skipped = 0;
+  var totalCount = 0;
+  var notAskedCount = 0;
   var dk = questionID + "-dk";
   var skip = questionID + "-skip";
   var answersArray = [];
@@ -1490,9 +1504,10 @@ function SM10(){
     };
     
     // counts for analysis chart  
-    if (survey[dk] === "TRUE"){
+    if (survey[dk] === "n/a"){
+      notAskedCount ++;
+    } else if (survey[dk] === "TRUE"){
       dontKnow ++;
-      lessThanThree ++;
     } else if (survey[skip] === "TRUE"){
       skipped ++;
     } else {
@@ -1517,7 +1532,11 @@ function SM10(){
     },
     {
       key: "less than 3",
-      y: lessThanThree,
+      y: lessThanThree + dontKnow,
+    },
+    {
+      key: "skip",
+      y: skipped,
     }
   ];  
   $("#infoWrapper").append('<div class="row"><div id="' + 
@@ -1541,33 +1560,37 @@ function SM10(){
   $.each(el, function(aIndex, a){
     a.parentNode.appendChild(a);
   });
-  var totalLessSkipped = filteredData.length - skipped;
+  var totalCount = atLeastThree + lessThanThree + dontKnow + skipped;
   var infoSelector = "#" + questionID + "_info";
-  var thisInfoHtml = "";
-  var atLeastThreePerc = formatPerc(atLeastThree / totalLessSkipped); 
-  var lessThanThreePerc = formatPerc(lessThanThree / totalLessSkipped);
-  var dontKnowPerc = formatPerc(dontKnow / totalLessSkipped);
-  thisInfoHtml = "<h4>" + questionEnglish +
+  var atLeastThreePerc = formatPerc(atLeastThree / totalCount); 
+  var lessThanThreePerc = formatPerc(lessThanThree / totalCount);
+  var dontKnowPerc = formatPerc(dontKnow / totalCount);
+  var lessThreeDontKnowPerc = formatPerc((lessThanThree + dontKnow)/totalCount); 
+  var noResponsePerc = formatPerc(skipped / totalCount);
+  var thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-1'>" + atLeastThreePerc + "</span> could identify at least three key responses" + 
-    " | " + atLeastThree.toString() + ((atLeastThree == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-2'>" +lessThanThreePerc + "</span> could identify less than three key responses or didn't know" + 
-    " | " + lessThanThree.toString() + ((lessThanThree == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "(" + dontKnowPerc + " of total didn't know | " +
-    dontKnow.toString() + ((dontKnow == 1) ? " interviewee" : " interviewees") + ")<br>" +
-    "(" + skipped.toString() + ((skipped == 1) ? " interviewee" : " interviewees") + " chose not to answer)</p>";
-
+    "<p><strong>" + totalCount + " respondents</strong><br>" +
+    "<span class='percText-1'>" + atLeastThreePerc + "</span> could identify at least three key responses" + 
+    " (" + atLeastThree.toString() + ")<br>" +
+    "<span class='percText-2'>" +lessThreeDontKnowPerc + "</span> could identify less than three key responses ("+
+    lessThanThreePerc + ", " + lessThanThree.toString()  + ") or don't know <span class='text-tagalog'>[walang sagot]</span> " + 
+    " (" + dontKnowPerc + ", " + dontKnow.toString() + ")<br>" +
+    "<span class='percText-3'>" + noResponsePerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> ("+
+    skipped.toString() + ")</p>";
   $(infoSelector).append(thisInfoHtml);
-  $(infoSelector).append("<strong>Raw counts of responses</strong><br>");
+  $(infoSelector).append("<strong>Raw counts of responses (multiple responses possible)</strong><br>");
   for(response in allResponses){
     var thisResponseCount = allResponses[response];
+    var thisResponsePerc = formatPerc(allResponses[response] / totalCount); 
     var thisResponseEng = answersEnglish[response];
     var thisResponseTag = answersTagalog[response];
-    thisHtml = thisResponseCount + " - " + thisResponseEng + " <span class='text-tagalog'>[" + thisResponseTag + "]</span><br>";
+    var thisHtml = thisResponsePerc + " - " + thisResponseEng + " <span class='text-tagalog'>[" + thisResponseTag + "]</span> ("+ thisResponseCount +")<br>";
     $(infoSelector).append(thisHtml);
   }
+  $(infoSelector).append("(" + notAskedCount.toString() + " not asked this question)"); 
   SM11();
 }
+
 
 function SM11(){
   var questionID = "SM11";
@@ -1640,7 +1663,8 @@ function SM11(){
   
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
+    "<p><strong>" + totalCount + " respondents</strong><br>" +
+    "<span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
     yesCount.toString() + ")<br>" +
     "<span class='percText-2'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> or don't know <span class='text-tagalog'>[hindi alam]</span> (" + 
     nodk.toString() + ")<br>" + 
@@ -1718,7 +1742,7 @@ function SM12(){
     thisHtml += " ("+ thisResponseCount + ")<br>";
     $(infoSelector).append(thisHtml);
   }
-  $(infoSelector).append(topicSkipped.toString() + " - respondents not asked this question"); 
+  $(infoSelector).append("(" + topicSkipped.toString() + " respondents not asked this question)"); 
   NB6();
 }
 
@@ -1762,6 +1786,7 @@ function NB6(){
   var lessThanThree = 0;
   var dontKnow = 0;
   var skipped = 0;
+  var notAskedCount = 0;
   var dk = questionID + "-dk";
   var skip = questionID + "-skip";
   var answersArray = [];
@@ -1781,9 +1806,10 @@ function NB6(){
     };
     
     // counts for analysis chart  
-    if (survey[dk] === "TRUE"){
+    if (survey[dk] === "n/a"){
+      notAskedCount ++;
+    } else if(survey[dk] === "TRUE"){
       dontKnow ++;
-      lessThanThree ++;
     } else if (survey[skip] === "TRUE"){
       skipped ++;
     } else {
@@ -1808,7 +1834,11 @@ function NB6(){
     },
     {
       key: "less than 3",
-      y: lessThanThree,
+      y: lessThanThree + dontKnow,
+    },
+    {
+      key: "skip",
+      y: skipped,
     }
   ];  
   $("#infoWrapper").append('<div class="row"><div id="' + 
@@ -1832,31 +1862,34 @@ function NB6(){
   $.each(el, function(aIndex, a){
     a.parentNode.appendChild(a);
   });
-  var totalLessSkipped = filteredData.length - skipped;
+  var totalCount = atLeastThree + lessThanThree + dontKnow + skipped;
   var infoSelector = "#" + questionID + "_info";
-  var thisInfoHtml = "";
-  var atLeastThreePerc = formatPerc(atLeastThree / totalLessSkipped); 
-  var lessThanThreePerc = formatPerc(lessThanThree / totalLessSkipped);
-  var dontKnowPerc = formatPerc(dontKnow / totalLessSkipped);
-  thisInfoHtml = "<h4>" + questionEnglish +
+  var atLeastThreePerc = formatPerc(atLeastThree / totalCount); 
+  var lessThanThreePerc = formatPerc(lessThanThree / totalCount);
+  var dontKnowPerc = formatPerc(dontKnow / totalCount);
+  var lessThreeDontKnowPerc = formatPerc((lessThanThree + dontKnow)/totalCount); 
+  var noResponsePerc = formatPerc(skipped / totalCount);
+  var thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-1'>" + atLeastThreePerc + "</span> could identify at least three key responses" + 
-    " | " + atLeastThree.toString() + ((atLeastThree == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "<span class='percText-2'>" +lessThanThreePerc + "</span> could identify less than three key responses or didn't know" + 
-    " | " + lessThanThree.toString() + ((lessThanThree == 1) ? " interviewee" : " interviewees") + "<br>" +
-    "(" + dontKnowPerc + " of total didn't know | " +
-    dontKnow.toString() + ((dontKnow == 1) ? " interviewee" : " interviewees") + ")<br>" +
-    "(" + skipped.toString() + ((skipped == 1) ? " interviewee" : " interviewees") + " chose not to answer)</p>";
-
+    "<p><strong>" + totalCount + " respondents</strong><br>" +
+    "<span class='percText-1'>" + atLeastThreePerc + "</span> could identify at least three key responses" + 
+    " (" + atLeastThree.toString() + ")<br>" +
+    "<span class='percText-2'>" +lessThreeDontKnowPerc + "</span> could identify less than three key responses ("+
+    lessThanThreePerc + ", " + lessThanThree.toString()  + ") or don't know <span class='text-tagalog'>[hindi alam]</span> " + 
+    " (" + dontKnowPerc + ", " + dontKnow.toString() + ")<br>" +
+    "<span class='percText-3'>" + noResponsePerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> ("+
+    skipped.toString() + ")</p>";
   $(infoSelector).append(thisInfoHtml);
-  $(infoSelector).append("<strong>Raw counts of responses</strong><br>");
+  $(infoSelector).append("<strong>Raw counts of responses (multiple responses possible)</strong><br>");
   for(response in allResponses){
     var thisResponseCount = allResponses[response];
+    var thisResponsePerc = formatPerc(allResponses[response] / totalCount); 
     var thisResponseEng = answersEnglish[response];
     var thisResponseTag = answersTagalog[response];
-    thisHtml = thisResponseCount + " - " + thisResponseEng + " <span class='text-tagalog'>[" + thisResponseTag + "]</span><br>";
+    var thisHtml = thisResponsePerc + " - " + thisResponseEng + " <span class='text-tagalog'>[" + thisResponseTag + "]</span> ("+ thisResponseCount +")<br>";
     $(infoSelector).append(thisHtml);
   }
+  $(infoSelector).append("(" + notAskedCount.toString() + " not asked this question)"); 
   NB2();
 }
 
@@ -1927,7 +1960,8 @@ function NB2(){
   thisInfoHtml = "<h4>" + questionEnglish +
     // "<br><small>" + questionTagalog + "</small>"+
     "</h4>" +
-    "<p><span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
+    "<p><strong>" + totalCount + " respondents</strong><br>" +
+    "<span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
     yesCount.toString() + ")<br>" +
     "<span class='percText-2'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> (" + 
     noCount.toString() + ")<br>" + 
@@ -2006,16 +2040,20 @@ function NB4(){
   var thisInfoHtml = "";
   var nodk = noCount + dontknowCount;
   var totalCount = yesCount + noCount + dontknowCount + skipped;
-  var yesPerc = formatPerc(yesCount / totalCount); 
-  var noPerc = formatPerc(nodk / totalCount);
+  var yesPerc = formatPerc(yesCount / totalCount);
+  var nodkPerc = formatPerc(nodk / totalCount); 
+  var dkPerc = formatPerc(dontknowCount / totalCount);
+  var noPerc = formatPerc(noCount / totalCount);
   var skipPerc = formatPerc(skipped / totalCount);
   
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
+    "<p><strong>" + totalCount + " respondents</strong><br>" +
+    "<span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
     yesCount.toString() + ")<br>" +
-    "<span class='percText-2'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> or don't know <span class='text-tagalog'>[hindi alam]</span> (" + 
-    nodk.toString() + ")<br>" + 
+    "<span class='percText-2'>" + nodkPerc + "</span> no <span class='text-tagalog'>[hindi]</span> (" + noPerc +
+    ", " + noCount + ") or don't know <span class='text-tagalog'>[hindi alam]</span> (" + dkPerc + ", " +
+    dontknowCount.toString() + ")<br>" + 
     "<span class='percText-3'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
     skipped.toString() + ")<br>";
   if(topicSkipped > 0){
@@ -2092,22 +2130,25 @@ function NB5(){
   var nodk = noCount + dontknowCount;
   var totalCount = yesCount + noCount + dontknowCount + skipped;
   var yesPerc = formatPerc(yesCount / totalCount); 
-  var noPerc = formatPerc(nodk / totalCount);
+  var nodkPerc = formatPerc(nodk / totalCount);
+  var noPerc = formatPerc(noCount / totalCount);
+  var dkPerc = formatPerc(dontknowCount / totalCount);
   var skipPerc = formatPerc(skipped / totalCount);
   
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><small><strong>Note:</strong> survey design error meant all section respondents were asked this question and not just those who answered <i>yes</i> to <i>Did you breastfeed your last baby?</i></small></p>"+
-    "<p><span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
+    "<p><strong>" + totalCount + " respondents</strong><br>" +
+    "<small><strong>Note:</strong> Survey design error meant all section respondents were asked this question and not just those who answered <i>yes</i> to <i>Did you breastfeed your last baby?</i></small><br>"+
+    "<span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
     yesCount.toString() + ")<br>" +
-    "<span class='percText-2'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> or don't know <span class='text-tagalog'>[hindi alam]</span> (" + 
-    nodk.toString() + ")<br>" + 
-    "<span class='percText-2'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
+    "<span class='percText-2'>" + nodkPerc + "</span> no <span class='text-tagalog'>[hindi]</span> (" + noPerc +
+    ", " + noCount + ") or don't know <span class='text-tagalog'>[hindi alam]</span> (" + dkPerc + ", " +
+    dontknowCount.toString() + ")<br>" + 
+    "<span class='percText-3'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
     skipped.toString() + ")<br>";
   if(topicSkipped > 0){
-    thisInfoHtml += "(" + topicSkipped.toString() + " not asked this question";
+    thisInfoHtml += "(" + topicSkipped.toString() + " not asked this question)<br>";
   }
-  thisInfoHtml += ")</p><br>";
   $(infoSelector).append(thisInfoHtml);
   NU2();
 }
@@ -2221,7 +2262,7 @@ function WS1(){
     thisHtml += " ("+ thisResponseCount + ")<br>";
     $(infoSelector).append(thisHtml);
   }
-  $(infoSelector).append(topicSkipped + " - respondents not asked this question");  
+  $(infoSelector).append("(" + topicSkipped + " not asked this question)");  
 
 }
 

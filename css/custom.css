@@ -56,6 +56,10 @@ svg {
   height: auto;
   padding: 30px;
 }
+.percText-other1 {
+  color: #222222;
+  font-weight: 900;
+}
 .percText-1 {
   color: #4393c3;
   font-weight: 900;
