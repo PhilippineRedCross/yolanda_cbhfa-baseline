@@ -4782,6 +4782,339 @@ function NC17(){
   }
   thisInfoHtml += ")</p><br>";
   $(infoSelector).append(thisInfoHtml);  
+  VP1();
 }
+
+
+function VP1(){
+  $(infoWrapper).append("<h3><span class='jumpto' id='violenceprevention'></span>Topic: Violence Prevention</h3><hr>");
+  var questionID = "VP1";
+  var questionEnglish = 'To what extent do you agree with the statement: "Violence against women, men, girls and boys is preventable."';
+  var questionTagalog = 'Sang-ayon ka ba o hindi sa panabing: "Ang karahasan sa mga kababaihan at kalalakihan ay maiiwasan."';
+  var totalCount = 0;
+  var agreeCount = 0;
+  var neitherCount = 0;
+  var disagreeCount = 0;
+  var dkCount = 0;
+  var noResponseCount = 0;
+  var notAskedCount = 0;
+  $.each(filteredData, function(surveyIndex, survey){
+    if (survey[questionID] === "n/a"){
+      notAskedCount ++;
+    } else {
+      totalCount ++;
+      if (survey[questionID] === "agree"){ agreeCount ++; }
+      if (survey[questionID] === "neither"){ neitherCount ++; }
+      if (survey[questionID] === "disagree"){ disagreeCount ++; }
+      if (survey[questionID] === "dk"){ dkCount ++; }
+      if (survey[questionID] === "skip"){ noResponseCount ++; }
+    }
+  });
+  // the viz is overlapping svg rectangle in the same category order
+  // calculate each width as its own percentage plus those to the left
+  var agree = (agreeCount / totalCount) * 100
+  var neither = agree + ((neitherCount / totalCount) * 100);
+  var disagree = neither + ((disagreeCount / totalCount) * 100);
+  var dk = disagree + ((dkCount / totalCount) * 100);
+  var noResponse = dk + ((noResponseCount / totalCount) * 100);
+  agree = agree.toString() + "%";
+  neither = neither.toString() + "%";
+  disagree = disagree.toString() + "%";
+  dk = dk.toString() + "%";
+  noResponse = noResponse.toString() + "%";
+  $("#infoWrapper").append('<div class="row"><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var infoSelector = "#" + questionID + "_info";
+  var thisInfoHtml = "<h4>" + questionEnglish +
+    "<br><small>" + questionTagalog + "</small></h4><br>"+
+    '<div id="' + questionID + '_bar" class="question-block">' +
+    '<div class="responsesBar">' +
+      '<svg width="100%" height="30">' +
+        '<rect class="response-bar noResponse" y="0" height="100%" width="'+ noResponse +'" ></rect>' +
+        '<rect class="response-bar dk" y="0" height="100%" width="'+ dk +'" ></rect>' +
+        '<rect class="response-bar disagree" y="0" height="100%" width="'+ disagree +'" ></rect>' +
+        '<rect class="response-bar neither" y="0" height="100%" width="'+ neither +'" ></rect>' +
+        '<rect class="response-bar agree" y="0" height="100%" width="'+ agree +'" ></rect>' +
+      '</svg></div></div>' +
+    "<p><strong>" + totalCount + " respondents</strong><br>" +
+    "<span class='text-agree'>" + formatPerc(agreeCount / totalCount) + "</span> agree <span class='text-tagalog'>[sang-ayon]</span> (" +
+    agreeCount.toString() + ")<br>" +
+    "<span class='text-neither'>" + formatPerc(neitherCount / totalCount) + "</span> neither <span class='text-tagalog'>[wala sa anuman]</span> (" +
+    neitherCount.toString() + ")<br>" +
+    "<span class='text-disagree'>" + formatPerc(disagreeCount / totalCount) + "</span> disagree <span class='text-tagalog'>[hindi sang-ayon]</span> (" +
+    disagreeCount.toString() + ")<br>" +
+    "<span class='text-dk'>" + formatPerc(dkCount / totalCount) + "</span> don't know <span class='text-tagalog'>[hindi alam]</span> (" +
+    dkCount.toString() + ")<br>" +
+    "<span class='text-noResponse'>" + formatPerc(noResponseCount / totalCount) + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" +
+    noResponseCount.toString() + ")<br>" +
+    "(" + notAskedCount.toString() + " respondents not asked this question)<br>";
+  $(infoSelector).append(thisInfoHtml);
+  VP2();
+}
+
+function VP2(){
+  var questionID = "VP2";
+  var questionEnglish = 'To what extent do you agree with the statement: "There are certain situations in a family when it is okay to hit someone else."';
+  var questionTagalog = 'Sang-ayon ka ba o hindi sa panabing: "May mga pagkakataon na maaaring paluin o saktan ng pisikal ang isang tao sa pamilya."';
+  var totalCount = 0;
+  var agreeCount = 0;
+  var neitherCount = 0;
+  var disagreeCount = 0;
+  var dkCount = 0;
+  var noResponseCount = 0;
+  var notAskedCount = 0;
+  $.each(filteredData, function(surveyIndex, survey){
+    if (survey[questionID] === "n/a"){
+      notAskedCount ++;
+    } else {
+      totalCount ++;
+      if (survey[questionID] === "agree"){ agreeCount ++; }
+      if (survey[questionID] === "neither"){ neitherCount ++; }
+      if (survey[questionID] === "disagree"){ disagreeCount ++; }
+      if (survey[questionID] === "dk"){ dkCount ++; }
+      if (survey[questionID] === "skip"){ noResponseCount ++; }
+    }
+  });
+  // the viz is overlapping svg rectangle in the same category order
+  // calculate each width as its own percentage plus those to the left
+  var agree = (agreeCount / totalCount) * 100
+  var neither = agree + ((neitherCount / totalCount) * 100);
+  var disagree = neither + ((disagreeCount / totalCount) * 100);
+  var dk = disagree + ((dkCount / totalCount) * 100);
+  var noResponse = dk + ((noResponseCount / totalCount) * 100);
+  agree = agree.toString() + "%";
+  neither = neither.toString() + "%";
+  disagree = disagree.toString() + "%";
+  dk = dk.toString() + "%";
+  noResponse = noResponse.toString() + "%";
+  $("#infoWrapper").append('<div class="row"><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var infoSelector = "#" + questionID + "_info";
+    var thisInfoHtml = "<h4>" + questionEnglish +
+    "<br><small>" + questionTagalog + "</small></h4><br>"+
+    '<div id="' + questionID + '_bar" class="question-block">' +
+    '<div class="responsesBar">' +
+      '<svg width="100%" height="30">' +
+        '<rect class="response-bar noResponse" y="0" height="100%" width="'+ noResponse +'" ></rect>' +
+        '<rect class="response-bar dk" y="0" height="100%" width="'+ dk +'" ></rect>' +
+        '<rect class="response-bar disagree" y="0" height="100%" width="'+ disagree +'" ></rect>' +
+        '<rect class="response-bar neither" y="0" height="100%" width="'+ neither +'" ></rect>' +
+        '<rect class="response-bar agree" y="0" height="100%" width="'+ agree +'" ></rect>' +
+      '</svg></div></div>' +
+    "<p><strong>" + totalCount + " respondents</strong><br>" +
+    "<span class='text-agree'>" + formatPerc(agreeCount / totalCount) + "</span> agree <span class='text-tagalog'>[sang-ayon]</span> (" +
+    agreeCount.toString() + ")<br>" +
+    "<span class='text-neither'>" + formatPerc(neitherCount / totalCount) + "</span> neither <span class='text-tagalog'>[wala sa anuman]</span> (" +
+    neitherCount.toString() + ")<br>" +
+    "<span class='text-disagree'>" + formatPerc(disagreeCount / totalCount) + "</span> disagree <span class='text-tagalog'>[hindi sang-ayon]</span> (" +
+    disagreeCount.toString() + ")<br>" +
+    "<span class='text-dk'>" + formatPerc(dkCount / totalCount) + "</span> don't know <span class='text-tagalog'>[hindi alam]</span> (" +
+    dkCount.toString() + ")<br>" +
+    "<span class='text-noResponse'>" + formatPerc(noResponseCount / totalCount) + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" +
+    noResponseCount.toString() + ")<br>" +
+    "(" + notAskedCount.toString() + " respondents not asked this question)<br>";
+  $(infoSelector).append(thisInfoHtml);
+  VP3();
+}
+
+function VP3(){
+  var questionID = "VP3";
+  var questionEnglish = 'To what extent do you agree with the statement: "A woman always has the right to refuse sexual contact."';
+  var questionTagalog = 'Sang-ayon ka ba o hindi sa panabing: "Ang isang babae ay may karapatang tumanggi sa pakikipagtalik."';
+  var totalCount = 0;
+  var agreeCount = 0;
+  var neitherCount = 0;
+  var disagreeCount = 0;
+  var dkCount = 0;
+  var noResponseCount = 0;
+  var notAskedCount = 0;
+  $.each(filteredData, function(surveyIndex, survey){
+    if (survey[questionID] === "n/a"){
+      notAskedCount ++;
+    } else {
+      totalCount ++;
+      if (survey[questionID] === "agree"){ agreeCount ++; }
+      if (survey[questionID] === "neither"){ neitherCount ++; }
+      if (survey[questionID] === "disagree"){ disagreeCount ++; }
+      if (survey[questionID] === "dk"){ dkCount ++; }
+      if (survey[questionID] === "skip"){ noResponseCount ++; }
+    }
+  });
+  // the viz is overlapping svg rectangle in the same category order
+  // calculate each width as its own percentage plus those to the left
+  var agree = (agreeCount / totalCount) * 100
+  var neither = agree + ((neitherCount / totalCount) * 100);
+  var disagree = neither + ((disagreeCount / totalCount) * 100);
+  var dk = disagree + ((dkCount / totalCount) * 100);
+  var noResponse = dk + ((noResponseCount / totalCount) * 100);
+  agree = agree.toString() + "%";
+  neither = neither.toString() + "%";
+  disagree = disagree.toString() + "%";
+  dk = dk.toString() + "%";
+  noResponse = noResponse.toString() + "%";
+  $("#infoWrapper").append('<div class="row"><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var infoSelector = "#" + questionID + "_info";
+    var thisInfoHtml = "<h4>" + questionEnglish +
+    "<br><small>" + questionTagalog + "</small></h4><br>"+
+    '<div id="' + questionID + '_bar" class="question-block">' +
+    '<div class="responsesBar">' +
+      '<svg width="100%" height="30">' +
+        '<rect class="response-bar noResponse" y="0" height="100%" width="'+ noResponse +'" ></rect>' +
+        '<rect class="response-bar dk" y="0" height="100%" width="'+ dk +'" ></rect>' +
+        '<rect class="response-bar disagree" y="0" height="100%" width="'+ disagree +'" ></rect>' +
+        '<rect class="response-bar neither" y="0" height="100%" width="'+ neither +'" ></rect>' +
+        '<rect class="response-bar agree" y="0" height="100%" width="'+ agree +'" ></rect>' +
+      '</svg></div></div>' +
+    "<p><strong>" + totalCount + " respondents</strong><br>" +
+    "<span class='text-agree'>" + formatPerc(agreeCount / totalCount) + "</span> agree <span class='text-tagalog'>[sang-ayon]</span> (" +
+    agreeCount.toString() + ")<br>" +
+    "<span class='text-neither'>" + formatPerc(neitherCount / totalCount) + "</span> neither <span class='text-tagalog'>[wala sa anuman]</span> (" +
+    neitherCount.toString() + ")<br>" +
+    "<span class='text-disagree'>" + formatPerc(disagreeCount / totalCount) + "</span> disagree <span class='text-tagalog'>[hindi sang-ayon]</span> (" +
+    disagreeCount.toString() + ")<br>" +
+    "<span class='text-dk'>" + formatPerc(dkCount / totalCount) + "</span> don't know <span class='text-tagalog'>[hindi alam]</span> (" +
+    dkCount.toString() + ")<br>" +
+    "<span class='text-noResponse'>" + formatPerc(noResponseCount / totalCount) + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" +
+    noResponseCount.toString() + ")<br>" +
+    "(" + notAskedCount.toString() + " respondents not asked this question)<br>";
+  $(infoSelector).append(thisInfoHtml);
+  VP4();
+}
+
+function VP4(){
+  var questionID = "VP4";
+  var questionEnglish = 'To what extent do you agree with the statement: "Constantly insulting another person is a form of violence."';
+  var questionTagalog = 'Sang-ayon ka ba o hindi sa panabing: "Ang madalas na pag-iinsulto sa isang tao ay uri ng karahasan."';
+  var totalCount = 0;
+  var agreeCount = 0;
+  var neitherCount = 0;
+  var disagreeCount = 0;
+  var dkCount = 0;
+  var noResponseCount = 0;
+  var notAskedCount = 0;
+  $.each(filteredData, function(surveyIndex, survey){
+    if (survey[questionID] === "n/a"){
+      notAskedCount ++;
+    } else {
+      totalCount ++;
+      if (survey[questionID] === "agree"){ agreeCount ++; }
+      if (survey[questionID] === "neither"){ neitherCount ++; }
+      if (survey[questionID] === "disagree"){ disagreeCount ++; }
+      if (survey[questionID] === "dk"){ dkCount ++; }
+      if (survey[questionID] === "skip"){ noResponseCount ++; }
+    }
+  });
+  // the viz is overlapping svg rectangle in the same category order
+  // calculate each width as its own percentage plus those to the left
+  var agree = (agreeCount / totalCount) * 100
+  var neither = agree + ((neitherCount / totalCount) * 100);
+  var disagree = neither + ((disagreeCount / totalCount) * 100);
+  var dk = disagree + ((dkCount / totalCount) * 100);
+  var noResponse = dk + ((noResponseCount / totalCount) * 100);
+  agree = agree.toString() + "%";
+  neither = neither.toString() + "%";
+  disagree = disagree.toString() + "%";
+  dk = dk.toString() + "%";
+  noResponse = noResponse.toString() + "%";
+  $("#infoWrapper").append('<div class="row"><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var infoSelector = "#" + questionID + "_info";
+    var thisInfoHtml = "<h4>" + questionEnglish +
+    "<br><small>" + questionTagalog + "</small></h4><br>"+
+    '<div id="' + questionID + '_bar" class="question-block">' +
+    '<div class="responsesBar">' +
+      '<svg width="100%" height="30">' +
+        '<rect class="response-bar noResponse" y="0" height="100%" width="'+ noResponse +'" ></rect>' +
+        '<rect class="response-bar dk" y="0" height="100%" width="'+ dk +'" ></rect>' +
+        '<rect class="response-bar disagree" y="0" height="100%" width="'+ disagree +'" ></rect>' +
+        '<rect class="response-bar neither" y="0" height="100%" width="'+ neither +'" ></rect>' +
+        '<rect class="response-bar agree" y="0" height="100%" width="'+ agree +'" ></rect>' +
+      '</svg></div></div>' +
+    "<p><strong>" + totalCount + " respondents</strong><br>" +
+    "<span class='text-agree'>" + formatPerc(agreeCount / totalCount) + "</span> agree <span class='text-tagalog'>[sang-ayon]</span> (" +
+    agreeCount.toString() + ")<br>" +
+    "<span class='text-neither'>" + formatPerc(neitherCount / totalCount) + "</span> neither <span class='text-tagalog'>[wala sa anuman]</span> (" +
+    neitherCount.toString() + ")<br>" +
+    "<span class='text-disagree'>" + formatPerc(disagreeCount / totalCount) + "</span> disagree <span class='text-tagalog'>[hindi sang-ayon]</span> (" +
+    disagreeCount.toString() + ")<br>" +
+    "<span class='text-dk'>" + formatPerc(dkCount / totalCount) + "</span> don't know <span class='text-tagalog'>[hindi alam]</span> (" +
+    dkCount.toString() + ")<br>" +
+    "<span class='text-noResponse'>" + formatPerc(noResponseCount / totalCount) + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" +
+    noResponseCount.toString() + ")<br>" +
+    "(" + notAskedCount.toString() + " respondents not asked this question)<br>";
+  $(infoSelector).append(thisInfoHtml);
+  VP5();
+}
+
+function VP5(){
+  var questionID = "VP5";
+  var questionEnglish = 'To what extent do you agree with the statement: "People who see or hear violence occurring have an important role to stop the violence when it is safe to do so."';
+  var questionTagalog = 'Sang-ayon ka ba o hindi sa panabing: "Sinuman ang nakakakita o nakakarinig ng kahit anong uri ng karahasan ay may importanteng ganap upang maitigil o maihinto sa ligtas na sitwasyon."';
+  var totalCount = 0;
+  var agreeCount = 0;
+  var neitherCount = 0;
+  var disagreeCount = 0;
+  var dkCount = 0;
+  var noResponseCount = 0;
+  var notAskedCount = 0;
+  $.each(filteredData, function(surveyIndex, survey){
+    if (survey[questionID] === "n/a"){
+      notAskedCount ++;
+    } else {
+      totalCount ++;
+      if (survey[questionID] === "agree"){ agreeCount ++; }
+      if (survey[questionID] === "neither"){ neitherCount ++; }
+      if (survey[questionID] === "disagree"){ disagreeCount ++; }
+      if (survey[questionID] === "dk"){ dkCount ++; }
+      if (survey[questionID] === "skip"){ noResponseCount ++; }
+    }
+  });
+  // the viz is overlapping svg rectangle in the same category order
+  // calculate each width as its own percentage plus those to the left
+  var agree = (agreeCount / totalCount) * 100
+  var neither = agree + ((neitherCount / totalCount) * 100);
+  var disagree = neither + ((disagreeCount / totalCount) * 100);
+  var dk = disagree + ((dkCount / totalCount) * 100);
+  var noResponse = dk + ((noResponseCount / totalCount) * 100);
+  agree = agree.toString() + "%";
+  neither = neither.toString() + "%";
+  disagree = disagree.toString() + "%";
+  dk = dk.toString() + "%";
+  noResponse = noResponse.toString() + "%";
+  $("#infoWrapper").append('<div class="row"><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var infoSelector = "#" + questionID + "_info";
+    var thisInfoHtml = "<h4>" + questionEnglish +
+    "<br><small>" + questionTagalog + "</small></h4><br>"+
+    '<div id="' + questionID + '_bar" class="question-block">' +
+    '<div class="responsesBar">' +
+      '<svg width="100%" height="30">' +
+        '<rect class="response-bar noResponse" y="0" height="100%" width="'+ noResponse +'" ></rect>' +
+        '<rect class="response-bar dk" y="0" height="100%" width="'+ dk +'" ></rect>' +
+        '<rect class="response-bar disagree" y="0" height="100%" width="'+ disagree +'" ></rect>' +
+        '<rect class="response-bar neither" y="0" height="100%" width="'+ neither +'" ></rect>' +
+        '<rect class="response-bar agree" y="0" height="100%" width="'+ agree +'" ></rect>' +
+      '</svg></div></div>' +
+    "<p><strong>" + totalCount + " respondents</strong><br>" +
+    "<span class='text-agree'>" + formatPerc(agreeCount / totalCount) + "</span> agree <span class='text-tagalog'>[sang-ayon]</span> (" +
+    agreeCount.toString() + ")<br>" +
+    "<span class='text-neither'>" + formatPerc(neitherCount / totalCount) + "</span> neither <span class='text-tagalog'>[wala sa anuman]</span> (" +
+    neitherCount.toString() + ")<br>" +
+    "<span class='text-disagree'>" + formatPerc(disagreeCount / totalCount) + "</span> disagree <span class='text-tagalog'>[hindi sang-ayon]</span> (" +
+    disagreeCount.toString() + ")<br>" +
+    "<span class='text-dk'>" + formatPerc(dkCount / totalCount) + "</span> don't know <span class='text-tagalog'>[hindi alam]</span> (" +
+    dkCount.toString() + ")<br>" +
+    "<span class='text-noResponse'>" + formatPerc(noResponseCount / totalCount) + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" +
+    noResponseCount.toString() + ")<br>" +
+    "(" + notAskedCount.toString() + " respondents not asked this question)<br>";
+  $(infoSelector).append(thisInfoHtml);
+
+}
+
+
+
+
+
 
 getSurveyData();

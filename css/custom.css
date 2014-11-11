@@ -21,6 +21,54 @@ body {
   margin-right: 20px; 
 }
 
+.responsesBar {
+  width: 100%;
+  height: 30px;
+}
+.question-block {
+  margin-bottom: 20px;
+}
+.response-bar.agree {
+  fill: #66bd63;
+  background: #66bd63;
+}
+.text-agree {
+  color: #66bd63;
+  font-weight: 900;
+}
+.response-bar.neither {
+  fill: #f46d43;
+  background: #f46d43;
+}
+.text-neither {
+  color: #f46d43;
+  font-weight: 900;
+}
+.response-bar.disagree {
+  fill: #a50026;
+  background: #a50026;
+}
+.text-disagree {
+  color: #a50026;
+  font-weight: 900;
+}
+.response-bar.dk {
+  fill: #979797;
+  background: #979797;
+}
+.text-dk {
+  color: #979797;
+  font-weight: 900;
+}
+.response-bar.noResponse {
+  fill: #d7d7d7;
+  background: #d7d7d7;
+}
+.text-noResponse {
+  color: #d7d7d7;
+  font-weight: 900;
+}
+
 .nav-admin{
   height: 85px;
   position: fixed;
@@ -52,7 +100,7 @@ body {
   margin-top: 10px;
 }
 
-svg {
+.box-chart svg {
   height: auto;
   padding: 30px;
 }
