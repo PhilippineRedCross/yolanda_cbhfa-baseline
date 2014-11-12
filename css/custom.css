@@ -104,6 +104,10 @@ body {
   height: auto;
   padding: 30px;
 }
+.box-chart-no-float svg {
+  height: auto;
+  padding: 30px;
+}
 .percText-other1 {
   color: #222222;
   font-weight: 900;
