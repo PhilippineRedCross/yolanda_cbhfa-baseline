@@ -224,6 +224,26 @@ function FA2() {
     "(" + noTraining.toString() + ((noTraining == 1) ? " respondent has" : " respondents have") + " not attended a training" +
       ")</p><br>";
   $(infoSelector).append(thisInfoHtml)
+  FA3();
+}
+
+function FA3(){
+  var questionID = "FA3";
+  var questionEnglish = "Who organized this training program?";
+  var questionTagalog = "Sino ang nagbigay/nagsagawa ng pagsasanay?";
+  var answersEnglish = {
+    "A":"Red Cross Red Crescent",
+    "other":"other",
+    "dk":"don't know",
+    "skip":"no response"
+  };
+  var answersTagalog = {
+    "A":false,
+    "other":"ibang sagot",
+    "dk":"hindi alam",
+    "skip":"walang sagot"
+  };
+  analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
   FA5();
 }
 
@@ -419,7 +439,6 @@ function FA7(){
 }
 
 function CM1(){
-  // know >3  or  <3/dont know, required!
   $(infoWrapper).append("<h3><span class='jumpto' id='majoremergencies'></span>Topic: Community Mobilization in Major Emergencies</h3></div><hr>");
   var questionID = "CM1";
   var questionEnglish = "What would you do to respond safely to a disaster?";
@@ -453,115 +472,9 @@ function CM1(){
     "CM1-skip":"walang sagot"
   };
   var optionCount = 9;
-  var atLeastThree = 0;
-  var lessThanThree = 0;
-  var dontKnow = 0;
-  var skipped = 0;
-  var totalCount = 0;
-  var dk = questionID + "-dk";
-  var skip = questionID + "-skip";
-  var answersArray = [];
-  for(var i = 0; i < optionCount; i++){
-    answersArray.push(questionID + "-" + alphabet[i]);
-  }
-  var allResponses = [];
-  for (responseOption in answersEnglish){
-    allResponses[responseOption] = 0;
-  }
-  $.each(filteredData, function(surveyIndex, survey){
-    totalCount++;
-    // counts for each of the responses
-    for (response in allResponses){
-      if (survey[response] === "TRUE"){
-        allResponses[response] ++;
-      }
-    };
-    
-    // counts for analysis chart  
-    if (survey[dk] === "TRUE"){
-      dontKnow ++;
-    } else if (survey[skip] === "TRUE"){
-      skipped ++;
-    } else {
-      var thisTrueCount = 0;
-      $.each(answersArray, function(answerIndex, answer){
-        if (survey[answer] === "TRUE"){
-          thisTrueCount ++;
-        }
-      });
-      if (thisTrueCount >= 3){
-        atLeastThree ++;
-      } 
-      if (thisTrueCount < 3){
-        lessThanThree ++;
-      }
-    } 
-  });
-  var thisPieData = [
-    {
-      key: "at least 3",
-      y: atLeastThree,
-    },
-    {
-      key: "less than 3",
-      y: lessThanThree + dontKnow,
-    },
-    {
-      key: "skip",
-      y: skipped,
-    }
-  ];  
-  $("#infoWrapper").append('<div class="row"><div id="' + 
-    questionID + '" class="box-chart"><svg id="' +
-    questionID + '_chart"></svg></div><div id="'+
-    questionID + '_info" class="box-info"></div></div><hr>');
-  var width = 180;
-  var chart = nv.models.pie().width(width - 60).height(width - 60)
-    .x(function(d) { return d.key }) 
-    .y(function(d) { return d.y })
-    .color(pieColors)
-    .showLabels(true);
-  var chartSelector = "#" + questionID + "_chart";
-  d3.select(chartSelector)
-    .datum(thisPieData)
-    .transition().duration(1200)
-    .attr('width', width)
-    .attr('height', width)
-    .call(chart);
-  var el = $(".nv-pieLabels");
-  $.each(el, function(aIndex, a){
-    a.parentNode.appendChild(a);
-  });
-  var infoSelector = "#" + questionID + "_info";
-  var atLeastThreePerc = formatPerc(atLeastThree / totalCount); 
-  var lessThanThreePerc = formatPerc(lessThanThree / totalCount);
-  var dontKnowPerc = formatPerc(dontKnow / totalCount);
-  var lessThreeDontKnowPerc = formatPerc((lessThanThree + dontKnow)/totalCount);
-  var noResponsePerc = formatPerc(skipped / totalCount);
-  var thisInfoHtml = "<h4>" + questionEnglish +
-    "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><strong>" + totalCount + " respondents (required question)</strong><br>" +
-    "<span class='percText-1'>" + atLeastThreePerc + "</span> could identify at least three key responses" + 
-    " (" + atLeastThree.toString() + ")<br>" +
-    "<span class='percText-2'>" +lessThreeDontKnowPerc + "</span> could identify less than three key responses ("+
-    lessThanThreePerc + ", " + lessThanThree.toString()  + ") or don't know <span class='text-tagalog'>[walang sagot]</span> " + 
-    " (" + dontKnowPerc + ", " + dontKnow.toString() + ")<br>" +
-    "<span class='percText-3'>" + noResponsePerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> ("+
-    skipped.toString() + ")</p>";
-  $(infoSelector).append(thisInfoHtml);
-  $(infoSelector).append("<strong>Raw counts of responses (multiple responses possible)</strong><br>");
-  for(response in allResponses){
-    var thisResponseCount = allResponses[response];
-    var thisResponsePerc = formatPerc(allResponses[response] / totalCount); 
-    var thisResponseEng = answersEnglish[response];
-    var thisResponseTag = answersTagalog[response];
-    var thisHtml = thisResponsePerc + " - " + thisResponseEng + " <span class='text-tagalog'>[" + thisResponseTag + "]</span> ("+ thisResponseCount +")<br>";
-    $(infoSelector).append(thisHtml);
-  }
+  analysisMoreThreeLessThree(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog, optionCount);
   CM2(); 
 }
-
-
 function CM2(){
   var questionID = "cbhfa-CM2";
   var questionEnglish = "Did you receive psychosocial support from a volunteer following the disaster?";
@@ -569,6 +482,11 @@ function CM2(){
   analysisYesNoDk(questionID, questionEnglish, questionTagalog);
   SM1();
 }
+
+
+
+
+
 
 function SM1(){
   $(infoWrapper).append("<h3><span class='jumpto' id='safemotherhood'></span>Topic: Safe Motherhood</h3><hr>");
@@ -578,7 +496,6 @@ function SM1(){
   analysisYesNo(questionID, questionEnglish, questionTagalog); 
   SM2();
 }
-
 function SM2(){
   var questionID = "SM2";
   var optionCount = 4;
@@ -684,9 +601,9 @@ function SM3(){
     "SM3-B":"kumadrona",
     "SM3-C":"hilot",
     "SM3-D":"ospital",
-    "SM3-E":"rural health unit (RHU)",
-    "SM3-F":"barangay health station (BHS)",
-    "SM3-G":"barangay health center (BHC)",
+    "SM3-E":false,
+    "SM3-F":false,
+    "SM3-G":false,
     "SM3-H":"pribadong ospital",
     "SM3-I":"pribadon klinika",
     "SM3-other":"ibang sagot",
@@ -1011,9 +928,29 @@ function SM7(){
   var questionEnglish = "During your Last pregnancy did you receive an injection in the arm to prevent the baby from getting tetanus that is convulsions after birth?";
   var questionTagalog = "Sa panahon ng iyong pagbubuntis, nabigyan ka ba ng bakuna laban sa tetanus upang maiwasan ng iyong sanggol ang pagkakaroon nito?";
   analysisYesNo(questionID, questionEnglish, questionTagalog);  
+  SM8();
+}
+function SM8(){
+  var questionID = "SM8";
+  var questionEnglish = "While pregnant, how many times did you receive such an injection?";
+  var questionTagalog = "Habang ikaw ay buntis, ilang beses ka nabigyan ng nasabing bakuna?";
+  var answersEnglish = {
+    "A":"one", 
+    "B":"two",
+    "C":"three or more",
+    "dk":"don't know", 
+    "skip":"no response"
+  };
+  var answersTagalog = {
+    "A":"isa",
+    "B":"dalawa",
+    "C":"tatlo o higit pa",
+    "dk":"hindi alam",
+    "skip":"walang sagot"
+  };
+  analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
   SM9();
 }
-
 function SM9(){
   var questionID = "SM9";
   var questionEnglish = "Who assisted with the delivery of your last child?";
@@ -1034,7 +971,7 @@ function SM9(){
     "SM9-B":"nars",
     "SM9-C":"kumadrona",
     "SM9-D":"hilot",
-    "SM9-E":"trained community/ barangay health worker",
+    "SM9-E":false,
     "SM9-F":"kamag-anak o kaibigan",
     "SM9-other":"ibang sagot",
     "SM9-none":"wala",
@@ -1078,118 +1015,9 @@ function SM10(){
     "SM10-skip":"walang sagot"
   };
   var optionCount = 9;
-  var atLeastThree = 0;
-  var lessThanThree = 0;
-  var dontKnow = 0;
-  var skipped = 0;
-  var totalCount = 0;
-  var notAskedCount = 0;
-  var dk = questionID + "-dk";
-  var skip = questionID + "-skip";
-  var answersArray = [];
-  for(var i = 0; i < optionCount; i++){
-    answersArray.push(questionID + "-" + alphabet[i]);
-  }
-  var allResponses = [];
-  for (responseOption in answersEnglish){
-    allResponses[responseOption] = 0;
-  }
-  $.each(filteredData, function(surveyIndex, survey){
-    // counts for each of the responses
-    for (response in allResponses){
-      if (survey[response] === "TRUE"){
-        allResponses[response] ++;
-      }
-    };
-    
-    // counts for analysis chart  
-    if (survey[dk] === "n/a"){
-      notAskedCount ++;
-    } else if (survey[dk] === "TRUE"){
-      dontKnow ++;
-    } else if (survey[skip] === "TRUE"){
-      skipped ++;
-    } else {
-      var thisTrueCount = 0;
-      $.each(answersArray, function(answerIndex, answer){
-        if (survey[answer] === "TRUE"){
-          thisTrueCount ++;
-        }
-      });
-      if (thisTrueCount >= 3){
-        atLeastThree ++;
-      } 
-      if (thisTrueCount < 3){
-        lessThanThree ++;
-      }
-    } 
-  });
-  var thisPieData = [
-    {
-      key: "at least 3",
-      y: atLeastThree,
-    },
-    {
-      key: "less than 3",
-      y: lessThanThree + dontKnow,
-    },
-    {
-      key: "skip",
-      y: skipped,
-    }
-  ];  
-  $("#infoWrapper").append('<div class="row"><div id="' + 
-    questionID + '" class="box-chart"><svg id="' +
-    questionID + '_chart"></svg></div><div id="'+
-    questionID + '_info" class="box-info"></div></div><hr>');
-  var width = 180;
-  var chart = nv.models.pie().width(width - 60).height(width - 60)
-    .x(function(d) { return d.key }) 
-    .y(function(d) { return d.y })
-    .color(pieColors)
-    .showLabels(true);
-  var chartSelector = "#" + questionID + "_chart";
-  d3.select(chartSelector)
-    .datum(thisPieData)
-    .transition().duration(1200)
-    .attr('width', width)
-    .attr('height', width)
-    .call(chart);
-  var el = $(".nv-pieLabels");
-  $.each(el, function(aIndex, a){
-    a.parentNode.appendChild(a);
-  });
-  var totalCount = atLeastThree + lessThanThree + dontKnow + skipped;
-  var infoSelector = "#" + questionID + "_info";
-  var atLeastThreePerc = formatPerc(atLeastThree / totalCount); 
-  var lessThanThreePerc = formatPerc(lessThanThree / totalCount);
-  var dontKnowPerc = formatPerc(dontKnow / totalCount);
-  var lessThreeDontKnowPerc = formatPerc((lessThanThree + dontKnow)/totalCount); 
-  var noResponsePerc = formatPerc(skipped / totalCount);
-  var thisInfoHtml = "<h4>" + questionEnglish +
-    "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><strong>" + totalCount + " respondents</strong><br>" +
-    "<span class='percText-1'>" + atLeastThreePerc + "</span> could identify at least three key responses" + 
-    " (" + atLeastThree.toString() + ")<br>" +
-    "<span class='percText-2'>" +lessThreeDontKnowPerc + "</span> could identify less than three key responses ("+
-    lessThanThreePerc + ", " + lessThanThree.toString()  + ") or don't know <span class='text-tagalog'>[walang sagot]</span> " + 
-    " (" + dontKnowPerc + ", " + dontKnow.toString() + ")<br>" +
-    "<span class='percText-3'>" + noResponsePerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> ("+
-    skipped.toString() + ")</p>";
-  $(infoSelector).append(thisInfoHtml);
-  $(infoSelector).append("<strong>Raw counts of responses (multiple responses possible)</strong><br>");
-  for(response in allResponses){
-    var thisResponseCount = allResponses[response];
-    var thisResponsePerc = formatPerc(allResponses[response] / totalCount); 
-    var thisResponseEng = answersEnglish[response];
-    var thisResponseTag = answersTagalog[response];
-    var thisHtml = thisResponsePerc + " - " + thisResponseEng + " <span class='text-tagalog'>[" + thisResponseTag + "]</span> ("+ thisResponseCount +")<br>";
-    $(infoSelector).append(thisHtml);
-  }
-  $(infoSelector).append("(" + notAskedCount.toString() + " not asked this question)"); 
+  analysisMoreThreeLessThree(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog, optionCount);
   SM11();
 }
-
 
 function SM11(){
   var questionID = "SM11";
@@ -1222,11 +1050,65 @@ function SM12(){
     "SM9-skip":"walang sagot"
   };
   analysisSelectMultipleWhatAnswers(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
+  NB1();
+}
+
+    // "NB1-A":"",
+    // "NB1-B":"",
+    // "NB1-C":"",
+    // "NB1-D":"",
+    // "NB1-E":"",
+    // "NB1-F":"",
+    // "NB1-G":"",
+    // "NB1-H":"",
+    // "NB1-I":"",
+    // "NB1-other":"",
+    // "NB1-dk":"",
+    // "NB1-skip":""
+  
+
+
+
+function NB1(){
+  $(infoWrapper).append("<h3><span class='jumpto' id='newborn'></span>Topic: Care of a Newborn</h3><hr>");
+  var questionID = "NB1";
+  var questionEnglish = "What are the important things for home based care of a newborn baby (immediately when born)?";
+  var questionTagalog = "Ano ang mga mahahalagang bagay na dapat isaalang-alang sa pangangalaga ng bagong silang na sanggol sa bahay?";
+  var answersEnglish = {
+    "NB1-A":"wash hands with soap and water before delivery",
+    "NB1-B":"wash hands with soap and water before handling the newborn",
+    "NB1-C":"keep the cord clean and dry",
+    "NB1-D":"keep the newborn baby warm",
+    "NB1-E":"wrap the baby immediately or dry and put against the mother’s skin with a cloth covering",
+    "NB1-F":"delay bathing for 3 days",
+    "NB1-G":"babies should be put to the breast immediately after birth (within the first hour)",
+    "NB1-H":"give the baby the first breast milk (thick and yellow) that comes immediately after birth",
+    "NB1-I":"planned for institutional delivery",
+    "NB1-other":"other",
+    "NB1-dk":"don’t know",
+    "NB1-skip":"no response"
+  };
+  var answersTagalog = {
+    "NB1-A":"hugasan muna ang kamay ng sabon at tubig bago mag-paanak at bago hawakan ang sanggol",
+    "NB1-B":false,
+    "NB1-C":false,
+    "NB1-D":"panatilihing mainit ang sanggol",
+    "NB1-E":"balutin agad o patuyuin ang sanggol at itabi ito malapit sa kanyang ina",
+    "NB1-F":"ipagliban ang paligo sa sanggol ng 3 araw",
+    "NB1-G":"pasusuhin agad ang sanggol pagkapanganak sa loob ng 1 oras",
+    "NB1-H":"bigyan ang sanggol ng unang patak ng gatas ng kanyang ina (malapot at kulay dilaw) pagkapanganak",
+    "NB1-I":false,
+    "NB1-other":"ibang sagot",
+    "NB1-dk":"hindi alam",
+    "NB1-skip":"walang sagot"
+  };
+  var optionCount = 9;
+  analysisMoreThreeLessThree(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog, optionCount);
   NB6();
 }
 
+
 function NB6(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='newborn'></span>Topic: Care of a Newborn</h3><hr>");
   var questionID = "NB6";
   var questionEnglish = "Sometimes newborns have severe illnesses within the first month of life and should be taken immediately to a health facility. What types of symptoms would cause you to take your newborn to a health facility right away?";
   var questionTagalog = "Minsan ang mga bagong panganak na saggol ay maaaring magkaroon ng matinding karamdaman sa loob lamang ng 1 buwan pagkapanganak kailangang madala agad sa isang pagamutan upang masuri. Anong uri ng mga sintomas ang dahilan ng agarang pagkonsulta sa isang pagamutan?";
@@ -1261,114 +1143,7 @@ function NB6(){
     "NB6-skip":"walang sagot"
   };
   var optionCount = 10;
-  var atLeastThree = 0;
-  var lessThanThree = 0;
-  var dontKnow = 0;
-  var skipped = 0;
-  var notAskedCount = 0;
-  var dk = questionID + "-dk";
-  var skip = questionID + "-skip";
-  var answersArray = [];
-  for(var i = 0; i < optionCount; i++){
-    answersArray.push(questionID + "-" + alphabet[i]);
-  }
-  var allResponses = [];
-  for (responseOption in answersEnglish){
-    allResponses[responseOption] = 0;
-  }
-  $.each(filteredData, function(surveyIndex, survey){
-    // counts for each of the responses
-    for (response in allResponses){
-      if (survey[response] === "TRUE"){
-        allResponses[response] ++;
-      }
-    };
-    
-    // counts for analysis chart  
-    if (survey[dk] === "n/a"){
-      notAskedCount ++;
-    } else if(survey[dk] === "TRUE"){
-      dontKnow ++;
-    } else if (survey[skip] === "TRUE"){
-      skipped ++;
-    } else {
-      var thisTrueCount = 0;
-      $.each(answersArray, function(answerIndex, answer){
-        if (survey[answer] === "TRUE"){
-          thisTrueCount ++;
-        }
-      });
-      if (thisTrueCount >= 3){
-        atLeastThree ++;
-      } 
-      if (thisTrueCount < 3){
-        lessThanThree ++;
-      }
-    } 
-  });
-  var thisPieData = [
-    {
-      key: "at least 3",
-      y: atLeastThree,
-    },
-    {
-      key: "less than 3",
-      y: lessThanThree + dontKnow,
-    },
-    {
-      key: "skip",
-      y: skipped,
-    }
-  ];  
-  $("#infoWrapper").append('<div class="row"><div id="' + 
-    questionID + '" class="box-chart"><svg id="' +
-    questionID + '_chart"></svg></div><div id="'+
-    questionID + '_info" class="box-info"></div></div><hr>');
-  var width = 180;
-  var chart = nv.models.pie().width(width - 60).height(width - 60)
-    .x(function(d) { return d.key }) 
-    .y(function(d) { return d.y })
-    .color(pieColors)
-    .showLabels(true);
-  var chartSelector = "#" + questionID + "_chart";
-  d3.select(chartSelector)
-    .datum(thisPieData)
-    .transition().duration(1200)
-    .attr('width', width)
-    .attr('height', width)
-    .call(chart);
-  var el = $(".nv-pieLabels");
-  $.each(el, function(aIndex, a){
-    a.parentNode.appendChild(a);
-  });
-  var totalCount = atLeastThree + lessThanThree + dontKnow + skipped;
-  var infoSelector = "#" + questionID + "_info";
-  var atLeastThreePerc = formatPerc(atLeastThree / totalCount); 
-  var lessThanThreePerc = formatPerc(lessThanThree / totalCount);
-  var dontKnowPerc = formatPerc(dontKnow / totalCount);
-  var lessThreeDontKnowPerc = formatPerc((lessThanThree + dontKnow)/totalCount); 
-  var noResponsePerc = formatPerc(skipped / totalCount);
-  var thisInfoHtml = "<h4>" + questionEnglish +
-    "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><strong>" + totalCount + " respondents</strong><br>" +
-    "<span class='percText-1'>" + atLeastThreePerc + "</span> could identify at least three key responses" + 
-    " (" + atLeastThree.toString() + ")<br>" +
-    "<span class='percText-2'>" +lessThreeDontKnowPerc + "</span> could identify less than three key responses ("+
-    lessThanThreePerc + ", " + lessThanThree.toString()  + ") or don't know <span class='text-tagalog'>[hindi alam]</span> " + 
-    " (" + dontKnowPerc + ", " + dontKnow.toString() + ")<br>" +
-    "<span class='percText-3'>" + noResponsePerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> ("+
-    skipped.toString() + ")</p>";
-  $(infoSelector).append(thisInfoHtml);
-  $(infoSelector).append("<strong>Raw counts of responses (multiple responses possible)</strong><br>");
-  for(response in allResponses){
-    var thisResponseCount = allResponses[response];
-    var thisResponsePerc = formatPerc(allResponses[response] / totalCount); 
-    var thisResponseEng = answersEnglish[response];
-    var thisResponseTag = answersTagalog[response];
-    var thisHtml = thisResponsePerc + " - " + thisResponseEng + " <span class='text-tagalog'>[" + thisResponseTag + "]</span> ("+ thisResponseCount +")<br>";
-    $(infoSelector).append(thisHtml);
-  }
-  $(infoSelector).append("(" + notAskedCount.toString() + " not asked this question)"); 
+  analysisMoreThreeLessThree(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog, optionCount);
   NB2();
 }
 
@@ -1483,7 +1258,18 @@ function NU3porridge(){
   var questionEnglish = "Now I would like to ask you about liquids or foods children had yesterday during the day or at night. Did your child/children drink/eat: <u>Any (other) porridge or gruel</u>?";
   var questionTagalog = "Ano-anong uri ng pagkain at inumin ang binigay mo sa iyong mga anak kahapon mula umaga hanggang gabi? Kumain o uminom ang iyong mga anak ng: <u>Lugaw o am</u>?";
   analysisYesNoDk(questionID, questionEnglish, questionTagalog);
-  NU5();
+  NU4();
+}
+
+function NU4(){
+  var questionID = "NU4";
+  var questionEnglish = "How many times did Baby eat solid, semi-solid, or soft foods other than liquids yesterday during the day or at night?";
+  var questionTagalog = "Ilang beses kumain ang iyong sanggol ng solid, semi-solid, soft foods maliban sa inumin kahapon mula umaga hanggang gabi?";
+  analysisHowManyTimes(questionID, questionEnglish, questionTagalog);
+  var infoSelector = "#" + questionID + "_info";
+  var thisNote = "<small><strong>Note:</strong> Find out how many times the child ate enough to be full.  Small snacks and small feeds such as one or two bites of mother’s or sister’s food should not be counted. Liquids do not count for this question.  Do not include thin soups or broth, watery gruels, or any other liquid.  If caregiver answers seven or more times, record '7'.<br>";
+  $(infoSelector).append(thisNote);
+  NU5();  
 }
   
 function NU5(){
@@ -1519,8 +1305,85 @@ function NU9(){
   var questionEnglish = "In the last 24 hours did you give <u>fruits</u> to baby?";
   var questionTagalog = "Sa nakalipas na 24 oras pinakain mo ba ang iyong sanggol ng <u>prutas</u>?";
   analysisYesNo(questionID, questionEnglish, questionTagalog);
+  NU10();
+}
+function NU10(){
+  var questionID = "NU10";
+  var questionEnglish = "In the last 24 hours did you give <u>egg</u> to baby?";
+  var questionTagalog = "Sa nakalipas na 24 oras pinakain mo ba ang iyong sanggol ng <u>itlog</u>?";
+  analysisYesNoDontEat(questionID, questionEnglish, questionTagalog);
+  NU11();
+}
+function NU11(){
+  var questionID = "NU11";
+  var questionEnglish = "In the last 24 hours did you give <u>fish</u> to baby?";
+  var questionTagalog = "Sa nakalipas na 24 oras pinakain mo ba ang iyong sanggol ng <u>isda</u>?";
+  analysisYesNoDontEat(questionID, questionEnglish, questionTagalog);
+  NU12();
+}
+function NU12(){
+  var questionID = "NU12";
+  var questionEnglish = "In the last 24 hours did you give <u>meat</u> to baby?";
+  var questionTagalog = "Sa nakalipas na 24 oras pinakain mo ba ang iyong sanggol ng <u>karne</u>?";
+  analysisYesNoDontEat(questionID, questionEnglish, questionTagalog);
+  NU13();
+}
+
+function NU13(){
+  var questionID = "NU13";
+  var questionEnglish = "What are the signs that a child that would suggest s/he was malnourished and should be referred to health facility?";
+  var questionTagalog = "Ano ang mga sintomas na iyong makikita sa batang may malnutrisyon at kailangang madala at masuri agad sa isang pagamutan?";
+  var answersEnglish = {
+    "NU13-A":"underweight",
+    "NU13-B":"no fat on the body, and ribs visible",
+    "NU13-C":"loose skin around the buttocks",
+    "NU13-D":"easily irritated",
+    "NU13-E":"usually appetite and normal hair",
+    "NU13-F":"frequent illnesses",
+    "NU13-G":"severe swelling (oedema) on both limbs or both arms",
+    "NU13-H":"swollen “moon” face",
+    "NU13-I":"damaged skin or different skin colour",
+    "NU13-J":"hair colour changes (yellow/reddish or discoloured)",
+    "NU13-K":"hair becomes dry, can be easily pulled out an leaves bald patches",
+    "NU13-other":"other",
+    "NU13-dk":"don't know",
+    "NU13-skip":"no response"
+  };
+  var answersTagalog = {
+    "NU13-A":"kulang sa timbang",
+    "NU13-B":"walang makikitang taba sa katawan/payat",
+    "NU13-C":"laylay ang balat sa kanyang pwetan",
+    "NU13-D":"madaling mainis/mairita",
+    "NU13-E":"may gana sa pagkain at nurmal ang buhok",
+    "NU13-F":"madalas magkasakit",
+    "NU13-G":"matinding pamamaga ng mga kamay at iba pang bahagi ng katawan",
+    "NU13-H":"pamamaga ng mukha",
+    "NU13-I":"sira o hindi pantay na kulay ng balat",
+    "NU13-J":"kakaibang kulay ng buhok (naninilaw/namumula o nag-iibang kulay)",
+    "NU13-K":"ang buhok ay madaling maputol at matigas",
+    "NU13-other":"iba pang kasagutan",
+    "NU13-dk":"hindi alam",
+    "NU13-skip":"walang sagot"
+  };
+  var optionCount = 11;
+  analysisMoreThreeLessThree(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog, optionCount);
   WS1();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1565,9 +1428,51 @@ function WS1(){
     "skip":"walang sagot",
   };
   analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
-  WS4();
+  WS2();
 }
 
+function WS2(){
+  var questionID = "WS2";
+  var questionEnglish = "Do you treat your water in any way to make it safer for drinking?";
+  var questionTagalog = "May ginagawa ka bang paraan upang maging malinis at ligtas na inumin ang inyong tubig?";
+  analysisYesNo(questionID, questionEnglish, questionTagalog);
+  WS3();     
+}
+
+function WS3(){
+  var questionID = "WS3";
+  var questionEnglish = "What do you usually do to the water to make it safer to drink?";
+  var questionTagalog = "Ano ang karaniwan mong ginagawa upang maging ligtas ang inyong iniinom na tubig?";
+  var answersEnglish = {
+    "WS3-A":"let it stand and settle/sedimentation ",
+    "WS3-B":"strain it through cloth",
+    "WS3-C":"boil",
+    "WS3-D":"add bleach/chlorine",
+    "WS3-E":"water filter (ceramic, sand, composite)",
+    "WS3-F":"solar disinfection",
+    "WS3-other":"other",
+    "WS3-dk":"don't know",
+    "WS3-skip":"no response"
+  };
+  var answersTagalog = {
+    "WS3-A":"tanggalin ang mga latak",
+    "WS3-B":"salain gamit ang malinis na tela",
+    "WS3-C":"pakuluan",
+    "WS3-D":"maglagay ng bleach o chlorine",
+    "WS3-E":"paggamit ng mga pansala (ceramic, sand, composite)",
+    "WS3-F":"pagbibilad sa araw",
+    "WS3-other":"ibang sagot",
+    "WS3-dk":"hindi alam",
+    "WS3-skip":"walang sagot"
+  };
+  analysisSelectMultipleWhatAnswers(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
+  var infoSelector = "#" + questionID + "_info";
+  var thisNote = "<small><strong>Note:</strong> Only check more than one response, if several methods are usually used together, for example, cloth filtration and chlorine. "+
+    "<span class='text-tagalog'>[Markahan lamang kung higit sa isa ang sagot, kung iba-ibang pamamaraan ang kadalasang ginagamit ng sabay-sabay, kagaya ng, pagsala sa tela at chlorine.]</span><br>";
+  $(infoSelector).append(thisNote);
+  WS4();
+}
+   
 function WS4(){
   var questionID = "WS4";
   var questionEnglish = "What kind of toilet facility does this household use?";
@@ -1626,7 +1531,6 @@ function WS5(){
   WS6();
 }
 
-
 function WS6(){
   var questionID = "WS6";
   var questionEnglish = "Is this toilet facility shared?";
@@ -1646,8 +1550,6 @@ function WS6(){
   analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
   WS6number();
 }
-
- 
 
 function WS6number(){
   var questionID = "WS6_number";
@@ -1689,236 +1591,104 @@ function WS9(){
   var questionID = "WS9";
   var questionEnglish = "Toilet facility observation: Is there faecal matter present inside the facility - on seat, floor, door, or walls (human or animal)?";
   var questionTagalog = "Pagmamasid sa palikuran/banyo: Mayroon bang dumi na nakakalat sa sahig, pinto, pader (tao o hayop)?";
-  var yesCount = 0;
-  var noCount = 0;
-  var cannotObserveCount = 0;
-  var notAskedCount = 0;
-  var totalCount = 0;
-  $.each(filteredData, function(surveyIndex, survey){
-    if (survey[questionID] === "n/a"){
-      notAskedCount ++;
-    } else {
-      totalCount++;
-      if (survey[questionID] === "yes"){
-        yesCount ++;
-      }
-      if (survey[questionID] === "no"){
-        noCount ++;
-      }
-      if (survey[questionID] === "cannot"){
-        cannotObserveCount ++;
-      }
-    }
-  });
-  var thisPieData = [
-    {
-      key: "no",
-      y: noCount,
-    },
-    {
-      key: "yes",
-      y: yesCount,
-    },
-    {
-      key: "cannot",
-      y: cannotObserveCount,
-    }
-  ];
-  $("#infoWrapper").append('<div class="row"><div id="' + 
-    questionID + '" class="box-chart"><svg id="' +
-    questionID + '_chart"></svg></div><div id="'+
-    questionID + '_info" class="box-info"></div></div><hr>');
-  var width = 180;
-  var chart = nv.models.pie().width(width - 60).height(width - 60)
-    .x(function(d) { return d.key }) 
-    .y(function(d) { return d.y })
-    .color(pieColors)
-    .showLabels(true);
-  var chartSelector = "#" + questionID + "_chart";
-  d3.select(chartSelector)
-    .datum(thisPieData)
-    .transition().duration(1200)
-    .attr('width', width)
-    .attr('height', width)
-    .call(chart);
-  var el = $(".nv-pieLabels");
-  $.each(el, function(aIndex, a){
-    a.parentNode.appendChild(a);
-  });
-  var infoSelector = "#" + questionID + "_info";
-  var yesPerc = formatPerc(yesCount / totalCount); 
-  var noPerc = formatPerc(noCount / totalCount);
-  var cannotPerc =formatPerc(cannotObserveCount / totalCount);
-  var thisInfoHtml = "<h4>" + questionEnglish +
-    "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><strong>" + totalCount + " observations</strong><br>" +
-    "<span class='percText-1'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> (" + 
-    noCount.toString() + ") <br>" + 
-    "<span class='percText-2'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
-    yesCount.toString() + ")<br>" + 
-    "<span class='percText-3'>" + cannotPerc + "</span> cannot assess <span class='text-tagalog'>[hindi masuri]</span> (" + 
-    cannotObserveCount.toString() + ")<br>" +
-    "(" + notAskedCount.toString() + " no observation attempted)";
-  $(infoSelector).append(thisInfoHtml);   
+  analysisAssessYesNo(questionID, questionEnglish, questionTagalog);
   WS10();
 }
-
 function WS10(){
   var questionID = "WS10";
   var questionEnglish = "Toilet facility observation: Is there any overflow of the sewer or septic systems?";
   var questionTagalog = "Pagmamasid sa palikuran/banyo: Mayroon bang pag-apaw sa padalaluyan o septik?";
-  var yesCount = 0;
-  var noCount = 0;
-  var cannotObserveCount = 0;
-  var notAskedCount = 0;
-  var totalCount = 0;
-  $.each(filteredData, function(surveyIndex, survey){
-    if (survey[questionID] === "n/a"){
-      notAskedCount ++;
-    } else {
-      totalCount++;
-      if (survey[questionID] === "yes"){
-        yesCount ++;
-      }
-      if (survey[questionID] === "no"){
-        noCount ++;
-      }
-      if (survey[questionID] === "cannot"){
-        cannotObserveCount ++;
-      }
-    }
-  });
-  var thisPieData = [
-    {
-      key: "no",
-      y: noCount,
-    },
-    {
-      key: "yes",
-      y: yesCount,
-    },
-    {
-      key: "cannot",
-      y: cannotObserveCount,
-    }
-  ];
-  $("#infoWrapper").append('<div class="row"><div id="' + 
-    questionID + '" class="box-chart"><svg id="' +
-    questionID + '_chart"></svg></div><div id="'+
-    questionID + '_info" class="box-info"></div></div><hr>');
-  var width = 180;
-  var chart = nv.models.pie().width(width - 60).height(width - 60)
-    .x(function(d) { return d.key }) 
-    .y(function(d) { return d.y })
-    .color(pieColors)
-    .showLabels(true);
-  var chartSelector = "#" + questionID + "_chart";
-  d3.select(chartSelector)
-    .datum(thisPieData)
-    .transition().duration(1200)
-    .attr('width', width)
-    .attr('height', width)
-    .call(chart);
-  var el = $(".nv-pieLabels");
-  $.each(el, function(aIndex, a){
-    a.parentNode.appendChild(a);
-  });
-  var infoSelector = "#" + questionID + "_info";
-  var yesPerc = formatPerc(yesCount / totalCount); 
-  var noPerc = formatPerc(noCount / totalCount);
-  var cannotPerc =formatPerc(cannotObserveCount / totalCount);
-  var thisInfoHtml = "<h4>" + questionEnglish +
-    "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><strong>" + totalCount + " observations</strong><br>" +
-    "<span class='percText-1'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> (" + 
-    noCount.toString() + ") <br>" + 
-    "<span class='percText-2'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
-    yesCount.toString() + ")<br>" + 
-    "<span class='percText-3'>" + cannotPerc + "</span> cannot assess <span class='text-tagalog'>[hindi masuri]</span> (" + 
-    cannotObserveCount.toString() + ")<br>" +
-    "(" + notAskedCount.toString() + " no observation attempted)";
-  $(infoSelector).append(thisInfoHtml);   
+  analysisAssessYesNo(questionID, questionEnglish, questionTagalog);  
   WS11();
 }
-
 function WS11(){
   var questionID = "WS11";
   var questionEnglish = "Toilet facility observation: Is there a cover on the hole?";
   var questionTagalog = "Pagmamasid sa palikuran/banyo: Mayroon bang takip ang butas?";
-  var yesCount = 0;
-  var noCount = 0;
-  var cannotObserveCount = 0;
-  var notAskedCount = 0;
-  var totalCount = 0;
-  $.each(filteredData, function(surveyIndex, survey){
-    if (survey[questionID] === "n/a"){
-      notAskedCount ++;
-    } else {
-      totalCount++;
-      if (survey[questionID] === "yes"){
-        yesCount ++;
-      }
-      if (survey[questionID] === "no"){
-        noCount ++;
-      }
-      if (survey[questionID] === "cannot"){
-        cannotObserveCount ++;
-      }
-    }
-  });
-  var thisPieData = [
-    {
-      key: "no",
-      y: noCount,
-    },
-    {
-      key: "yes",
-      y: yesCount,
-    },
-    {
-      key: "cannot",
-      y: cannotObserveCount,
-    }
-  ];
-  $("#infoWrapper").append('<div class="row"><div id="' + 
-    questionID + '" class="box-chart"><svg id="' +
-    questionID + '_chart"></svg></div><div id="'+
-    questionID + '_info" class="box-info"></div></div><hr>');
-  var width = 180;
-  var chart = nv.models.pie().width(width - 60).height(width - 60)
-    .x(function(d) { return d.key }) 
-    .y(function(d) { return d.y })
-    .color(pieColors)
-    .showLabels(true);
-  var chartSelector = "#" + questionID + "_chart";
-  d3.select(chartSelector)
-    .datum(thisPieData)
-    .transition().duration(1200)
-    .attr('width', width)
-    .attr('height', width)
-    .call(chart);
-  var el = $(".nv-pieLabels");
-  $.each(el, function(aIndex, a){
-    a.parentNode.appendChild(a);
-  });
-  var infoSelector = "#" + questionID + "_info";
-  var yesPerc = formatPerc(yesCount / totalCount); 
-  var noPerc = formatPerc(noCount / totalCount);
-  var cannotPerc =formatPerc(cannotObserveCount / totalCount);
-  var thisInfoHtml = "<h4>" + questionEnglish +
-    "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><strong>" + totalCount + " observations</strong><br>" +
-    "<span class='percText-1'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> (" + 
-    noCount.toString() + ") <br>" + 
-    "<span class='percText-2'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
-    yesCount.toString() + ")<br>" + 
-    "<span class='percText-3'>" + cannotPerc + "</span> cannot assess <span class='text-tagalog'>[hindi masuri]</span> (" + 
-    cannotObserveCount.toString() + ")<br>" +
-    "(" + notAskedCount.toString() + " no observation attempted)";
-  $(infoSelector).append(thisInfoHtml);   
-  WS16();
+  analysisAssessYesNo(questionID, questionEnglish, questionTagalog);   
+  WS12();
 }
 
+function WS12(){
+  var questionID = "WS12";
+  var questionEnglish = "Can you show me where you usually wash your hands and what you use to wash hands? Or can I wash my hands?";
+  var questionTagalog = "Maaari mo bang ipakita sakin kung saan kayo kadalasang naghuhugas ng kamay at kung ano ang inyong ginagamit sa paghuhugas? Or Maaari ba akong makihugas ng kamay?";
+  var answersEnglish = {
+    "A":"inside/near toilet facility",
+    "B":"inside/near kitchen/cooking place",
+    "C":"elsewhere in yard",
+    "D":"outside yard",
+    "E":"no specific place",
+    "F":"no permission to see"
+  };
+  var answersTagalog = {
+    "A":"sa loob o malapit sa palikuran/banyo",
+    "B":"sa kusina/lutuan",
+    "C":"sa bakuran",
+    "D":"labas ng bakuran",
+    "E":"walang saktong lugar",
+    "F":"hindi pinakita"
+  };
+  analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
+  var infoSelector = "#" + questionID + "_info";
+  var thisNote = "<small><strong>Note:</strong> Ask to see and observe. "+
+    "<span class='text-tagalog'>[Tanungin upang makita at mamasid.]</span><br>";
+  $(infoSelector).append(thisNote);
+  WS13();
+}
+
+function WS13(){
+  var questionID = "WS13";
+  var questionEnglish = "Observation only: Is there soap or detergent or locally used cleansing agent?";
+  var questionTagalog = "Pagmamasid lamang: Mayroon bang sabon o tradisyonal na ginagamit na panlinis?";
+  var answersEnglish = {
+    "A":"soap",
+    "B":"detergent",
+    "C":"mud or sand",
+    "D":"none",
+    "E":"no specific place",
+    "other":"other",
+    "G":"no permission to see"
+  };
+  var answersTagalog = {
+    "A":"sabong panligo",
+    "B":"sabong panlaba",
+    "C":"putik o buhangin",
+    "D":"wala",
+    "E":"walang saktong lugar",
+    "other":"ibang sagot",
+    "G":"hindi pinakita"
+  };
+  analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
+  var infoSelector = "#" + questionID + "_info";
+  var thisNote = "<small><strong>Note:</strong> This item should be either in place or brought by the interviewee within one minute. If the item is not present within one minute check none, even if brought out later. "+
+    "<span class='text-tagalog'>[Ang mga bagay na ito ay dapat nakalagay o dala ng ini-interbyu sa loob ng isang minuto. Kapag ang bagay na ito ay wala sa loob ng isang minuto, markahan ang none o wala, kahit na makapagdala nito maya-maya.]</span><br>";
+  $(infoSelector).append(thisNote);
+  WS14();
+}
+
+function WS14(){
+  var questionID = "WS14";
+  var questionEnglish = "Observation only: Is there water?";
+  var questionTagalog = "Pagmamasid lamang: Mayroon bang tubig?";
+  analysisYesNo(questionID, questionEnglish, questionTagalog);
+  var infoSelector = "#" + questionID + "_info";
+  var thisNote = "<small><strong>Note:</strong> Turn on tap and/or a check container and note if water is present. "+
+    "<span class='text-tagalog'>[Buksan ang gripo at/o tingnan ang lalagyan kung mayroon ba itong laman na tubig.]</span><br>";
+  $(infoSelector).append(thisNote);
+  WS15();     
+}
+function WS15(){
+  var questionID = "WS15";
+  var questionEnglish = "Observation only: Is there a handwashing device such as a tap, basin, bucket, sink, or tippy tap?";
+  var questionTagalog = "Pagmamasid lamang: Mayroon bang kagamitan para sa paghuhugas ng kamay katulad ng gripo, palanggana, balde o lababo?";
+  analysisYesNo(questionID, questionEnglish, questionTagalog);
+  var infoSelector = "#" + questionID + "_info";
+  var thisNote = "<small><strong>Note:</strong> This item should be either in place or brought by the interviewee within one minute. If the item is not present within one minute check none, even if brought out later. "+
+    "<span class='text-tagalog'>[Ang mga bagay na ito ay dapat nakalagay o dala ng ini-interbyu sa loob ng isang minuto. Kapag ang bagay na ito ay wala sa loob ng isang minuto, markahan ang none o wala, kahit na makapagdala nito maya-maya.]</span><br>";
+  $(infoSelector).append(thisNote);
+  WS16();     
+}
 
 function WS16(){
   var questionID = "WS16";
@@ -1955,17 +1725,62 @@ function WS16(){
     "WS16-skip":"walang sagot"
   };
   var optionCount = 9;
+  analysisMoreThreeLessThree(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog, optionCount);
+  DI1();
+}
+
+
+
+
+
+
+
+
+
+function DI1(){
+  $(infoWrapper).append("<h3><span class='jumpto' id='diarrhea'></span>Topic: Diarrhea and Dehydation</h3><hr>");
+  var questionID = "DI1";
+  var questionEnglish = "Has any family member had Diarrhea in the last 2 weeks? (define it if needed)";
+  var questionTagalog = "Mayroon bang miyembro ng pamilya na nakaranas ng pagtatae sa nakaraang dalawang linggo? (ipalarawan kung kailangan)";
+  analysisYesNoDk(questionID, questionEnglish, questionTagalog);
+  DI2();
+}
+
+function DI2(){
+  var questionID = "DI2";
+  var questionEnglish = "If any family member was to suffer diarrhea (or when any family member did have diarrhea last) what did/ would you do? Anything else?";
+  var questionTagalog = "Kung mayroong miyembro ng pamilya ang nakakaranas ng pagtatae, ano ang karaniwan mong ginagawa? May iba pa ba?";
+  var answersEnglish = {
+    "DI2-nothing":"nothing",
+    "DI2-A":"fluid from ors packet",
+    "DI2-B":"home-made fluid",
+    "DI2-C":"pill or syrup, zinc",
+    "DI2-D":"injection",
+    "DI2-E":"(iv) intravenous",
+    "DI2-F":"home remedies or herbal medicines",
+    "DI2-other":"other",
+    "DI2-skip":"no response"
+  };
+  var answersTagalog = {
+    "DI2-nothing":"wala",
+    "DI2-A":"oral rehydrating solution",
+    "DI2-B":false,
+    "DI2-C":"tableta, syrup",
+    "DI2-D":"injeksyon",
+    "DI2-E":"swero",
+    "DI2-F":"halamang gamot",
+    "DI2-other":"iba pa",
+    "DI2-skip":"walang sagot"
+  };
+  var optionCount = 6;
   var atLeastThree = 0;
   var lessThanThree = 0;
-  var dontKnow = 0;
-  var otherCount = 0;
-  var neverCount = 0;
+  var nothingCount = 0;
   var skipped = 0;
+  var totalCount = 0;
   var notAskedCount = 0;
-  var dk = questionID + "-dk";
+  var nothing = questionID + "-nothing";
   var skip = questionID + "-skip";
-  var other = questionID + "-other";
-  var never = questionID + "-never";
   var answersArray = [];
   for(var i = 0; i < optionCount; i++){
     answersArray.push(questionID + "-" + alphabet[i]);
@@ -1980,17 +1795,14 @@ function WS16(){
       if (survey[response] === "TRUE"){
         allResponses[response] ++;
       }
-    };
-    
-    // counts for analysis chart  
-    if (survey[dk] === "n/a"){
+    };    
+    // counts for analysis chart
+    if (survey[nothing] === "n/a"){
       notAskedCount ++;
-    } else if(survey[dk] === "TRUE"){
-      dontKnow ++;
+    } else if (survey[nothing] === "TRUE"){
+      nothingCount ++;
     } else if (survey[skip] === "TRUE"){
       skipped ++;
-    } else if (survey[never] === "TRUE"){
-      neverCount ++;
     } else {
       var thisTrueCount = 0;
       $.each(answersArray, function(answerIndex, answer){
@@ -2013,7 +1825,7 @@ function WS16(){
     },
     {
       key: "less than 3",
-      y: lessThanThree + dontKnow + neverCount,
+      y: lessThanThree + nothingCount,
     },
     {
       key: "skip",
@@ -2041,24 +1853,21 @@ function WS16(){
   $.each(el, function(aIndex, a){
     a.parentNode.appendChild(a);
   });
-  var totalCount = atLeastThree + lessThanThree + dontKnow + neverCount + skipped;
   var infoSelector = "#" + questionID + "_info";
+  var totalCount = atLeastThree + lessThanThree + nothingCount + skipped;
   var atLeastThreePerc = formatPerc(atLeastThree / totalCount); 
   var lessThanThreePerc = formatPerc(lessThanThree / totalCount);
-  var dontKnowPerc = formatPerc(dontKnow / totalCount);
-  var neverPerc = formatPerc(neverCount / totalCount);
-  var lessThreeDontKnowNeverPerc = formatPerc((lessThanThree + dontKnow + neverCount)/totalCount); 
+  var nothingPerc = formatPerc(nothingCount / totalCount);
+  var lessThreeDontKnowPerc = formatPerc((lessThanThree + nothingCount)/totalCount);
   var noResponsePerc = formatPerc(skipped / totalCount);
   var thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>" +
     "<p><strong>" + totalCount + " respondents</strong><br>" +
     "<span class='percText-1'>" + atLeastThreePerc + "</span> could identify at least three key responses" + 
     " (" + atLeastThree.toString() + ")<br>" +
-    "<span class='percText-2'>" +lessThreeDontKnowNeverPerc + "</span> could identify less than three key responses ("+
-    lessThanThreePerc + ", " + lessThanThree.toString()  + ") or never <span class='text-tagalog'>[hindi kailanman]</span> (" +
-    neverPerc + ", " + neverCount.toString() + ") " +
-    " or don't know <span class='text-tagalog'>[hindi alam]</span> " + 
-    " (" + dontKnowPerc + ", " + dontKnow.toString() + ")<br>" +
+    "<span class='percText-2'>" +lessThreeDontKnowPerc + "</span> could identify less than three key responses ("+
+    lessThanThreePerc + ", " + lessThanThree.toString()  + ") or nothing <span class='text-tagalog'>[wala]</span> " + 
+    " (" + nothingPerc + ", " + nothingCount.toString() + ")<br>" +
     "<span class='percText-3'>" + noResponsePerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> ("+
     skipped.toString() + ")</p>";
   $(infoSelector).append(thisInfoHtml);
@@ -2067,28 +1876,89 @@ function WS16(){
     var thisResponseCount = allResponses[response];
     var thisResponsePerc = formatPerc(allResponses[response] / totalCount); 
     var thisResponseEng = answersEnglish[response];
-    var thisResponseTag = answersTagalog[response];
-    var thisHtml = thisResponsePerc + " - " + thisResponseEng + " <span class='text-tagalog'>[" + thisResponseTag + "]</span> ("+ thisResponseCount +")<br>";
+    var thisResponseTag = answersTagalog[response];    
+    var thisHtml = thisResponsePerc + " - " + thisResponseEng +
+      ((thisResponseTag !== false) ? " <span class='text-tagalog'>[" + thisResponseTag + "]</span>" : "") +
+      " ("+ thisResponseCount + ")<br>";
     $(infoSelector).append(thisHtml);
   }
-  $(infoSelector).append("(" + notAskedCount.toString() + " not asked this question)"); 
-  DI1();
+  $(infoSelector).append("(" + notAskedCount.toString() + " not asked this question)</p>"); 
+  var thisNote = "<small><strong>Note:</strong> Do not read responses. Record all that are mentioned. " + 
+    "<span class='text-tagalog'>[Wag basahin ang mga pagpipilian. Itala lahat ng nabanggit.]</span><br>";
+  $(infoSelector).append(thisNote);
+  DI3();
 }
 
 
+function DI3(){
+  var questionID = "DI3";
+  var questionEnglish = "If your baby was to suffer, would/did you breastfeed him/her less than usual, about the same amount or more than usual?";
+  var questionTagalog = "Kung nakakaranas ng pagtatae ang iyong sanggol, gaano mo siya kadalas pasusohin ng iyong gatas?";
+  var answersEnglish = {
+    "less":"less",
+    "same":"same",
+    "more":"more",
+    "not":"child not breastfed",
+    "dk":"don't know",
+    "skip":"no response"
+  };
+  var answersTagalog = {
+    "less":"bihira",
+    "same":"gayag ng dato o walang pagbabago",
+    "more":"mas madalas",
+    "not":"hindi na ngpapasuso",
+    "dk":"hindi alam",
+    "skip":"walang sagot"
+  };
+  analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
+  DI4();
+}
 
+function DI4(){
+  var questionID = "DI4";
+  var questionEnglish = "If any family member was to suffer diarrhea (or when any family member did have diarrhea last), would/did you offer less than usual to <u>drink</u>, about the same amount, or more than usual to <u>drink</u>?";
+  var questionTagalog = "Kung nakakaranas ng pagtataeang sinumang miyembro ng pamilya, gaano mo siya kadalas bibigyan ng <u>inumin</u>, gaya ng dati o mas marami sa <u>karaniwan</u>?";
+  var answersEnglish = {
+    "less":"less",
+    "same":"same",
+    "more":"more",
+    "not":"",
+    "dk":"don't know",
+    "skip":"no response"
+  };
+  var answersTagalog = {
+    "less":"bihira",
+    "same":"gayag ng dato o walang pagbabago",
+    "more":"mas madalas",
+    "not":"walang iniinom",
+    "dk":"hindi alam",
+    "skip":"walang sagot"
+  };
+  analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
+  DI5();
+}
 
-
-
-
-
-
-function DI1(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='diarrhea'></span>Topic: Diarrhea and Dehydation</h3><hr>");
-  var questionID = "DI1";
-  var questionEnglish = "Has any family member had Diarrhea in the last 2 weeks? (define it if needed)";
-  var questionTagalog = "Mayroon bang miyembro ng pamilya na nakaranas ng pagtatae sa nakaraang dalawang linggo? (ipalarawan kung kailangan)";
-  analysisYesNoDk(questionID, questionEnglish, questionTagalog);
+function DI5(){
+  var questionID = "DI5";
+  var questionEnglish = "If any family member was to suffer diarrhea (or when did any family member have diarrhea last), would/did you offer less than usual to <u>eat</u>, about the same amount, or more than usual to <u>eat</u>?";
+  var questionTagalog = "Kung nakakaranas ng patatae ang isang miyembro ng pamilya, gaano mo siya kadalas <u>pakainin</u>, mas konti, kapareho o higit sa karaniwan niyang <u>kinakain</u>?";
+  var answersEnglish = {
+    "less":"less",
+    "same":"same",
+    "more":"more",
+    "not":"",
+    "dk":"don't know",
+    "skip":"no response"
+  };
+  var answersTagalog = {
+    "less":"bihira",
+    "same":"gayag ng dato o walang pagbabago",
+    "more":"mas madalas",
+    "not":"walang kinakain",
+    "dk":"hindi alam",
+    "skip":"walang sagot"
+  };
+  analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
   DI8();
 }
   
@@ -2135,123 +2005,7 @@ function DI14(){
     "WS16-skip":"walang sagot"
   };
   var optionCount = 9;
-  var atLeastThree = 0;
-  var lessThanThree = 0;
-  var dontKnow = 0;
-  var otherCount = 0;
-  var neverCount = 0;
-  var skipped = 0;
-  var notAskedCount = 0;
-  var dk = questionID + "-dk";
-  var skip = questionID + "-skip";
-  var other = questionID + "-other";
-  var never = questionID + "-never";
-  var answersArray = [];
-  for(var i = 0; i < optionCount; i++){
-    answersArray.push(questionID + "-" + alphabet[i]);
-  }
-  var allResponses = [];
-  for (responseOption in answersEnglish){
-    allResponses[responseOption] = 0;
-  }
-  $.each(filteredData, function(surveyIndex, survey){
-    // counts for each of the responses
-    for (response in allResponses){
-      if (survey[response] === "TRUE"){
-        allResponses[response] ++;
-      }
-    };
-    
-    // counts for analysis chart  
-    if (survey[dk] === "n/a"){
-      notAskedCount ++;
-    } else if(survey[dk] === "TRUE"){
-      dontKnow ++;
-    } else if (survey[skip] === "TRUE"){
-      skipped ++;
-    } else if (survey[never] === "TRUE"){
-      neverCount ++;
-    } else {
-      var thisTrueCount = 0;
-      $.each(answersArray, function(answerIndex, answer){
-        if (survey[answer] === "TRUE"){
-          thisTrueCount ++;
-        }
-      });
-      if (thisTrueCount >= 3){
-        atLeastThree ++;
-      } 
-      if (thisTrueCount < 3){
-        lessThanThree ++;
-      }
-    } 
-  });
-  var thisPieData = [
-    {
-      key: "at least 3",
-      y: atLeastThree,
-    },
-    {
-      key: "less than 3",
-      y: lessThanThree + dontKnow + neverCount,
-    },
-    {
-      key: "skip",
-      y: skipped,
-    }
-  ];  
-  $("#infoWrapper").append('<div class="row"><div id="' + 
-    questionID + '" class="box-chart"><svg id="' +
-    questionID + '_chart"></svg></div><div id="'+
-    questionID + '_info" class="box-info"></div></div><hr>');
-  var width = 180;
-  var chart = nv.models.pie().width(width - 60).height(width - 60)
-    .x(function(d) { return d.key }) 
-    .y(function(d) { return d.y })
-    .color(pieColors)
-    .showLabels(true);
-  var chartSelector = "#" + questionID + "_chart";
-  d3.select(chartSelector)
-    .datum(thisPieData)
-    .transition().duration(1200)
-    .attr('width', width)
-    .attr('height', width)
-    .call(chart);
-  var el = $(".nv-pieLabels");
-  $.each(el, function(aIndex, a){
-    a.parentNode.appendChild(a);
-  });
-  var totalCount = atLeastThree + lessThanThree + dontKnow + neverCount + skipped;
-  var infoSelector = "#" + questionID + "_info";
-  var atLeastThreePerc = formatPerc(atLeastThree / totalCount); 
-  var lessThanThreePerc = formatPerc(lessThanThree / totalCount);
-  var dontKnowPerc = formatPerc(dontKnow / totalCount);
-  var neverPerc = formatPerc(neverCount / totalCount);
-  var lessThreeDontKnowNeverPerc = formatPerc((lessThanThree + dontKnow + neverCount)/totalCount); 
-  var noResponsePerc = formatPerc(skipped / totalCount);
-  var thisInfoHtml = "<h4>" + questionEnglish +
-    "<br><small>" + questionTagalog + "</small></h4>" +
-    "<p><strong>" + totalCount + " respondents</strong><br>" +
-    "<span class='percText-1'>" + atLeastThreePerc + "</span> could identify at least three key responses" + 
-    " (" + atLeastThree.toString() + ")<br>" +
-    "<span class='percText-2'>" +lessThreeDontKnowNeverPerc + "</span> could identify less than three key responses ("+
-    lessThanThreePerc + ", " + lessThanThree.toString()  + ") or never <span class='text-tagalog'>[hindi kailanman]</span> (" +
-    neverPerc + ", " + neverCount.toString() + ") " +
-    " or don't know <span class='text-tagalog'>[hindi alam]</span> " + 
-    " (" + dontKnowPerc + ", " + dontKnow.toString() + ")<br>" +
-    "<span class='percText-3'>" + noResponsePerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> ("+
-    skipped.toString() + ")</p>";
-  $(infoSelector).append(thisInfoHtml);
-  $(infoSelector).append("<strong>Raw counts of responses (multiple responses possible)</strong><br>");
-  for(response in allResponses){
-    var thisResponseCount = allResponses[response];
-    var thisResponsePerc = formatPerc(allResponses[response] / totalCount); 
-    var thisResponseEng = answersEnglish[response];
-    var thisResponseTag = answersTagalog[response];
-    var thisHtml = thisResponsePerc + " - " + thisResponseEng + " <span class='text-tagalog'>[" + thisResponseTag + "]</span> ("+ thisResponseCount +")<br>";
-    $(infoSelector).append(thisHtml);
-  }
-  $(infoSelector).append("(" + notAskedCount.toString() + " not asked this question)"); 
+  analysisMoreThreeLessThree(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog, optionCount);
   AR2();
 }
  
@@ -2492,6 +2246,7 @@ function RS5(){
 
 
 
+
 function NC1(){
   $(infoWrapper).append("<h3><span class='jumpto' id='noncommunicablediseases'></span>Topic: Noncommunicable Diseases</h3><hr>");
   var questionID = "NC1";
@@ -2500,7 +2255,6 @@ function NC1(){
   analysisYesNo(questionID, questionEnglish, questionTagalog);  
   NC2();
 }
-
 function NC2(){
   var questionID = "NC2";
   var questionEnglish = "Have you consumed an alcoholic drink within the past 12 months?";
@@ -2508,7 +2262,6 @@ function NC2(){
   analysisYesNo(questionID, questionEnglish, questionTagalog);
   NC3();  
 }
-
 function NC3(){
   var questionID = "NC3";
   var questionEnglish = "Have you consumed an alcoholic drink within the past 30 days?";
@@ -2516,8 +2269,6 @@ function NC3(){
   analysisYesNo(questionID, questionEnglish, questionTagalog);
   NC4();  
 }
-
-
 function NC4(){
   var questionID = "NC4";
   var questionEnglish = "During each of the past 7 days, on how many occasions did you have at least one alcoholic drink?";
@@ -2525,7 +2276,6 @@ function NC4(){
   analysisHowManyTimes(questionID, questionEnglish, questionTagalog);
   NC5();
 }
-
 function NC5(){
   var questionID = "NC5";
   var questionEnglish = "During the past 7 days, how many times did you have [for men: five or more / for women: four or more] standard alcoholic drinks in a single drinking occasion?";
@@ -2533,7 +2283,6 @@ function NC5(){
   analysisHowManyTimes(questionID, questionEnglish, questionTagalog);
   NC6();
 }
-
 function NC6(){
   var questionID = "NC6";
   var questionEnglish = "Does your work involve moderate-intensity activity that causes large increase in breathing or heart rate like carrying or lifting heavy loads, digging, harvesting for at least 10 minutes continuously?";
@@ -2541,7 +2290,6 @@ function NC6(){
   analysisYesNo(questionID, questionEnglish, questionTagalog);
   NC7();  
 }
-
 function NC7(){
   var questionID = "NC7";
   var questionEnglish = "In a typical week, on how many days do you do moderate-intensity activities as part of your work? ";
@@ -2549,7 +2297,6 @@ function NC7(){
   analysisHowManyTimes(questionID, questionEnglish, questionTagalog);
   NC9();
 }
-
 function NC9(){
   var questionID = "NC9";
   var questionEnglish = "Do you do any moderate-intensity sports, fitness or recreational activities (adult) that cause large increases in breathing or heart rate like running or football for at least 10 minutes continuously?";
@@ -2557,7 +2304,6 @@ function NC9(){
   analysisYesNo(questionID, questionEnglish, questionTagalog);
   NC10(); 
 }
-
 function NC10(){
   var questionID = "NC10";
   var questionEnglish = "In a typical week, on how many days do you do moderate-intensity sports, fitness or recreational activities?";
@@ -2565,7 +2311,6 @@ function NC10(){
   analysisHowManyTimes(questionID, questionEnglish, questionTagalog);
   NC12();  
 }
-
 function NC12(){
   var questionID = "NC12";
   var questionEnglish = "Do you currently smoke any tobacco products such as cigarettes, cigars or pipes?";
@@ -2573,7 +2318,6 @@ function NC12(){
   analysisYesNo(questionID, questionEnglish, questionTagalog);
   NC13(); 
 }
-
 function NC13(){
   var questionID = "NC13";
   var questionEnglish = "Do you currently smoke tobacco products daily?";
@@ -2581,7 +2325,6 @@ function NC13(){
   analysisYesNo(questionID, questionEnglish, questionTagalog); 
   NC15(); 
 }
-
 function NC15(){
   var questionID = "NC15";
   var questionEnglish = "Have you ever had your blood pressure measured by a doctor or other health worker?";
@@ -2589,7 +2332,6 @@ function NC15(){
   analysisYesNo(questionID, questionEnglish, questionTagalog);  
   NC16();
 }
-
 function NC16(){
   var questionID = "NC16";
   var questionEnglish = "Have you ever been told by a doctor or other health worker that you have raised blood pressure or hypertension?";
@@ -2597,12 +2339,39 @@ function NC16(){
   analysisYesNo(questionID, questionEnglish, questionTagalog);
   NC17();  
 }
-
 function NC17(){
   var questionID = "NC17";
   var questionEnglish = "Have you been told in the past 12 months?";
   var questionTagalog = "Sinabihan ka ba sa nakalipas na 12 buwan?";
   analysisYesNo(questionID, questionEnglish, questionTagalog);  
+  NC18();
+}
+function NC18(){
+  var questionID = "NC18";
+  var questionEnglish = "In a typical week, on how many days do you eat fruit?";
+  var questionTagalog = "Sa karaniwang linggo, ilang beses ka kumakain ng prutas?";
+  analysisHowManyTimesPerWeek(questionID, questionEnglish, questionTagalog);  
+  NC19();
+}
+function NC19(){
+  var questionID = "NC19";
+  var questionEnglish = "How many servings of fruit do you eat on one of those days?";
+  var questionTagalog = "Gaano kadami ang kinakain mong prutas sa mga araw na nabanggit?";
+  analysisHowManyTimes(questionID, questionEnglish, questionTagalog);  
+  NC20();
+}
+function NC20(){
+  var questionID = "NC20";
+  var questionEnglish = "In a typical week, on how many days do you eat vegetables?";
+  var questionTagalog = "Sa karaniwang lingo, gaano ka kadalas kumain ng gulay?";
+  analysisHowManyTimesPerWeek(questionID, questionEnglish, questionTagalog);  
+  NC21();
+}
+function NC21(){
+  var questionID = "NC21";
+  var questionEnglish = "How many servings of vegetables do you eat on one of those days?";
+  var questionTagalog = "Gaano kadami ang kinain mong gulay sa mga nabanggit na araw?";
+  analysisHowManyTimes(questionID, questionEnglish, questionTagalog);  
   VP1();
 }
 
@@ -2619,7 +2388,6 @@ function VP1(){
   analysisAgreeDisagree(questionID, questionEnglish, questionTagalog);
   VP2();
 }
-
 function VP2(){
   var questionID = "VP2";
   var questionEnglish = 'To what extent do you agree with the statement: "There are certain situations in a family when it is okay to hit someone else."';
@@ -2627,7 +2395,6 @@ function VP2(){
   analysisAgreeDisagree(questionID, questionEnglish, questionTagalog);
   VP3();
 }
-
 function VP3(){
   var questionID = "VP3";
   var questionEnglish = 'To what extent do you agree with the statement: "A woman always has the right to refuse sexual contact."';
@@ -2635,7 +2402,6 @@ function VP3(){
   analysisAgreeDisagree(questionID, questionEnglish, questionTagalog);
   VP4();
 }
-
 function VP4(){
   var questionID = "VP4";
   var questionEnglish = 'To what extent do you agree with the statement: "Constantly insulting another person is a form of violence."';
@@ -2643,7 +2409,6 @@ function VP4(){
   analysisAgreeDisagree(questionID, questionEnglish, questionTagalog);
   VP5();
 }
-
 function VP5(){
   var questionID = "VP5";
   var questionEnglish = 'To what extent do you agree with the statement: "People who see or hear violence occurring have an important role to stop the violence when it is safe to do so."';
@@ -2651,7 +2416,6 @@ function VP5(){
   analysisAgreeDisagree(questionID, questionEnglish, questionTagalog);
   VP6();
 }
-
 function VP6(){
   var questionID = "VP6";
   var questionEnglish = "In your opinion, what are the safest ways to discipline children?";
@@ -2675,14 +2439,12 @@ function VP6(){
     "VP6-skip":"walang sagot"  
   };
   analysisSelectMultipleWhatAnswers(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
-  
   var infoSelector = "#" + questionID + "_info";
   var thisNote = "<small><strong>Note:</strong> do not prompt respondents. let them know they can provide more than one answer. record all that are mentioned." +
     " <span class='text-tagalog'>[huwag banggitin ang mga kasagutan. maaaring magbigay ng higit sa isang kasagutan. itala lahat ng nabanggit.]</span>";
   $(infoSelector).append(thisNote);
   VP7();
 }
-
 function VP7(){
   var questionID = "VP7";
   var questionEnglish = "What are some of the human impacts of violence?";
@@ -2706,14 +2468,12 @@ function VP7(){
     "VP7-skip":"walang sagot"  
   };
   analysisSelectMultipleWhatAnswers(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
-  
   var infoSelector = "#" + questionID + "_info";
   var thisNote = "<small><strong>Note:</strong> do not prompt respondents. let them know they can provide more than one answer. record all that are mentioned." +
     " <span class='text-tagalog'>[huwag banggitin ang mga kasagutan. maaaring magbigay ng higit sa isang kasagutan. itala lahat ng nabanggit.]</span>";
   $(infoSelector).append(thisNote);
   VP8();
 }
-
 function VP8(){
   var questionID = "VP8";
   var questionEnglish = "If you saw or heard someone being sexually violent against another person, what immediate action could you take?";
@@ -2739,14 +2499,12 @@ function VP8(){
     "VP8-skip":"walang sagot"  
   };
   analysisSelectMultipleWhatAnswers(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
-
   var infoSelector = "#" + questionID + "_info";
   var thisNote = "<small><strong>Note:</strong> do not prompt respondents. let them know they can provide more than one answer. record all that are mentioned." +
     " <span class='text-tagalog'>[huwag banggitin ang mga kasagutan. maaaring magbigay ng higit sa isang kasagutan. itala lahat ng nabanggit.]</span>";
   $(infoSelector).append(thisNote);
   VP9();
 } 
-
 function VP9(){
   var questionID = "VP9";
   var questionEnglish = "What practical action can you take to prevent violence in disaster?";
@@ -2772,14 +2530,12 @@ function VP9(){
     "VP9-skip":"walang sagot"  
   };
   analysisSelectMultipleWhatAnswers(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
-
   var infoSelector = "#" + questionID + "_info";
   var thisNote = "<small><strong>Note:</strong> do not prompt respondents. let them know they can provide more than one answer. record all that are mentioned." +
     " <span class='text-tagalog'>[huwag banggitin ang mga kasagutan. maaaring magbigay ng higit sa isang kasagutan. itala lahat ng nabanggit.]</span>";
   $(infoSelector).append(thisNote);
   VP10();
 }
-
 function VP10(){
   var questionID = "VP10";
   var questionEnglish = "If a person tells you they are being hurt by violence what can you do to help the person?";
@@ -2805,7 +2561,6 @@ function VP10(){
     "VP10-skip":"walang sagot"  
   };
   analysisSelectMultipleWhatAnswers(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
-
   var infoSelector = "#" + questionID + "_info";
   var thisNote = "<small><strong>Note:</strong> do not prompt respondents. let them know they can provide more than one answer. record all that are mentioned." +
     " <span class='text-tagalog'>[huwag banggitin ang mga kasagutan. maaaring magbigay ng higit sa isang kasagutan. itala lahat ng nabanggit.]</span>";
@@ -2814,6 +2569,7 @@ function VP10(){
 }
 
  
+
 
 
 
@@ -3054,6 +2810,90 @@ function analysisYesNoDk(questionID, questionEnglish, questionTagalog){
   $(infoSelector).append(thisInfoHtml);
 }
 
+function analysisYesNoDontEat(questionID, questionEnglish, questionTagalog){
+  var yesCount = 0;
+  var noCount = 0;
+  var dontEatCount = 0;
+  var skipped = 0;
+  var topicSkipped = 0;
+  $.each(filteredData, function(surveyIndex, survey){
+    if (survey[questionID] === "yes"){
+      yesCount ++;
+    }
+    if (survey[questionID] === "no"){
+      noCount ++;
+    }
+    if (survey[questionID] === "donteat"){
+      dontEatCount ++;
+    }
+    if (survey[questionID] === "skip"){
+      skipped ++;
+    }
+    if (survey[questionID] === "n/a"){
+      topicSkipped ++;
+    }
+  });
+  var thisPieData = [
+    {
+      key: "yes",
+      y: yesCount,
+    },
+    {
+      key: "no/don't eat",
+      y: noCount + dontEatCount,
+    },
+    {
+      key: "skip",
+      y: skipped,
+    }
+  ];
+  $("#infoWrapper").append('<div class="row"><div id="' + 
+    questionID + '" class="box-chart"><svg id="' +
+    questionID + '_chart"></svg></div><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var width = 180;
+  var chart = nv.models.pie().width(width - 60).height(width - 60)
+    .x(function(d) { return d.key }) 
+    .y(function(d) { return d.y })
+    .color(pieColors)
+    .showLabels(true);
+  var chartSelector = "#" + questionID + "_chart";
+  d3.select(chartSelector)
+    .datum(thisPieData)
+    .transition().duration(1200)
+    .attr('width', width)
+    .attr('height', width)
+    .call(chart);
+  var el = $(".nv-pieLabels");
+  $.each(el, function(aIndex, a){
+    a.parentNode.appendChild(a);
+  });
+  var infoSelector = "#" + questionID + "_info";
+  var nodonteat = noCount + dontEatCount;
+  var totalCount = yesCount + noCount + dontEatCount + skipped;
+  var yesPerc = formatPerc(yesCount / totalCount);
+  var nodonteatPerc = formatPerc(nodonteat / totalCount); 
+  var donteatPerc = formatPerc(dontEatCount / totalCount);
+  var noPerc = formatPerc(noCount / totalCount);
+  var skipPerc = formatPerc(skipped / totalCount);
+  var thisInfoHtml = "<h4>" + questionEnglish +
+    ((questionTagalog !== false) ? "<br><small>" + questionTagalog + "</small>" : "") +    
+    "</h4>" +
+    "<p><strong>" + totalCount + " respondents</strong><br>" +
+    "<span class='percText-1'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
+    yesCount.toString() + ")<br>" +
+    "<span class='percText-2'>" + nodonteatPerc + "</span> no <span class='text-tagalog'>[hindi]</span> (" + noPerc +
+    ", " + noCount + ") or don't eat <span class='text-tagalog'>[hindi kumakain]</span> (" + donteatPerc + ", " +
+    dontEatCount.toString() + ")<br>" + 
+    "<span class='percText-3'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
+    skipped.toString() + ")<br>";
+  if(topicSkipped > 0){
+    thisInfoHtml += "(" + topicSkipped.toString() + " not asked this question)";
+  }
+  thisInfoHtml += "</p>";
+  $(infoSelector).append(thisInfoHtml);
+}
+
 function analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog){
   var topicSkipped = 0;
   var totalCount = 0;
@@ -3077,7 +2917,7 @@ function analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalo
     ((questionTagalog !== false) ? "<br><small>" + questionTagalog + "</small>" : "") +    
     "</h4>";
   $(infoSelector).append(thisInfoHtml);
-  $(infoSelector).append("<strong>" + totalCount.toString() + " respondents (single response)</strong><br>");
+  $(infoSelector).append("<p><strong>" + totalCount.toString() + " respondents (single response)</strong><br>");
   for(response in allResponses){
     var thisResponseCount = allResponses[response];
     var thisResponsePerc = formatPerc(allResponses[response] / totalCount); 
@@ -3088,7 +2928,7 @@ function analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalo
       " ("+ thisResponseCount + ")<br>";
     $(infoSelector).append(thisHtml);
   }
-  $(infoSelector).append("(" + topicSkipped + " not asked this question)<br>");  
+  $(infoSelector).append("(" + topicSkipped + " not asked this question)</p>");  
 }
 
 
@@ -3121,20 +2961,18 @@ function analysisSelectMultipleWhatAnswers(questionID, questionEnglish, question
     ((questionTagalog !== false) ? "<br><small>" + questionTagalog + "</small>" : "") +    
     "</h4>";
   $(infoSelector).append(thisInfoHtml);
-  $(infoSelector).append("<strong>" + totalCount.toString() + " respondents (multiple responses possible)</strong><br>");
+  $(infoSelector).append("<p><strong>" + totalCount.toString() + " respondents (multiple responses possible)</strong><br>");
   for(response in allResponses){
     var thisResponseCount = allResponses[response];
     var thisResponsePerc = formatPerc(allResponses[response] / totalCount); 
     var thisResponseEng = answersEnglish[response];
     var thisResponseTag = answersTagalog[response];
-    thisHtml = thisResponsePerc + " - " + thisResponseEng;
-    if(thisResponseEng !== thisResponseTag){
-      thisHtml += " <span class='text-tagalog'>[" + thisResponseTag + "]</span>";
-    }
-    thisHtml += " ("+ thisResponseCount + ")<br>";
+    var thisHtml = thisResponsePerc + " - " + thisResponseEng +
+      ((thisResponseTag !== false) ? " <span class='text-tagalog'>[" + thisResponseTag + "]</span>" : "") +
+      " ("+ thisResponseCount + ")<br>";
     $(infoSelector).append(thisHtml);
   }
-  $(infoSelector).append("(" + topicSkipped.toString() + " respondents not asked this question)<br>"); 
+  $(infoSelector).append("(" + topicSkipped.toString() + " respondents not asked this question)</p>"); 
 }
 
 function analysisHowManyTimes(questionID, questionEnglish, questionTagalog){
@@ -3169,12 +3007,271 @@ function analysisHowManyTimes(questionID, questionEnglish, questionTagalog){
   var thisInfoHtml = "";
   thisInfoHtml = "<h4>" + questionEnglish +
     "<br><small>" + questionTagalog + "</small></h4>"+
-    "<strong>" + numberResponses.length.toString() + " respondents providing #</strong><br>" +
+    "<p><strong>" + numberResponses.length.toString() + " respondents providing #</strong><br>" +
     "Average Times: " + avgTimes.toString() + "<br>" +
     "Min: " + minTimes.toString() + " / Max: " + maxTimes.toString() + "<br>"+
     "(" + dkCount.toString() + " don't know <span class='text-tagalog'>[hindi alam]</span>, " + noResponseCount.toString() + " no response <span class='text-tagalog'>[walang sagot]</span>, " + 
-    notAskedCount.toString() + " not asked this question)";
+    notAskedCount.toString() + " not asked this question)</p>";
   $(infoSelector).append(thisInfoHtml);
+}
+
+function analysisHowManyTimesPerWeek(questionID, questionEnglish, questionTagalog){
+  var numberResponses = [];
+  var dkCount = 0;
+  var noResponseCount = 0;
+  var notAskedCount = 0;
+  $.each(filteredData, function(surveyIndex, survey){
+    var thisAnswer = survey[questionID];
+    if (thisAnswer == "999"){
+      dkCount ++;
+    } else if (thisAnswer == "777") {
+      noResponseCount ++;
+    } else if (thisAnswer == "n/a"){
+      notAskedCount ++;
+    } else {
+      if(isFinite(parseInt(thisAnswer, 10)) == true){
+        numberResponses.push(parseInt(thisAnswer, 10));
+      }
+    }
+  });
+  var maxTimes = Math.max.apply(Math,numberResponses);
+  var minTimes = Math.min.apply(Math,numberResponses);
+  var sum = 0;
+  for( var i = 0; i < numberResponses.length; i++ ){
+      sum += numberResponses[i];
+  }
+  var avgTimes = d3.round(sum/numberResponses.length, 2);
+  var thisPieData = [
+    {
+      key: "days yes",
+      y: sum/numberResponses.length,
+    },
+    {
+      key: "days no",
+      y: 7-(sum/numberResponses.length),
+    }
+  ];
+  $("#infoWrapper").append('<div class="row"><div id="' + 
+    questionID + '" class="box-chart"><svg id="' +
+    questionID + '_chart"></svg></div><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var width = 180;
+  var chart = nv.models.pie().width(width - 60).height(width - 60)
+    .x(function(d) { return d.key }) 
+    .y(function(d) { return d.y })
+    .color(pieColors)
+    .showLabels(true);
+  var chartSelector = "#" + questionID + "_chart";
+  d3.select(chartSelector)
+    .datum(thisPieData)
+    .transition().duration(1200)
+    .attr('width', width)
+    .attr('height', width)
+    .call(chart);
+  var el = $(".nv-pieLabels");
+  $.each(el, function(aIndex, a){
+    a.parentNode.appendChild(a);
+  });
+  var infoSelector = "#" + questionID + "_info";
+  var thisInfoHtml = "";
+  thisInfoHtml = "<h4>" + questionEnglish +
+    "<br><small>" + questionTagalog + "</small></h4>"+
+    "<p><strong>" + numberResponses.length.toString() + " respondents providing #</strong><br>" +
+    "Average Times: " + avgTimes.toString() + "<br>" +
+    "Min: " + minTimes.toString() + " / Max: " + maxTimes.toString() + "<br>"+
+    "(" + dkCount.toString() + " don't know <span class='text-tagalog'>[hindi alam]</span>, " + noResponseCount.toString() + " no response <span class='text-tagalog'>[walang sagot]</span>, " + 
+    notAskedCount.toString() + " not asked this question)</p>";
+  $(infoSelector).append(thisInfoHtml);
+}
+
+function analysisMoreThreeLessThree(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog, optionCount){
+  var atLeastThree = 0;
+  var lessThanThree = 0;
+  var dontKnow = 0;
+  var skipped = 0;
+  var totalCount = 0;
+  var notAskedCount = 0;
+  var dk = questionID + "-dk";
+  var skip = questionID + "-skip";
+  var answersArray = [];
+  for(var i = 0; i < optionCount; i++){
+    answersArray.push(questionID + "-" + alphabet[i]);
+  }
+  var allResponses = [];
+  for (responseOption in answersEnglish){
+    allResponses[responseOption] = 0;
+  }
+  $.each(filteredData, function(surveyIndex, survey){
+    // counts for each of the responses
+    for (response in allResponses){
+      if (survey[response] === "TRUE"){
+        allResponses[response] ++;
+      }
+    };    
+    // counts for analysis chart
+    if (survey[dk] === "n/a"){
+      notAskedCount ++;
+    } else if (survey[dk] === "TRUE"){
+      dontKnow ++;
+    } else if (survey[skip] === "TRUE"){
+      skipped ++;
+    } else {
+      var thisTrueCount = 0;
+      $.each(answersArray, function(answerIndex, answer){
+        if (survey[answer] === "TRUE"){
+          thisTrueCount ++;
+        }
+      });
+      if (thisTrueCount >= 3){
+        atLeastThree ++;
+      } 
+      if (thisTrueCount < 3){
+        lessThanThree ++;
+      }
+    } 
+  });
+  var thisPieData = [
+    {
+      key: "at least 3",
+      y: atLeastThree,
+    },
+    {
+      key: "less than 3",
+      y: lessThanThree + dontKnow,
+    },
+    {
+      key: "skip",
+      y: skipped,
+    }
+  ];  
+  $("#infoWrapper").append('<div class="row"><div id="' + 
+    questionID + '" class="box-chart"><svg id="' +
+    questionID + '_chart"></svg></div><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var width = 180;
+  var chart = nv.models.pie().width(width - 60).height(width - 60)
+    .x(function(d) { return d.key }) 
+    .y(function(d) { return d.y })
+    .color(pieColors)
+    .showLabels(true);
+  var chartSelector = "#" + questionID + "_chart";
+  d3.select(chartSelector)
+    .datum(thisPieData)
+    .transition().duration(1200)
+    .attr('width', width)
+    .attr('height', width)
+    .call(chart);
+  var el = $(".nv-pieLabels");
+  $.each(el, function(aIndex, a){
+    a.parentNode.appendChild(a);
+  });
+  var infoSelector = "#" + questionID + "_info";
+  var totalCount = atLeastThree + lessThanThree + dontKnow + skipped;
+  var atLeastThreePerc = formatPerc(atLeastThree / totalCount); 
+  var lessThanThreePerc = formatPerc(lessThanThree / totalCount);
+  var dontKnowPerc = formatPerc(dontKnow / totalCount);
+  var lessThreeDontKnowPerc = formatPerc((lessThanThree + dontKnow)/totalCount);
+  var noResponsePerc = formatPerc(skipped / totalCount);
+  var thisInfoHtml = "<h4>" + questionEnglish +
+    "<br><small>" + questionTagalog + "</small></h4>" +
+    "<p><strong>" + totalCount + " respondents</strong><br>" +
+    "<span class='percText-1'>" + atLeastThreePerc + "</span> could identify at least three key responses" + 
+    " (" + atLeastThree.toString() + ")<br>" +
+    "<span class='percText-2'>" +lessThreeDontKnowPerc + "</span> could identify less than three key responses ("+
+    lessThanThreePerc + ", " + lessThanThree.toString()  + ") or don't know <span class='text-tagalog'>[walang sagot]</span> " + 
+    " (" + dontKnowPerc + ", " + dontKnow.toString() + ")<br>" +
+    "<span class='percText-3'>" + noResponsePerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> ("+
+    skipped.toString() + ")</p>";
+  $(infoSelector).append(thisInfoHtml);
+  $(infoSelector).append("<strong>Raw counts of responses (multiple responses possible)</strong><br>");
+  for(response in allResponses){
+    var thisResponseCount = allResponses[response];
+    var thisResponsePerc = formatPerc(allResponses[response] / totalCount); 
+    var thisResponseEng = answersEnglish[response];
+    var thisResponseTag = answersTagalog[response];    
+    var thisHtml = thisResponsePerc + " - " + thisResponseEng +
+      ((thisResponseTag !== false) ? " <span class='text-tagalog'>[" + thisResponseTag + "]</span>" : "") +
+      " ("+ thisResponseCount + ")<br>";
+    $(infoSelector).append(thisHtml);
+  }
+  $(infoSelector).append("(" + notAskedCount.toString() + " not asked this question)</p>"); 
+  var thisNote = "<small><strong>Note:</strong> Do not read responses. Record all that are mentioned. " + 
+    "<span class='text-tagalog'>[Wag basahin ang mga pagpipilian. Itala lahat ng nabanggit.]</span><br>";
+  $(infoSelector).append(thisNote);
+}
+
+function analysisAssessYesNo(questionID, questionEnglish, questionTagalog){
+  var yesCount = 0;
+  var noCount = 0;
+  var cannotObserveCount = 0;
+  var notAskedCount = 0;
+  var totalCount = 0;
+  $.each(filteredData, function(surveyIndex, survey){
+    if (survey[questionID] === "n/a"){
+      notAskedCount ++;
+    } else {
+      totalCount++;
+      if (survey[questionID] === "yes"){
+        yesCount ++;
+      }
+      if (survey[questionID] === "no"){
+        noCount ++;
+      }
+      if (survey[questionID] === "cannot"){
+        cannotObserveCount ++;
+      }
+    }
+  });
+  var thisPieData = [
+    {
+      key: "no",
+      y: noCount,
+    },
+    {
+      key: "yes",
+      y: yesCount,
+    },
+    {
+      key: "cannot",
+      y: cannotObserveCount,
+    }
+  ];
+  $("#infoWrapper").append('<div class="row"><div id="' + 
+    questionID + '" class="box-chart"><svg id="' +
+    questionID + '_chart"></svg></div><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var width = 180;
+  var chart = nv.models.pie().width(width - 60).height(width - 60)
+    .x(function(d) { return d.key }) 
+    .y(function(d) { return d.y })
+    .color(pieColors)
+    .showLabels(true);
+  var chartSelector = "#" + questionID + "_chart";
+  d3.select(chartSelector)
+    .datum(thisPieData)
+    .transition().duration(1200)
+    .attr('width', width)
+    .attr('height', width)
+    .call(chart);
+  var el = $(".nv-pieLabels");
+  $.each(el, function(aIndex, a){
+    a.parentNode.appendChild(a);
+  });
+  var infoSelector = "#" + questionID + "_info";
+  var yesPerc = formatPerc(yesCount / totalCount); 
+  var noPerc = formatPerc(noCount / totalCount);
+  var cannotPerc =formatPerc(cannotObserveCount / totalCount);
+  var thisInfoHtml = "<h4>" + questionEnglish +
+    "<br><small>" + questionTagalog + "</small></h4>" +
+    "<p><strong>" + totalCount + " observations</strong><br>" +
+    "<span class='percText-1'>" + noPerc + "</span> no <span class='text-tagalog'>[hindi]</span> (" + 
+    noCount.toString() + ") <br>" + 
+    "<span class='percText-2'>" + yesPerc + "</span> yes <span class='text-tagalog'>[oo]</span> (" +
+    yesCount.toString() + ")<br>" + 
+    "<span class='percText-3'>" + cannotPerc + "</span> cannot assess <span class='text-tagalog'>[hindi masuri]</span> (" + 
+    cannotObserveCount.toString() + ")<br>" +
+    "(" + notAskedCount.toString() + " no observation attempted)";
+  $(infoSelector).append(thisInfoHtml);   
 }
 
 function analysisAgreeDisagree(questionID, questionEnglish, questionTagalog){
@@ -3234,7 +3331,7 @@ function analysisAgreeDisagree(questionID, questionEnglish, questionTagalog){
     dkCount.toString() + ")<br>" +
     "<span class='text-noResponse'>" + formatPerc(noResponseCount / totalCount) + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" +
     noResponseCount.toString() + ")<br>" +
-    "(" + notAskedCount.toString() + " respondents not asked this question)<br>";
+    "(" + notAskedCount.toString() + " respondents not asked this question)</p>";
   $(infoSelector).append(thisInfoHtml);
 }
 
