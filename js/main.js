@@ -480,13 +480,36 @@ function CM2(){
   var questionEnglish = "Did you receive psychosocial support from a volunteer following the disaster?";
   var questionTagalog = "Nakatanggap ka ba ng psychosocial support mula sa isang volunteer matapos ang isang kalamidad?";
   analysisYesNoDk(questionID, questionEnglish, questionTagalog);
-  SM1();
+  safemotherhood();
 }
 
 
 
 
 
+
+
+
+
+
+function safemotherhood(){
+  var section = false;
+  $.each(filteredData, function(index, survey){
+    if(survey["cbhfa-SM_section"] == "continue"){
+      section = true;
+    }
+  });
+  switch(section){
+    case true:
+      $("#safemotherhood").show();
+      SM1();
+      break;
+    case false:
+      $("#safemotherhood").hide();
+      newborn();
+      break;
+  };
+}
 
 function SM1(){
   $(infoWrapper).append("<h3><span class='jumpto' id='safemotherhood'></span>Topic: Safe Motherhood</h3><hr>");
@@ -1050,24 +1073,34 @@ function SM12(){
     "SM9-skip":"walang sagot"
   };
   analysisSelectMultipleWhatAnswers(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
-  NB1();
+  newborn();
 }
 
-    // "NB1-A":"",
-    // "NB1-B":"",
-    // "NB1-C":"",
-    // "NB1-D":"",
-    // "NB1-E":"",
-    // "NB1-F":"",
-    // "NB1-G":"",
-    // "NB1-H":"",
-    // "NB1-I":"",
-    // "NB1-other":"",
-    // "NB1-dk":"",
-    // "NB1-skip":""
   
 
 
+
+
+
+
+function newborn(){
+  var section = false;
+  $.each(filteredData, function(index, survey){
+    if(survey["cbhfa-NB_section"] == "continue"){
+      section = true;
+    }
+  });
+  switch(section){
+    case true:
+      $("#newborn").show();
+      NB1();
+      break;
+    case false:
+      $("#newborn").hide();
+      babynutrition();
+      break;
+  };
+}
 
 function NB1(){
   $(infoWrapper).append("<h3><span class='jumpto' id='newborn'></span>Topic: Care of a Newborn</h3><hr>");
@@ -1216,9 +1249,39 @@ function NU2(){
     "(" + dkCount.toString() + " don't know, " + noResponseCount.toString() + " no response, " + 
     notAskedCount.toString() + " not asked this question)";
   $(infoSelector).append(thisInfoHtml);
-  NU3breastmilk();
+  babynutrition();
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+function babynutrition(){
+  var section = false;
+  $.each(filteredData, function(index, survey){
+    if(survey["cbhfa-NU_section"] == "continue"){
+      section = true;
+    }
+  });
+  switch(section){
+    case true:
+      $("#babynutrition").show();
+      NU3breastmilk();
+      break;
+    case false:
+      $("#babynutrition").hide();
+      immunization();
+      break;
+  };
+}
 
 function NU3breastmilk(){
   $(infoWrapper).append("<h3><span class='jumpto' id='babynutrition'></span>Topic: Baby Nutrition</h3><hr>");
@@ -1367,7 +1430,46 @@ function NU13(){
   };
   var optionCount = 11;
   analysisMoreThreeLessThree(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog, optionCount);
-  WS1();
+  immunization();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function immunization(){
+  var section = false;
+  $.each(filteredData, function(index, survey){
+    if(survey["cbhfa-IM_section"] == "continue"){
+      section = true;
+    }
+  });
+  switch(section){
+    case true:
+      $("#immunization").show();
+      IM1();
+      break;
+    case false:
+      $("#immunization").hide();
+      sanitation();
+      break;
+  };
+}
+
+function IM1(){
+  $(infoWrapper).append("<h3><span class='jumpto' id='immunization'></span>Topic: Immunization and Vaccination Campaigns</h3><hr>");
+
+  sanitation();
 }
 
 
@@ -1385,8 +1487,24 @@ function NU13(){
 
 
 
-
-
+function sanitation(){
+  var section = false;
+  $.each(filteredData, function(index, survey){
+    if(survey["cbhfa-IM_section"] == "continue"){
+      section = true;
+    }
+  });
+  switch(section){
+    case true:
+      $("#sanitation").show();
+      WS1();
+      break;
+    case false:
+      $("#sanitation").hide();
+      diarrhoea();
+      break;
+  };
+}
 
 function WS1(){
   $(infoWrapper).append("<h3><span class='jumpto' id='sanitation'></span>Topic: Safe Water, Hygiene, and Sanitation</h3><hr>");
@@ -1726,7 +1844,7 @@ function WS16(){
   };
   var optionCount = 9;
   analysisMoreThreeLessThree(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog, optionCount);
-  DI1();
+  diarrhoea();
 }
 
 
@@ -1737,8 +1855,27 @@ function WS16(){
 
 
 
+function diarrhoea(){
+  var section = false;
+  $.each(filteredData, function(index, survey){
+    if(survey["cbhfa-DI_section"] == "continue"){
+      section = true;
+    }
+  });
+  switch(section){
+    case true:
+      $("#diarrhoea").show();
+      DI1();
+      break;
+    case false:
+      $("#diarrhoea").hide();
+      ari();
+      break;
+  };
+}
+
 function DI1(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='diarrhea'></span>Topic: Diarrhea and Dehydation</h3><hr>");
+  $(infoWrapper).append("<h3><span class='jumpto' id='diarrhoea'></span>Topic: Diarrhoea and Dehydation</h3><hr>");
   var questionID = "DI1";
   var questionEnglish = "Has any family member had Diarrhea in the last 2 weeks? (define it if needed)";
   var questionTagalog = "Mayroon bang miyembro ng pamilya na nakaranas ng pagtatae sa nakaraang dalawang linggo? (ipalarawan kung kailangan)";
@@ -2006,7 +2143,35 @@ function DI14(){
   };
   var optionCount = 9;
   analysisMoreThreeLessThree(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog, optionCount);
-  AR2();
+  ari();
+}
+
+
+
+
+
+
+
+
+
+
+function ari(){
+  var section = false;
+  $.each(filteredData, function(index, survey){
+    if(survey["cbhfa-AR_section"] == "continue"){
+      section = true;
+    }
+  });
+  switch(section){
+    case true:
+      $("#ari").show();
+      AR2();
+      break;
+    case false:
+      $("#ari").hide();
+      malaria();
+      break;
+  };
 }
  
 function AR2(){
@@ -2034,13 +2199,34 @@ function AR3(){
 
 
 
+
+
 function malaria(){
+  var section = false;
+  $.each(filteredData, function(index, survey){
+    if(survey["cbhfa-ML_section"] == "continue"){
+      section = true;
+    }
+  });
+  switch(section){
+    case true:
+      $("#malaria").show();
+      malariaStart();
+      break;
+    case false:
+      $("#malaria").hide();
+      dengue();
+      break;
+  };
+}
+
+function malariaStart(){
   $(infoWrapper).append("<h3><span class='jumpto' id='malaria'></span>Topic: Malaria Prevention and Control</h3><hr>");
   var questionID = "malaria_start";
   var questionEnglish = "Have you ever heard of Malaria?";
   var questionTagalog = "May kaalaman ka ba tungkol sa Malaria?";
   analysisYesNo(questionID, questionEnglish, questionTagalog);
-  DN1();
+  dengue();
 }
 
 
@@ -2049,6 +2235,30 @@ function malaria(){
 
 
 
+
+
+
+
+
+
+function dengue(){
+  var section = false;
+  $.each(filteredData, function(index, survey){
+    if(survey["cbhfa-DN_section"] == "continue"){
+      section = true;
+    }
+  });
+  switch(section){
+    case true:
+      $("#dengue").show();
+      DN1();
+      break;
+    case false:
+      $("#dengue").hide();
+      mosquitonets();
+      break;
+  };
+}
 
 function DN1(){
   $(infoWrapper).append("<h3><span class='jumpto' id='dengue'></span>Topic: Dengue Prevention and Control</h3><hr>");
@@ -2056,7 +2266,7 @@ function DN1(){
   var questionEnglish = "Have you ever heard of Dengue Fever?";
   var questionTagalog = "May kaalaman ka ba tungkol sa Dengue?";
   analysisYesNo(questionID, questionEnglish, questionTagalog);
-  MN1();  
+  mosquitonets();  
 }
 
 
@@ -2064,6 +2274,28 @@ function DN1(){
 
 
 
+
+
+
+
+function mosquitonets(){
+  var section = false;
+  $.each(filteredData, function(index, survey){
+    if(survey["cbhfa-MN_section"] == "continue"){
+      section = true;
+    }
+  });
+  switch(section){
+    case true:
+      $("#mosquitonets").show();
+      MN1();
+      break;
+    case false:
+      $("#mosquitonets").hide();
+      hiv();
+      break;
+  };
+}
 
 function MN1(){
   $(infoWrapper).append("<h3><span class='jumpto' id='mosquitonets'></span>Topic: Mosquito Net Use</h3><hr>");
@@ -2079,7 +2311,7 @@ function MN3(){
   var questionEnglish = "When you got the (most recent) net, was it already treated with an insecticide to kill or repel mosquitoes?";
   var questionTagalog = "Nang makuha mo ang kasalukuyang kulambo, ito ba ay may pamatay peste?";
   analysisYesNoDk(questionID, questionEnglish, questionTagalog);
-  HA1();
+  hiv();
 }
  
 
@@ -2090,13 +2322,33 @@ function MN3(){
 
 
 
+
+function hiv(){
+  var section = false;
+  $.each(filteredData, function(index, survey){
+    if(survey["cbhfa-HA_section"] == "continue"){
+      section = true;
+    }
+  });
+  switch(section){
+    case true:
+      $("#hiv").show();
+      HA1();
+      break;
+    case false:
+      $("#hiv").hide();
+      tb();
+      break;
+  };
+}
+
 function HA1(){
   $(infoWrapper).append("<h3><span class='jumpto' id='hiv'></span>Topic: HIV and Sexually Transmitted Infections (STI)</h3><hr>");
   var questionID = "HA1";
   var questionEnglish = "Have you ever heard of an illness called AIDS or an infection called HIV?";
   var questionTagalog = "Narinig mo na ba ang tungkol sa sakit na AIDS o ang impeksyon na HIV?";
   analysisYesNo(questionID, questionEnglish, questionTagalog);
-  TB1();
+  tb();
 }
 
 
@@ -2104,6 +2356,29 @@ function HA1(){
 
 
 
+
+
+
+
+
+function tb(){
+  var section = false;
+  $.each(filteredData, function(index, survey){
+    if(survey["cbhfa-TB_section"] == "continue"){
+      section = true;
+    }
+  });
+  switch(section){
+    case true:
+      $("#tb").show();
+      TB1();
+      break;
+    case false:
+      $("#tb").hide();
+      blooddonation();
+      break;
+  };
+}
 
 function TB1(){
   $(infoWrapper).append("<h3><span class='jumpto' id='tb'></span>Topic: Tuberculosis (TB)</h3><hr>");
@@ -2119,7 +2394,7 @@ function TB3(){
   var questionEnglish = "Is TB contagious (can spread easily from one person to another)?";
   var questionTagalog = "Ang TB ba ay madaling makahawa?";
   analysisYesNoDk(questionID, questionEnglish, questionTagalog);
-  BD1();
+  blooddonation();
 }
 
 
@@ -2128,6 +2403,27 @@ function TB3(){
 
 
 
+
+
+
+function blooddonation(){
+  var section = false;
+  $.each(filteredData, function(index, survey){
+    if(survey["cbhfa-BD_section"] == "continue"){
+      section = true;
+    }
+  });
+  switch(section){
+    case true:
+      $("#blooddonation").show();
+      BD1();
+      break;
+    case false:
+      $("#blooddonation").hide();
+      roadsafety();
+      break;
+  };
+}
 
 function BD1(){
   $(infoWrapper).append("<h3><span class='jumpto' id='blooddonation'></span>Topic: Blood Donation</h3><hr>");
@@ -2138,13 +2434,12 @@ function BD1(){
   BD2(); 
 }
 
-
 function BD2(){
   var questionID = "BD2";
   var questionEnglish = "Have any of your family member donated blood in the last 12 months?";
   var questionTagalog = "Mayroon bang miyembro ng pamilya na nag-donate ng dugo ng nakaraang 12 buwan?";
   analysisYesNo(questionID, questionEnglish, questionTagalog); 
-  RS1();  
+  roadsafety();  
 }
 
 
@@ -2152,6 +2447,26 @@ function BD2(){
 
 
 
+
+
+function roadsafety(){
+  var section = false;
+  $.each(filteredData, function(index, survey){
+    if(survey["cbhfa-RS_section"] == "continue"){
+      section = true;
+    }
+  });
+  switch(section){
+    case true:
+      $("#roadsafety").show();
+      RS1();
+      break;
+    case false:
+      $("#roadsafety").hide();
+      substanceuse();
+      break;
+  };
+}
 
 function RS1(){
   $(infoWrapper).append("<h3><span class='jumpto' id='roadsafety'></span>Topic: Road Safety</h3><hr>");
@@ -2237,7 +2552,7 @@ function RS5(){
     "RS5-skip":"walang sagot"  
   };
   analysisSelectMultipleWhatAnswers(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
-  NC1();
+  substanceuse();
 }
 
 
@@ -2246,6 +2561,61 @@ function RS5(){
 
 
 
+
+
+
+
+function substanceuse(){
+  var section = false;
+  $.each(filteredData, function(index, survey){
+    if(survey["cbhfa-ES_section"] == "continue"){
+      section = true;
+    }
+  });
+  switch(section){
+    case true:
+      $("#substanceuse").show();
+      ES1();
+      break;
+    case false:
+      $("#substanceuse").hide();
+      noncommunicablediseases();
+      break;
+  };
+}
+
+function ES1(){
+  $(infoWrapper).append("<h3><span class='jumpto' id='substanceuse'></span>Topic: Excessive Substance Use</h3><hr>");
+  
+  noncommunicablediseases();
+}
+
+
+
+
+
+
+
+
+
+function noncommunicablediseases(){
+  var section = false;
+  $.each(filteredData, function(index, survey){
+    if(survey["cbhfa-NC_section"] == "continue"){
+      section = true;
+    }
+  });
+  switch(section){
+    case true:
+      $("#noncommunicablediseases").show();
+      NC1();
+      break;
+    case false:
+      $("#noncommunicablediseases").hide();
+      violenceprevention();
+      break;
+  };
+}
 
 function NC1(){
   $(infoWrapper).append("<h3><span class='jumpto' id='noncommunicablediseases'></span>Topic: Noncommunicable Diseases</h3><hr>");
@@ -2379,6 +2749,27 @@ function NC21(){
 
 
 
+
+
+
+function violenceprevention(){
+  var section = false;
+  $.each(filteredData, function(index, survey){
+    if(survey["cbhfa-VP_section"] == "continue"){
+      section = true;
+    }
+  });
+  switch(section){
+    case true:
+      $("#violenceprevention").show();
+      VP1();
+      break;
+    case false:
+      $("#violenceprevention").hide();
+      RC1();
+      break;
+  };
+}
 
 function VP1(){
   $(infoWrapper).append("<h3><span class='jumpto' id='violenceprevention'></span>Topic: Violence Prevention</h3><hr>");
