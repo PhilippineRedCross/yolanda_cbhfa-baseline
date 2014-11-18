@@ -132,7 +132,7 @@ function analyzeData() {
 
 
 function FA1(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='firstaid'></span>Topic: First Aid</h3><hr>");
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_firstaid'></span>Topic: First Aid</h3><hr>");
   var questionID = "cbhfa-FA1";
   var questionEnglish = "Have you ever attended any training program to learn basic first aid?";
   var questionTagalog = "Nakadalo ka na ba ng pagsasanay patungkol sa paunang lunas?";
@@ -439,7 +439,7 @@ function FA7(){
 }
 
 function CM1(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='majoremergencies'></span>Topic: Community Mobilization in Major Emergencies</h3></div><hr>");
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_majoremergencies'></span>Topic: Community Mobilization in Major Emergencies</h3></div><hr>");
   var questionID = "CM1";
   var questionEnglish = "What would you do to respond safely to a disaster?";
   var questionTagalog = "Ano ang iyong gagawin upang makatugon ng ligtas sa isang kalamidad?";
@@ -512,7 +512,7 @@ function safemotherhood(){
 }
 
 function SM1(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='safemotherhood'></span>Topic: Safe Motherhood</h3><hr>");
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_safemotherhood'></span>Topic: Safe Motherhood</h3><hr>");
   var questionID = "SM1";
   var questionEnglish = "During your last pregnancy, did you see anyone for antenatal care?";
   var questionTagalog = "Sa panahon ng iyong huling pagbubuntis, kumunsulta ka ba ng isang healthcare worker para mapangalagaan ang iyong pagbubuntis?";
@@ -1103,7 +1103,7 @@ function newborn(){
 }
 
 function NB1(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='newborn'></span>Topic: Care of a Newborn</h3><hr>");
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_newborn'></span>Topic: Care of a Newborn</h3><hr>");
   var questionID = "NB1";
   var questionEnglish = "What are the important things for home based care of a newborn baby (immediately when born)?";
   var questionTagalog = "Ano ang mga mahahalagang bagay na dapat isaalang-alang sa pangangalaga ng bagong silang na sanggol sa bahay?";
@@ -1284,7 +1284,7 @@ function babynutrition(){
 }
 
 function NU3breastmilk(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='babynutrition'></span>Topic: Baby Nutrition</h3><hr>");
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_babynutrition'></span>Topic: Baby Nutrition</h3><hr>");
   var questionID = "NU3_breastmilk";
   var questionEnglish = "Now I would like to ask you about liquids or foods children had yesterday during the day or at night. Did your child/children drink/eat: <u>Breast milk</u>?";
   var questionTagalog = "Ano-anong uri ng pagkain at inumin ang binigay mo sa iyong mga anak kahapon mula umaga hanggang gabi? Kumain o uminom ang iyong mga anak ng: <u>Gatas ng ina</u>?";
@@ -1467,7 +1467,7 @@ function immunization(){
 }
 
 function IM1(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='immunization'></span>Topic: Immunization and Vaccination Campaigns</h3><hr>");
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_immunization'></span>Topic: Immunization and Vaccination Campaigns</h3><hr>");
 
   sanitation();
 }
@@ -1507,7 +1507,7 @@ function sanitation(){
 }
 
 function WS1(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='sanitation'></span>Topic: Safe Water, Hygiene, and Sanitation</h3><hr>");
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_sanitation'></span>Topic: Safe Water, Hygiene, and Sanitation</h3><hr>");
   var questionID = "cbhfa-WS_group-WS1";
   var questionEnglish = "What is the main source of drinking water for members of this household?";
   var questionTagalog = "Ano ang pangunahing pinagkukunan niyo ng inuming tubig sa inyong tahanan?";
@@ -1875,7 +1875,7 @@ function diarrhoea(){
 }
 
 function DI1(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='diarrhoea'></span>Topic: Diarrhoea and Dehydation</h3><hr>");
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_diarrhoea'></span>Topic: Diarrhoea and Dehydation</h3><hr>");
   var questionID = "DI1";
   var questionEnglish = "Has any family member had Diarrhea in the last 2 weeks? (define it if needed)";
   var questionTagalog = "Mayroon bang miyembro ng pamilya na nakaranas ng pagtatae sa nakaraang dalawang linggo? (ipalarawan kung kailangan)";
@@ -2175,7 +2175,7 @@ function ari(){
 }
  
 function AR2(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='ari'></span>Topic: Acute Respiratory Infections</h3><hr>");
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_ari'></span>Topic: Acute Respiratory Infections</h3><hr>");
   var questionID = "AR2";
   var questionEnglish = "Has any family member had an illness with a cough at any time in the last two weeks?";
   var questionTagalog = "May miymbro ban g pamilya na nagkasakit na may kasamang ubo sa nakalipas na 2 linggo?";
@@ -2221,7 +2221,7 @@ function malaria(){
 }
 
 function malariaStart(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='malaria'></span>Topic: Malaria Prevention and Control</h3><hr>");
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_malaria'></span>Topic: Malaria Prevention and Control</h3><hr>");
   var questionID = "malaria_start";
   var questionEnglish = "Have you ever heard of Malaria?";
   var questionTagalog = "May kaalaman ka ba tungkol sa Malaria?";
@@ -2261,7 +2261,7 @@ function dengue(){
 }
 
 function DN1(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='dengue'></span>Topic: Dengue Prevention and Control</h3><hr>");
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_dengue'></span>Topic: Dengue Prevention and Control</h3><hr>");
   var questionID = "DN1";
   var questionEnglish = "Have you ever heard of Dengue Fever?";
   var questionTagalog = "May kaalaman ka ba tungkol sa Dengue?";
@@ -2298,7 +2298,7 @@ function mosquitonets(){
 }
 
 function MN1(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='mosquitonets'></span>Topic: Mosquito Net Use</h3><hr>");
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_mosquitonets'></span>Topic: Mosquito Net Use</h3><hr>");
   var questionID = "MN1";
   var questionEnglish = "Does your household have any mosquito nets that can be used while sleeping?";
   var questionTagalog = "Gumagamit ba kayo ng kulambo sa inyong pagtulog?";
@@ -2343,7 +2343,7 @@ function hiv(){
 }
 
 function HA1(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='hiv'></span>Topic: HIV and Sexually Transmitted Infections (STI)</h3><hr>");
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_hiv'></span>Topic: HIV and Sexually Transmitted Infections (STI)</h3><hr>");
   var questionID = "HA1";
   var questionEnglish = "Have you ever heard of an illness called AIDS or an infection called HIV?";
   var questionTagalog = "Narinig mo na ba ang tungkol sa sakit na AIDS o ang impeksyon na HIV?";
@@ -2381,7 +2381,7 @@ function tb(){
 }
 
 function TB1(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='tb'></span>Topic: Tuberculosis (TB)</h3><hr>");
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_tb'></span>Topic: Tuberculosis (TB)</h3><hr>");
   var questionID = "TB1";
   var questionEnglish = "Have you heard about the disease called Tuberculosis or TB?";
   var questionTagalog = "Narinig mo na ba ang sakit na Tuberculosis o TB?";
@@ -2426,7 +2426,7 @@ function blooddonation(){
 }
 
 function BD1(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='blooddonation'></span>Topic: Blood Donation</h3><hr>");
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_blooddonation'></span>Topic: Blood Donation</h3><hr>");
   var questionID = "BD1";
   var questionEnglish = "Have you donated blood in the last 12 months?";
   var questionTagalog = "Nag-donate ka ba ng dugo sa nakalipas na 12 buwan?";
@@ -2469,7 +2469,7 @@ function roadsafety(){
 }
 
 function RS1(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='roadsafety'></span>Topic: Road Safety</h3><hr>");
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_roadsafety'></span>Topic: Road Safety</h3><hr>");
   var questionID = "RS1";
   var questionEnglish = "Do you currently own a motorcycle or has one been provided for you to use?";
   var questionTagalog = "Sa kasalukuyan, ikaw ba ay nagmamay-ari ng isang motosiklo?";
@@ -2585,7 +2585,7 @@ function substanceuse(){
 }
 
 function ES1(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='substanceuse'></span>Topic: Excessive Substance Use</h3><hr>");
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_substanceuse'></span>Topic: Excessive Substance Use</h3><hr>");
   
   noncommunicablediseases();
 }
@@ -2618,7 +2618,7 @@ function noncommunicablediseases(){
 }
 
 function NC1(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='noncommunicablediseases'></span>Topic: Noncommunicable Diseases</h3><hr>");
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_noncommunicablediseases'></span>Topic: Noncommunicable Diseases</h3><hr>");
   var questionID = "NC1";
   var questionEnglish = "Have you ever consumed an alcoholic drink such as wine, beer, spirit?";
   var questionTagalog = "Nakainom ka na ba ng mga inumin na may alcohol tulad ng wine, beer, spirit?";
@@ -2772,7 +2772,7 @@ function violenceprevention(){
 }
 
 function VP1(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='violenceprevention'></span>Topic: Violence Prevention</h3><hr>");
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_violenceprevention'></span>Topic: Violence Prevention</h3><hr>");
   var questionID = "VP1";
   var questionEnglish = 'To what extent do you agree with the statement: "Violence against women, men, girls and boys is preventable."';
   var questionTagalog = 'Sang-ayon ka ba o hindi sa panabing: "Ang karahasan sa mga kababaihan at kalalakihan ay maiiwasan."';
@@ -2966,7 +2966,7 @@ function VP10(){
 
 
 function RC1(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='redcross'></span>Topic: Red Cross Exposure</h3><hr>");
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_redcross'></span>Topic: Red Cross Exposure</h3><hr>");
   var questionID = "RC1";
   var questionEnglish = "Are you aware about Philippine Red Cross?";
   var questionTagalog = "May kaalaman ka ba tungkol sa Philippine Red Cross?";
