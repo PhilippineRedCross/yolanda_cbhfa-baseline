@@ -1466,12 +1466,224 @@ function immunization(){
   };
 }
 
+
 function IM1(){
   $(infoWrapper).append("<h3><span class='jumpto' id='section_immunization'></span>Topic: Immunization and Vaccination Campaigns</h3><hr>");
 
-  sanitation();
+
+  var questionID = "IM1";
+  var questionEnglish = "Do you have a card or child health booklet where vaccinations are written down?";
+  var questionTagalog = "Mayroon ka bang card o child health booklet kung saan naka-rekord/nakatala ang nga bakuna na natanggap ng iyong mga anak?";
+  var AyesCount = 0;
+  var ByesCount = 0;
+  var CnoCount = 0;
+  var topicSkipped = 0;
+  var totalCount = 0;
+  $.each(filteredData, function(surveyIndex, survey){
+    if (survey[questionID] === "n/a"){
+      topicSkipped ++;
+    } else {
+      totalCount ++;
+      if (survey[questionID] === "A"){
+        AyesCount ++;
+      }
+      if (survey[questionID] === "B"){
+        ByesCount ++;
+      }
+      if (survey[questionID] === "C"){
+        CnoCount ++;
+      }
+    }
+  });
+  var thisPieData = [
+    {
+      key: "no card",
+      y: CnoCount,
+    },
+    {
+      key: "yes, seen",
+      y: AyesCount,
+    },
+    {
+      key: "yes, not seen",
+      y: ByesCount,
+    }
+  ];
+  $("#infoWrapper").append('<div class="row"><div id="' + 
+    questionID + '" class="box-chart"><svg id="' +
+    questionID + '_chart"></svg></div><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var width = 180;
+  var chart = nv.models.pie().width(width - 60).height(width - 60)
+    .x(function(d) { return d.key }) 
+    .y(function(d) { return d.y })
+    .color(pieColors)
+    .showLabels(true);
+  var chartSelector = "#" + questionID + "_chart";
+  d3.select(chartSelector)
+    .datum(thisPieData)
+    .transition().duration(1200)
+    .attr('width', width)
+    .attr('height', width)
+    .call(chart);
+  var el = $(".nv-pieLabels");
+  $.each(el, function(aIndex, a){
+    a.parentNode.appendChild(a);
+  });
+  var infoSelector = "#" + questionID + "_info";
+  var AyesPerc = formatPerc(AyesCount / totalCount); 
+  var ByesPerc = formatPerc(ByesCount / totalCount); 
+  var CnoPerc = formatPerc(CnoCount / totalCount);
+  var thisInfoHtml = "<h4>" + questionEnglish +
+    ((questionTagalog !== false) ? "<br><small>" + questionTagalog + "</small>" : "") +    
+    "</h4>" +
+    "<p><strong>" + totalCount + " respondents</strong><br>" +
+    "<span class='percText-1'>" + CnoPerc + "</span> no <span class='text-tagalog'>[wala]</span> (" + 
+    CnoCount.toString() + ")<br>" +
+    "<span class='percText-2'>" + AyesPerc + "</span> yes, seen by interviewer <span class='text-tagalog'>[oo, nakita ng tagatanong]</span> (" +
+    AyesCount.toString() + ")<br>" +
+    "<span class='percText-3'>" + ByesPerc + "</span> yes, not seen <span class='text-tagalog'>[oo, ngunit hindi nakita]</span> (" +
+    ByesCount.toString() + ")<br>";
+  if(topicSkipped > 0){
+    thisInfoHtml += "(" + topicSkipped.toString() + " not asked this question)";
+  }
+  thisInfoHtml += "</p>";
+  $(infoSelector).append(thisInfoHtml); 
+  IM2A();  
 }
 
+function IM2A(){
+  var questionID = "IM2A";
+  var questionEnglish = "Did you ever have a vaccination card for baby?";
+  var questionTagalog = "Nagkaroon ka ba ng vaccination card para sa iyong sanggol?";
+  analysisYesNo(questionID, questionEnglish, questionTagalog);
+  var infoSelector = "#" + questionID + "_info";
+  var thisNote = "<small><strong>Note:</strong> Only asked if response to previous question was 'no card' <span class='text-tagalog'>[wala]</span><br>";  
+  IM2B();
+}
+
+function IM2B(){
+  var questionID = "IM2B";
+  var questionEnglish = "Where did you go to provide vaccines to your child/ children?";
+  var questionTagalog = "Saan ka pumunta upang pabakunahan ang iyong anak/ mga anak?";
+  var answersEnglish = {
+    "IM2B-A":"your home",
+    "IM2B-B":"midwife",
+    "IM2B-C":"traditional birth attendant (TBA)",
+    "IM2B-D":"public hospital",
+    "IM2B-E":"rural health unit (RHU)",
+    "IM2B-F":"barangay health station (BHS)",
+    "IM2B-G":"barangay health center (BHC)",
+    "IM2B-H":"private hospital",
+    "IM2B-I":"private clinic",
+    "IM2B-none":"children not vaccinated",
+    "IM2B-other":"other",
+    "IM2B-dk":"don't know",
+    "IM2B-skip":"no response"
+  };
+  var answersTagalog = {
+    "IM2B-A":"sa bahay",
+    "IM2B-B":"kumadrona",
+    "IM2B-C":"hilot",
+    "IM2B-D":"ospital",
+    "IM2B-E":false,
+    "IM2B-F":false,
+    "IM2B-G":false,
+    "IM2B-H":"pribadong ospital",
+    "IM2B-I":"pribadong klinika",
+    "IM2B-none":false,
+    "IM2B-other":"ibang sagot",
+    "IM2B-dk":"hindi alam",
+    "IM2B-skip":"walang sagot"
+  };
+  analysisSelectMultipleWhatAnswers(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
+  IM2C();
+}
+
+function IM2C(){
+  var questionID = "IM2C";
+  var questionEnglish = "Who assisted with the vaccinations?";
+  var questionTagalog = "Sino ang nagsasagawa ng pagpapabakuna?";
+  var answersEnglish = {
+    "IM2C-A":"doctor",
+    "IM2C-B":"nurse",
+    "IM2C-C":"midwife",
+    "IM2C-D":"traditional birth attendant",
+    "IM2C-E":"trained community/ barangay health worker",
+    "IM2C-F":"relative/ friend",
+    "IM2C-other":"other",
+    "IM2C-none":"no one",
+    "IM2C-skip":"no response"
+  };
+  var answersTagalog = {
+    "IM2C-A":"duktor",
+    "IM2C-B":"nars",
+    "IM2C-C":"kumadrona",
+    "IM2C-D":"hilot",
+    "IM2C-E":false,
+    "IM2C-F":"kamang-anak o kaibigan",
+    "IM2C-other":"ibang sagot",
+    "IM2C-none":"wala",
+    "IM2C-skip":"walang sagot"
+  };
+  analysisSelectMultipleWhatAnswers(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
+  var infoSelector = "#" + questionID + "_info";
+  var thisNote = "<small><strong>Note:</strong> Probe for the type(s) of person(s) and record all mentioned.<br>";
+  $(infoSelector).append(thisNote);
+  IM4();
+}
+
+function IM4(){
+  var questionID = "IM4";
+  var questionEnglish = "Can you tell me what diseases can be prevented using immunizations?";
+  var questionTagalog = "Maaari mo bang sabihin kung ano ang mga sakit na maaaring maiwasan sa pamamagitan ng pagbabakuna?";
+  var answersEnglish = {
+    "IM4-A":"Tuberculosis (TB)",
+    "IM4-B":"Polio",
+    "IM4-C":"Diphtheria",
+    "IM4-D":"Whooping Cough (Pertusis)",
+    "IM4-E":"Tetanus",
+    "IM4-F":"Measles",
+    "IM4-G":"Hepatitis B",
+    "IM4-H":"Hepatitis A",
+    "IM4-I":"Yellow Fever",
+    "IM4-J":"Meningitis",
+    "IM4-K":"Rotavirus",
+    "IM4-L":"Pneumococcal Disease",
+    "IM4-M":"Japanese Encephalitis",
+    "IM4-N":"Human Papiloma Virus",
+    "IM4-O":"Rabies",
+    "IM4-other":"other",
+    "IM4-dk":"don't know",
+    "IM4-skip":"no response"
+  };
+  var answersTagalog = {
+    "IM4-A":false,
+    "IM4-B":false,
+    "IM4-C":false,
+    "IM4-D":false,
+    "IM4-E":false,
+    "IM4-F":false,
+    "IM4-G":false,
+    "IM4-H":false,
+    "IM4-I":false,
+    "IM4-J":false,
+    "IM4-K":false,
+    "IM4-L":false,
+    "IM4-M":false,
+    "IM4-N":false,
+    "IM4-O":false,
+    "IM4-other":"iba pang kasagutan",
+    "IM4-dk":"hindi alam",
+    "IM4-skip":"walang sagot"
+  };
+  analysisSelectMultipleWhatAnswers(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
+  var infoSelector = "#" + questionID + "_info";
+  var thisNote = "<small><strong>Note:</strong> Do not read responses. Record all that are mentioned. " + 
+    "<span class='text-tagalog'>[Wag basahin ang mga pagpipilian. Itala lahat ng nabanggit.]</span><br>";
+  $(infoSelector).append(thisNote);
+  sanitation();
+}
 
 
 
@@ -3033,6 +3245,38 @@ function RC6(){
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // "IM2B-A":"",
+    // "IM2B-B":"",
+    // "IM2B-C":"",
+    // "IM2B-D":"",
+    // "IM2B-E":"",
+    // "IM2B-F":"",
+    // "IM2B-G":"",
+    // "IM2B-H":"",
+    // "IM2B-I":"",
+    // "IM2B-J":"",
+    // "IM2B-K":"",
+    // "IM2B-L":"",
+    // "IM2B-M":"",
+    // "IM2B-N":"",
+    // "IM2B-O":"",
+    // "IM2B-none":"",
+    // "IM2B-other":"other",
+    // "IM2B-dk":"don't know",
+    // "IM2B-skip":"no response"
 
 
 
