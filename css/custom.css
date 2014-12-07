@@ -12,6 +12,14 @@ body {
   display: block; 
 }
 
+.tableIcon {
+  height: 34px;
+  width: 34px;
+}
+.table-custom {
+  width: 0;
+}
+
 .logo-ifrc{
   height:100%;
   background: #fff;

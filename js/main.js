@@ -11,10 +11,15 @@ var activeMunicipality = "ALL";
 var activeBarangay = "ALL";
 
 var formatPerc = d3.format(".0%");
+var formatCommas = d3.format(",");
 
 function getSurveyData() {
   d3.csv("data/cbhfa_baseline_final_2014_10_28.csv", function(data){
-    surveyData = data;
+    $.each(data, function(index, survey){
+      if(survey.start_permission == "yes"){
+        surveyData.push(survey);
+      }
+    });
     buildProvinceDropdown();
   });
 }
@@ -127,8 +132,201 @@ function analyzeData() {
 
   $("#selected-survey-count").html(filteredData.length.toString());
 
-  FA1();
+  BC1();
 }
+
+
+function BC1() {
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_profile'></span>Respondents' Profile</h3><hr>");
+  var questionID = "BC1";
+  var questionEnglish = "Number of people in household";
+  var questionTagalog = "Bilang ng tao sa isang sambahayan";
+
+  $("#infoWrapper").append('<div class="row"><div id="'+
+      questionID + '_info" class="box-info"></div></div><hr>');
+  var infoSelector = "#" + questionID + "_info";
+
+  var thisInfoHtml = "<h4>" + questionEnglish +
+    ((questionTagalog !== false) ? "<br><small>" + questionTagalog + "</small>" : "") +    
+    "</h4>" +
+      '<table class="table table-custom"><thead>' +
+        '<tr>' +
+          '<th></th>' +
+          '<th>Female <span class="text-tagalog">[Babae]</span></th>' +
+          '<th>Male <span class="text-tagalog">[Lalaki]</span></th>' +               
+        '</tr>' +
+      '</thead>' +
+      '<tbody>' +
+        '<tr class="active">' +
+          '<td style="font-weight:bold;"><span id="grandTotal"></span> total</td>' +
+          '<td><span id="femaleTotal"></span></td>' +
+          '<td><span id="maleTotal"></span></td>' +
+        '</tr>' +              
+        '<tr>' +
+          '<td><img class="tableIcon pull-right" src="img/infant.png"> Infant, 0-11 months' +
+            '<span class="text-tagalog"> [Sanggol 0-11 buwaan]</span></td>' +
+          '<td><span id="femaleInfant"></span></td>' +
+          '<td><span id="maleInfant"></span></td>' +
+        '</tr>' +
+        '<tr>' +
+          '<td><img class="tableIcon pull-right" src="img/children.png"> Young child, 1-4 years' +
+            '<span class="text-tagalog"> [Anak 1-4 taon]</span></td>' +
+          '<td><span id="femaleYoung"></span></td>' +
+          '<td><span id="maleYoung"></span></td>' +
+        '</tr>' +
+        '<tr>' +
+          '<td><img class="tableIcon pull-right" src="img/children.png"> Child, 5-14 years' +
+            '<span class="text-tagalog"> [Anak 5-14 taon]</span></td>' +
+          '<td><span id="femaleChild"></span></td>' +
+          '<td><span id="maleChild"></span></td>' +
+        '</tr>' +
+        '<tr>' +
+          '<td><img class="tableIcon pull-right" src="img/adult.png"> Adult, 15-49 years' +
+            '<span class="text-tagalog"> [Edad 15-49 taon]</span></td>' +
+          '<td><span id="femaleAdult"></span></td>' +
+          '<td><span id="maleAdult"></span></td>' +
+        '</tr>' +
+        '<tr>' +
+          '<td><img class="tableIcon pull-right" src="img/elderly.png"> Adult, 50+' +
+            '<span class="text-tagalog"> [Edad 50 taon pataas]</span></td>' +
+          '<td><span id="femaleSenior"></span></td>' +
+          '<td><span id="maleSenior"></span></td>' +
+        '</tr>' +
+      '</tbody></table>';
+  $(infoSelector).append(thisInfoHtml);
+
+
+  var maleInfant = 0;
+  var maleYoung = 0;
+  var maleChild = 0;
+  var maleAdult = 0;
+  var maleSenior = 0;
+  var femaleInfant = 0;
+  var femaleYoung = 0;
+  var femaleChild = 0;
+  var femaleAdult = 0;
+  var femaleSenior = 0;
+  $.each(filteredData, function(surveyIndex, survey){
+    maleInfant += parseInt(survey.male_infant, 10);
+    maleYoung += parseInt(survey.male_young, 10);
+    maleChild += parseInt(survey.male_child, 10);
+    maleAdult += parseInt(survey.male_adult, 10);
+    maleSenior += parseInt(survey.male_senior, 10);
+    femaleInfant += parseInt(survey.female_infant, 10);
+    femaleYoung += parseInt(survey.female_young, 10);
+    femaleChild += parseInt(survey.female_child, 10);
+    femaleAdult += parseInt(survey.female_adult, 10);
+    femaleSenior += parseInt(survey.female_senior, 10); 
+  });
+  var femaleTotal = femaleInfant + femaleYoung + femaleChild + femaleAdult + femaleSenior;
+  var maleTotal = maleInfant + maleYoung + maleChild + maleAdult + maleSenior;
+  var grandTotal = femaleTotal + maleTotal;
+  $("#maleInfant").html(formatCommas(maleInfant));
+  $("#maleYoung").html(formatCommas(maleYoung));
+  $("#maleChild").html(formatCommas(maleChild));
+  $("#maleAdult").html(formatCommas(maleAdult));
+  $("#maleSenior").html(formatCommas(maleSenior));
+  $("#femaleInfant").html(formatCommas(femaleInfant));
+  $("#femaleYoung").html(formatCommas(femaleYoung));
+  $("#femaleChild").html(formatCommas(femaleChild));
+  $("#femaleAdult").html(formatCommas(femaleAdult));
+  $("#femaleSenior").html(formatCommas(femaleSenior));
+  $("#maleTotal").html(formatCommas(maleTotal));
+  $("#femaleTotal").html(formatCommas(femaleTotal));
+  $("#grandTotal").html(formatCommas(grandTotal));
+
+  BC2();
+}
+
+
+
+function BC2(){
+
+  var questionID = "BC2";
+  var questionEnglish = "Sex of the respondent";
+  var questionTagalog = "Kasarian ng tagasagot ";
+
+  var maleCount = 0;
+  var femaleCount = 0;
+  var skipped = 0;
+  var totalCount = 0;
+  $.each(filteredData, function(surveyIndex, survey){
+      totalCount ++;
+      if (survey[questionID] === "female"){
+        femaleCount ++;
+      }
+      if (survey[questionID] === "male"){
+        maleCount ++;
+      }
+      if (survey[questionID] === "skip"){
+        skipped ++;
+      }
+  });
+  var thisPieData = [
+    {
+      key: "male",
+      y: maleCount,
+    },
+    {
+      key: "female",
+      y: femaleCount,
+    },
+    {
+      key: "skip",
+      y: skipped,
+    }
+  ];
+  $("#infoWrapper").append('<div class="row"><div id="' + 
+    questionID + '" class="box-chart"><svg id="' +
+    questionID + '_chart"></svg></div><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var width = 180;
+  var chart = nv.models.pie().width(width - 60).height(width - 60)
+    .x(function(d) { return d.key }) 
+    .y(function(d) { return d.y })
+    .color(pieColors)
+    .showLabels(true);
+  var chartSelector = "#" + questionID + "_chart";
+  d3.select(chartSelector)
+    .datum(thisPieData)
+    .transition().duration(1200)
+    .attr('width', width)
+    .attr('height', width)
+    .call(chart);
+  var el = $(".nv-pieLabels");
+  $.each(el, function(aIndex, a){
+    a.parentNode.appendChild(a);
+  });
+  var infoSelector = "#" + questionID + "_info";
+  var malePerc = formatPerc(maleCount / totalCount); 
+  var femalePerc = formatPerc(femaleCount / totalCount);
+  var noResponsePerc = formatPerc(skipped / totalCount);
+  var thisInfoHtml = "<h4>" + questionEnglish +
+    ((questionTagalog !== false) ? "<br><small>" + questionTagalog + "</small>" : "") +    
+    "</h4>" +
+    "<p><strong>" + totalCount + " respondents</strong><br>" +
+    "<span class='percText-1'>" + malePerc + "</span> male <span class='text-tagalog'>[lalaki]</span> (" +
+    maleCount.toString() + ")<br>" +
+    "<span class='percText-2'>" + femalePerc + "</span> female <span class='text-tagalog'>[babae]</span> (" + 
+    femaleCount.toString() + ")<br>" + 
+    "<span class='percText-3'>" + noResponsePerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
+    skipped.toString() + ")<br>";
+  thisInfoHtml += "</p>";
+  $(infoSelector).append(thisInfoHtml);  
+  FA1(); 
+}
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function FA1(){
@@ -2954,7 +3152,7 @@ function NC21(){
   var questionEnglish = "How many servings of vegetables do you eat on one of those days?";
   var questionTagalog = "Gaano kadami ang kinain mong gulay sa mga nabanggit na araw?";
   analysisHowManyTimes(questionID, questionEnglish, questionTagalog);  
-  VP1();
+  violenceprevention();
 }
 
 
