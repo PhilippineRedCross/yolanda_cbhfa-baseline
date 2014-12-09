@@ -313,7 +313,38 @@ function BC2(){
     skipped.toString() + ")<br>";
   thisInfoHtml += "</p>";
   $(infoSelector).append(thisInfoHtml);  
-  FA1(); 
+  BC3(); 
+}
+
+function BC3(){
+  var questionID = "BC3";
+  var questionEnglish = "How old are you?";
+  var questionTagalog = "Ilang taon ka na? Ano ang edad mo?";
+  var yearResponses = [];
+  $.each(filteredData, function(surveyIndex, survey){
+    var thisAnswer = survey[questionID];
+    if(isFinite(parseInt(thisAnswer, 10)) == true){
+      yearResponses.push(parseInt(thisAnswer, 10));
+    }
+  });
+  var maxYears = Math.max.apply(Math,yearResponses);
+  var minYears = Math.min.apply(Math,yearResponses);
+  var sum = 0;
+  for( var i = 0; i < yearResponses.length; i++ ){
+      sum += yearResponses[i];
+  }
+  var avgYears = d3.round(sum/yearResponses.length, 2);
+  $("#infoWrapper").append('<div class="row"><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var infoSelector = "#" + questionID + "_info";
+  var thisInfoHtml = "";
+  thisInfoHtml = "<h4>" + questionEnglish +
+    "<br><small>" + questionTagalog + "</small></h4>"+
+    "<strong>" + yearResponses.length.toString() + " respondents providing # of years</strong><br>" +
+    "Average years: " + avgYears.toString() + "<br>" +
+    "Min: " + minYears.toString() + " / Max: " + maxYears.toString() + "<br>";
+  $(infoSelector).append(thisInfoHtml);
+  FA1();
 }
 
 
@@ -1383,9 +1414,34 @@ function NB2(){
   var questionEnglish = "Did you breastfeed your last baby?";
   var questionTagalog = false;
   analysisYesNo(questionID, questionEnglish, questionTagalog);   
-  NB4();
+  NB3();
 }
 
+function NB3(){
+  var questionID = "NB3";
+  var questionEnglish = "How long after birth did you first put baby to the breast?";
+  var questionTagalog = "Pagkapanganak, gaano katagalbago mo pinasuso ng iyong gatas ang iyong sanggol?";
+  var answersEnglish = {
+    "immediate":"immediate",
+    "hours":"hours",
+    "days":"days",
+    "dk":"don't know",
+    "skip":"no response"
+  };
+  var answersTagalog = {
+    "immediate":false,
+    "hours":"oras pagkapanganak ng sanggol",
+    "days":"araw pagkapanganak ng sanggol",
+    "dk":"hindi alam",
+    "skip":"walang sagot"
+  };
+  analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
+  var infoSelector = "#" + questionID + "_info";
+  var thisNote = "<small><strong>Note:</strong> If less than 24 hours record 'hours', otherwise record 'days'</small><br>";
+  $(infoSelector).append(thisNote);
+
+  NB4();
+}
 
 function NB4(){
   var questionID = "NB4";
@@ -1828,8 +1884,106 @@ function IM2C(){
   var infoSelector = "#" + questionID + "_info";
   var thisNote = "<small><strong>Note:</strong> Probe for the type(s) of person(s) and record all mentioned.<br>";
   $(infoSelector).append(thisNote);
+  IM3();
+}
+
+function IM3(){
+  var questionID = "IM3_permission";
+  var questionEnglish = "May I copy the information from the card? / May I ask you about vaccinations received by your child?";
+  var questionTagalog = false;
+  observationStartOptions(questionID, questionEnglish, questionTagalog);
+  BCG();
+}
+
+function BCG(){
+  var questionID = "BCG_record";
+  var questionEnglish = "BCG (TB injection in arm often scar)";
+  var questionTagalog = "BCG (TB injection sa braso at kadalasan may peklat)";
+  vaccineCard(questionID, questionEnglish, questionTagalog);
+  OPV0();
+}
+function OPV0(){
+  var questionID = "OPV0_record";
+  var questionEnglish = "POLIO 0 (drops given at birth or before 6 weeks)";
+  var questionTagalog = "POLIO 0 (patak na ibinibigay pagkapanganak o bago mag 6 na linggo)";
+  vaccineCard(questionID, questionEnglish, questionTagalog);
+  OPV1();
+}
+function OPV1(){
+  var questionID = "OPV1_record";
+  var questionEnglish = "POLIO 1 (drops in mouth)";
+  var questionTagalog = "POLIO 1 (pinapatak sa bibig)";
+  vaccineCard(questionID, questionEnglish, questionTagalog);
+  OPV2();
+}
+function OPV2(){
+  var questionID = "OPV2_record";
+  var questionEnglish = "POLIO 2";
+  var questionTagalog = false;
+  vaccineCard(questionID, questionEnglish, questionTagalog);
+  OPV3();
+}
+function OPV3(){
+  var questionID = "OPV3_record";
+  var questionEnglish = "POLIO 3";
+  var questionTagalog = false;
+  vaccineCard(questionID, questionEnglish, questionTagalog);
+  DTP1();
+}
+
+function DTP1(){
+  var questionID = "DTP1_record";
+  var questionEnglish = "DTP 1 (leg injection often with polio)";
+  var questionTagalog = false;
+  vaccineCard(questionID, questionEnglish, questionTagalog);
+  DTP2();
+}
+function DTP2(){
+  var questionID = "DTP2_record";
+  var questionEnglish = "DTP 2";
+  var questionTagalog = false;
+  vaccineCard(questionID, questionEnglish, questionTagalog);
+  DTP3();
+}
+function DTP3(){
+  var questionID = "DTP3_record";
+  var questionEnglish = "DTP 3";
+  var questionTagalog = false;
+  vaccineCard(questionID, questionEnglish, questionTagalog);
+  HepB1();
+}
+
+function HepB1(){
+  var questionID = "HepB1_record";
+  var questionEnglish = "Hepatitis B 1";
+  var questionTagalog = false;
+  vaccineCard(questionID, questionEnglish, questionTagalog);
+  HepB2();
+}
+function HepB2(){
+  var questionID = "HepB2_record";
+  var questionEnglish = "Hepatitis B 2";
+  var questionTagalog = false;
+  vaccineCard(questionID, questionEnglish, questionTagalog);
+  HepB3();
+}
+function HepB3(){
+  var questionID = "HepB3_record";
+  var questionEnglish = "Hepatitis B 3";
+  var questionTagalog = false;
+  vaccineCard(questionID, questionEnglish, questionTagalog);
+  MeaslesVac();
+}
+function MeaslesVac(){
+  var questionID = "Measles_record";
+  var questionEnglish = "Measles";
+  var questionTagalog = false;
+  vaccineCard(questionID, questionEnglish, questionTagalog);
   IM4();
 }
+
+
+
 
 function IM4(){
   var questionID = "IM4";
@@ -2112,6 +2266,70 @@ function WS6number(){
     "Min: " + minNumber.toString() + " / Max: " + maxNumber.toString() + "<br>"+
     "(" + notAskedCount.toString() + " not asked this question)";
   $(infoSelector).append(thisInfoHtml);
+  WS7();
+}
+
+function WS7(){
+  var questionID = "WS7";
+  var questionEnglish = "May I see the toilet facility? Or can I use the toilet?";
+  var questionTagalog = "Maaari bang makigamit ng inyong palikuran?";
+  observationStartOptions(questionID, questionEnglish, questionTagalog);
+  WS8A();
+}
+
+function WS8A(){
+  var questionID = "WS8A";
+  var questionEnglish = "[elsewhere inside yard / outside yard] Toilet facility observation. Access to the facility… are there obstacles in the path, are there signs of regular use?";
+  var questionTagalog = "[kahit saan sa loon ng bakuran / sa labas ng bakuran] Obserbahan ang daanan papunta sa pasilidad; mayroon bang mga harang sa daan, mayroon bang sinyales ng kadalasang pagkagamit?";
+  var answersEnglish = {
+    "WS8A-A":"dense vegetation in its path",
+    "WS8A-B":"waste or debris in its path",
+    "WS8A-C":"major crevices or potholes in its path",
+    "WS8A-D":"mud in its path",
+    "WS8A-E":"path is clear",
+    "WS8A-F":"path well worn as sign of regular use ",
+    "WS8A-G":"entrance is clear/door not locked",
+    "WS8A-H":"entrance is obstructed ",
+    "WS8A-I":"facility is locked ",
+    "WS8A-other":"other observation",
+    "WS8A-no":"cannot assess"
+  };
+  var answersTagalog = {
+    "WS8A-A":"makapal na halamanan sa daan",
+    "WS8A-B":"mga dumi o kalat sa daan",
+    "WS8A-C":"malaking siwang o butas sa daan",
+    "WS8A-D":"putik sa daan",
+    "WS8A-E":"walang sagabal sa daan",
+    "WS8A-F":"gamit na husto ang daan bilang sinyalis ng regular na paggamit",
+    "WS8A-G":"walang sagabal sa pasukan/hindi nakakandado ang pinto",
+    "WS8A-H":"may harang ang pasukan",
+    "WS8A-I":"nakakandado ang pasilidad",
+    "WS8A-other":"iba pang obserbasyon",
+    "WS8A-no":"hindi masuri"
+  };
+  observeMultipleWhatAnswers(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
+  WS8B();
+}
+
+function WS8B(){
+  var questionID = "WS8B";
+  var questionEnglish = "[inside or attached to dwelling] Toilet facility observation. Access to the facility… are there obstacles in the path, are there signs of regular use?";
+  var questionTagalog = "[sa loon ng bahay/tahanan] Obserbahan ang daanan papunta sa pasilidad; mayroon bang mga harang sa daan, mayroon bang sinyales ng kadalasang pagkagamit?";
+  var answersEnglish = {
+    "WS8B-G":"entrance is clear/door not locked",
+    "WS8B-H":"entrance is obstructed ",
+    "WS8B-I":"facility is locked ",
+    "WS8B-other":"other observation",
+    "WS8B-no":"cannot assess"
+  };
+  var answersTagalog = {
+    "WS8B-G":"walang sagabal sa pasukan/hindi nakakandado ang pinto",
+    "WS8B-H":"may harang ang pasukan",
+    "WS8B-I":"nakakandado ang pasilidad",
+    "WS8B-other":"iba pang obserbasyon",
+    "WS8B-no":"hindi masuri"
+  };
+  observeMultipleWhatAnswers(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
   WS9();
 }
 
@@ -2506,6 +2724,58 @@ function DI5(){
     "skip":"walang sagot"
   };
   analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
+  DI6();
+}
+
+function DI6(){
+  var questionID = "DI6"
+  var questionEnglish = "Would/ did you seek advice or treatment from someone outside of the home for any family member who suffers from diarrhoea?";
+  var questionTagalog = "Kung nakakaranas ng pagtatae ang kahit sinong miyembro ng pamilya, ikaw ba ay kukunsulta o kumukonsulta sa iba?";
+  analysisYesNo(questionID, questionEnglish, questionTagalog);
+  DI7();     
+}
+
+function DI7(){
+  var questionID = "DI7";
+  var questionEnglish = "Where would/ did you first go for advice or treatment?";
+  var questionTagalog = "Saan o kanino ka unang kukunsulta?";
+  var answersEnglish = {
+    "A":"your home",
+    "B":"midwife/tba home",
+    "C":"other home",
+    "D":"hospital",
+    "E":"rural health unit (RHU)",
+    "F":"barangay health station (BHS)",
+    "G":"barangay health center (BHC)",
+    "H":"private hospital",
+    "I":"private clinic",
+    "J":"traditional practitioner",
+    "K":"shop",
+    "L":"pharmacy",
+    "M":"community distributors",
+    "N":"friend/relative",
+    "other":"other",
+    "skip":"no response"
+  };
+  var answersTagalog = {
+    "A":"sa bahay",
+    "B":"kumadrona",
+    "C":"sa ibang bahay",
+    "D":"ospital",
+    "E":false,
+    "F":false,
+    "G":false,
+    "H":"pribadong ospital",
+    "I":"pribadong klinika",
+    "J":"tradisyonal na mga propesyonal",
+    "K":"tindahan",
+    "L":"parmasya",
+    "M":"tagapamahagi sa komunidad",
+    "N":"kaibigan o kamag-anak",
+    "other":"ibang sagot",
+    "skip":"walang sagot"
+  };
+  analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
   DI8();
 }
   
@@ -2514,7 +2784,147 @@ function DI8(){
   var questionEnglish = "Have you heard of ORS?";
   var questionTagalog = "Alam mo ba kung ano ang ORS?";
   analysisYesNo(questionID, questionEnglish, questionTagalog);
-  DI14();  
+  DI9sachets();  
+}
+
+function DI9sachets(){
+  var questionID = "DI9_sachets";
+  var questionEnglish = "Ask mother to describe PREPARED SACHETS ORS preparation for you. Once mother has provided a description, record whether she described ors preparation correctly or incorrectly.";
+  var questionTagalog = "Ipalarawan sa ina kung paano inihahanda ang NAKA-PAKETE ORS. Itala kung tama o hindi ang paglalarawan.";
+  orsPrep(questionID, questionEnglish, questionTagalog);
+  var infoSelector = "#" + questionID + "_info";
+  var thisNote = "<small><strong>Note:</strong> described correctly if the mother mentioned the following... prepared sachets: use 1 liter of clean drinking water; use the entire packet; dissolve the powder fully" +
+    "<span class='text-tagalog'> [tamang paglalarawan kung nabanggit/ nagawa ang mga sumusunod... naka-pakete: gumamit ng 1 litrong malinis na inuming tubig; gamitin ang buong pakete; tunawing mabuti ang powder]</span><br>";
+  $(infoSelector).append(thisNote);
+  DI9homemade();
+}
+function DI9homemade(){
+  var questionID = "DI9_homemade";
+  var questionEnglish = "Ask mother to describe HOMEMADE ORS preparation for you. Once mother has provided a description, record whether she described ors preparation correctly or incorrectly.";
+  var questionTagalog = "Ipalarawan sa ina kung paano inihahanda ang HOMEMADE ORS. Itala kung tama o hindi ang paglalarawan.";
+  orsPrep(questionID, questionEnglish, questionTagalog);
+  var infoSelector = "#" + questionID + "_info";
+  var thisNote = "<small><strong>Note:</strong> described correctly if the mother mentioned the following... homemade: use 1 liter of clean drinking water; six level teaspoons of sugar; half level teaspoon of salt; stir until salt and sugar mixture is dissolved" +
+    "<span class='text-tagalog'> [tamang paglalarawan kung nabanggit/ nagawa ang mga sumusunod... homemade: gumamit ng 1 litrong malinis na tubig; anim na kutsaritang asukall; kalahating kutsaritang asin; haluin hanggang matunaw ang asin at asukal]</span><br>";
+  $(infoSelector).append(thisNote);
+  DI10();
+}
+
+function DI10(){
+  var questionID = "DI10";
+  var questionEnglish = "When do you use ORS?";
+  var questionTagalog = "Kailan ka gumagamit ng ORS?";
+  var answersEnglish = {
+    "DI10-A":"when child is suffering from diarrhoea",
+    "DI10-B":"when child is thirsty",
+    "DI10-C":"when child is suffering from fever",
+    "DI10-D":"when child is having vomiting",
+    "DI10-other":"other",
+    "DI10-dk":"don't know",
+    "DI10-skip":"no response"
+  };
+  var answersTagalog = {
+    "DI10-A":"kung ang bata ay nakakaranas ng pagtatae",
+    "DI10-B":"kung ang bata ay nauuhaw",
+    "DI10-C":"kunng ang bata ay nilalagnat",
+    "DI10-D":"kung ang bata ay nagsusuka",
+    "DI10-other":"ibang sagot",
+    "DI10-dk":"hindi alam",
+    "DI10-skip":"walang sagot"
+  };
+  analysisSelectMultipleWhatAnswers(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
+  var infoSelector = "#" + questionID + "_info";
+  var thisNote = "<small><strong>Note:</strong> multiple answers possible. ask: anything else? do not read responses. record all that are mentioned. "+
+    "<span class='text-tagalog'>[maaari ang maraming sagot. tanungin: mayroon ka pa bang nais idagdag? wag basahin ang mga pagpipilian. itala lahat ng nabanggit.]</span><br>";
+  $(infoSelector).append(thisNote);
+  DI11();
+}
+
+function DI11(){
+  var questionID = "DI11";
+  var questionEnglish = "Once the ORS is ready, for how long you can use that solution?";
+  var questionTagalog = "Kung natimpla na ang ORS, gaano katagal ito pwedeng inumin?";
+  var answersEnglish = {
+    "A":"less than 8 hours ",
+    "B":"8 -12 hours",
+    "C":"12 – 24 hours",
+    "D":"more than 24 hours",
+    "other":"other",
+    "dk":"don't know",
+    "skip":"no response"
+  };
+  var answersTagalog = {
+    "A":"sa loob lamang ng 8 oras",
+    "B":"8 -12 oras",
+    "C":"12 – 24 oras ",
+    "D":"mahigit sa 24 oras",
+    "other":"ibang sagot",
+    "dk":"hindi alam",
+    "skip":"walang sagot"
+  };
+  analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
+  DI12();
+}
+
+function DI12(){
+  var questionID = "DI12";
+  var questionEnglish = "At what frequency ORS should be given to a child suffering from diarrhoea?";
+  var questionTagalog = "Gaano kadalas ibinibigay ang ORS sa batang nakakaranas ng pagtatae?";
+  var answersEnglish = {
+    "A":"once a day",
+    "B":"twice a day",
+    "C":"thrice a day",
+    "D":"after every stool/vomit",
+    "E":"quite frequently",
+    "other":"other",
+    "dk":"don't know",
+    "skip":"no response"
+  };
+  var answersTagalog = {
+    "A":"isang beses sa isang araw",
+    "B":"2 beses sa isang araw",
+    "C":"3 beses sa isang araw",
+    "D":"sa bawit pagdumi at pagsusuka",
+    "E":"mas madalas",
+    "other":"ibang sagot",
+    "dk":"hindi alam",
+    "skip":"walang sagot"
+  };
+  analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
+  DI13();
+}
+
+function DI13(){
+  var questionID = "DI13";
+  var questionEnglish = "How will you know that a child suffering from diarrhoea is dehydrated?";
+  var questionTagalog = "Paano mo malalaman kung ang batang nakakaranas ng pagtatae ay dehydrated na?";
+  var answersEnglish = {
+    "DI13-A":"sunken eyes with little or no tears when crying",
+    "DI13-B":"dry mouth and tongue",
+    "DI13-C":"thirst",
+    "DI13-D":"little or no urine",
+    "DI13-E":"dry skin or skin with little elasticity",
+    "DI13-F":"feeling weak and very tired",
+    "DI13-G":"muscle cramps",
+    "DI13-other":"other",
+    "DI13-dk":"don't know",
+    "DI13-skip":"no response"
+  };
+  var answersTagalog = {
+    "DI13-A":"lubog na ang mga mata at kaunting luha ang lumalabas kapag umiiyak",
+    "DI13-B":"tuyo ang bibig at dila",
+    "DI13-C":"thirst/ uhaw",
+    "DI13-D":"kaunti o hindi umiihi",
+    "DI13-E":"tuyo ang balat",
+    "DI13-F":"nanghihina at pagod",
+    "DI13-G":"pamumulikat",
+    "DI13-other":"ibang sagot",
+    "DI13-dk":"hindi alam",
+    "DI13-skip":"walang sagot"
+  };
+  var optionCount = 7;
+  analysisMoreThreeLessThree(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog, optionCount);
+  DI14();
 }
 
 function DI14(){
@@ -2575,7 +2985,7 @@ function ari(){
   switch(section){
     case true:
       $("#ari").show();
-      AR2();
+      AR1();
       break;
     case false:
       $("#ari").hide();
@@ -2583,9 +2993,40 @@ function ari(){
       break;
   };
 }
+
+function AR1(){
+  $(infoWrapper).append("<h3><span class='jumpto' id='section_ari'></span>Topic: Acute Respiratory Infections</h3><hr>");
+  var questionID = "AR1";
+  var questionEnglish = "What are the signs of pneumonia or ARI – acute respiratory infections – when a person should be taken immediately to a health facility?";
+  var questionTagalog = "Ano ang mga senyales ng pneumonia o ARI – acute respiratory infections – at kalian dapat dalhin ang isang tao sa isang pagamutan upang masuri?";
+  var answersEnglish = {
+    "AR1-A":"fast breathing",
+    "AR1-B":"drawing in the chest when taking a breath",
+    "AR1-C":"harsh sound when breathing in (stridor)",
+    "AR1-D":"lethargic/unconscious",
+    "AR1-E":"unable to drink / breastfeed",
+    "AR1-F":"vomits everything",
+    "AR1-dk":"don't know",
+    "AR1-other":"other",
+    "AR1-skip":"no response"
+  };
+  var answersTagalog = {
+    "AR1-A":"mabilis ang paghinga",
+    "AR1-B":false,
+    "AR1-C":"kakaibang tunog kapag humihinga",
+    "AR1-D":"walang malay",
+    "AR1-E":"hindi makainom at makakain",
+    "AR1-F":"pagsusuka",
+    "AR1-dk":"hindi alam",
+    "AR1-other":"ibang sagot",
+    "AR1-skip":"walang sagot"
+  };
+  var optionCount = 6;
+  analysisMoreThreeLessThree(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog, optionCount);
+  AR2();
+}
  
 function AR2(){
-  $(infoWrapper).append("<h3><span class='jumpto' id='section_ari'></span>Topic: Acute Respiratory Infections</h3><hr>");
   var questionID = "AR2";
   var questionEnglish = "Has any family member had an illness with a cough at any time in the last two weeks?";
   var questionTagalog = "May miymbro ban g pamilya na nagkasakit na may kasamang ubo sa nakalipas na 2 linggo?";
@@ -2598,8 +3039,129 @@ function AR3(){
   var questionEnglish = "When any family member had an illness with a cough, did he/she have trouble breathing or breathe faster than usual with short, fast breaths?";
   var questionTagalog = "Kung nagkasakit at may kasamang ubo at kahit sino sa pamilya, nagkaroon ba sya ng problema sa paghinga?";
   analysisYesNoDk(questionID, questionEnglish, questionTagalog);
+  AR4();
+}
+
+function AR4(){
+  var questionID = "AR4";
+  var questionEnglish = "If any family member had a cough with fast breathing what would action would you take?";
+  var questionTagalog = "Kung nakakaranas ng ubo si (pangalan) ano ang iyong ginagawa?";
+  var answersEnglish = {
+    "A":"seek medical assistance",
+    "B":"treat with antibiotics",
+    "C":"inform a Red Cross volunteer",
+    "other":"other",
+    "dk":"don't know",
+    "skip":"no response"
+  };
+  var answersTagalog = {
+    "A":"komunsulta sa duktor",
+    "B":"bigyan ng antibiotic",
+    "C":"ipagbigay alam sa Red Cross volunteer",
+    "other":"ibang sagot",
+    "dk":"hindi alam",
+    "skip":"walang sagot"
+  };
+  analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
+  AR5();
+}
+
+function AR5(){
+  var questionID = "AR5";
+  var questionEnglish = "How long after you noticed/ were noticing any family member cough and fast breathing did/ would you seek treatment?";
+  var questionTagalog = "Gaano katagal bago mo napansin ang ubo at mabilis na pahinga ng bata at ipinagamot mo ba ito?";
+  var answersEnglish = {
+    "A":"same day",
+    "B":"next day",
+    "C":"two days",
+    "D":"three or more days",
+    "skip":"no response"
+  };
+  var answersTagalog = {
+    "A":"parehong araw",
+    "B":"kinabukasan",
+    "C":"dalawang araw",
+    "D":"tatlong araw o higit pa",
+    "skip":"walang sagot"
+  };
+  analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
+  AR6();
+}
+
+function AR6(){
+  var questionID = "AR6";
+  var questionEnglish = "Where did (or if he/she has not been ill, would) you first go for advice or treatment?";
+  var questionTagalog = "Saan mo siya unang dinala upang masuri?";
+  var answersEnglish = {
+    "A":"hospital",
+    "B":"rural health unity (RHU)",
+    "C":"barangay health station (BHS)",
+    "D":"barangay health center (BHS)",
+    "E":"private hospital",
+    "F":"private clinic",
+    "G":"traditional practitioner",
+    "H":"shop",
+    "I":"pharmacy",
+    "J":"community distributors",
+    "K":"friend/relative",
+    "other":"other",
+    "skip":"no response"
+  };
+  var answersTagalog = {
+    "A":"ospital",
+    "B":false,
+    "C":false,
+    "D":false,
+    "E":"pribadong klinika",
+    "F":"private clinic",
+    "G":false,
+    "H":"tindahan",
+    "I":"parmasya",
+    "J":false,
+    "K":"kaibigan o kamag-anak",
+    "other":"iba pa",
+    "skip":"walang sagot"
+  };
+  analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
+  AR7();
+}
+
+function AR7(){
+  var questionID = "AR7";
+  var questionEnglish = "How can you prevent childhood pneumonia (and ARIs – acute respiratory infections)?";
+  var questionTagalog = "Paano mo maiiwasan ang pneumonia sa mga bata (at ARIs – acute respiratory infections)?";
+  var answersEnglish = {
+    "AR7-A":"breastfeeding babies",
+    "AR7-B":"immunizing children",
+    "AR7-C":"protecting infants from exposure to cold and damp",
+    "AR7-D":"avoiding indoor pollution/ smoke",
+    "AR7-E":"avoid smoking near children",
+    "AR7-F":"avoiding outdoor pollution",
+    "AR7-G":"eating nutritious foods",
+    "AR7-H":"practicing good hygiene and hand washing",
+    "AR7-dk":"don't know",
+    "AR7-other":"other",
+    "AR7-skip":"no response"
+  };
+  var answersTagalog = {
+    "AR7-A":"pagpapasuso sa mga sanggol",
+    "AR7-B":"pagbabakuna sa mga bata",
+    "AR7-C":"pagprotekta sa bata mula sa malamig at pagkakabasa",
+    "AR7-D":"iwasan ang usok ng sigarilyo",
+    "AR7-E":"iwasang manigarilyo malapiy sa mga bata",
+    "AR7-F":"iwasan ang polusyon",
+    "AR7-G":"kumain ng masustansyang pagkain",
+    "AR7-H":"pananatiling malinis at palaging paghuhugas ng kamay",
+    "AR7-dk":"hindi alam",
+    "AR7-other":"ibang sagot",
+    "AR7-skip":"walang sagot"
+  };
+  var optionCount = 8;
+  analysisMoreThreeLessThree(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog, optionCount);
   malaria();
 }
+
+ 
 
 
 
@@ -2636,6 +3198,45 @@ function malariaStart(){
   var questionEnglish = "Have you ever heard of Malaria?";
   var questionTagalog = "May kaalaman ka ba tungkol sa Malaria?";
   analysisYesNo(questionID, questionEnglish, questionTagalog);
+  ML8();
+}
+
+function ML8(){
+  var questionID = "ML8";
+  var questionEnglish = "What are the signs/ symptoms of Malaria?";
+  var questionTagalog = "Ano ang mga sinyales at sintomas na Malaria?";
+  var answersEnglish = {
+    "ML8-A":"fever",
+    "ML8-B":"chills",
+    "ML8-C":"sweats",
+    "ML8-D":"headaches",
+    "ML8-E":"nausea and vomiting",
+    "ML8-F":"body aches",
+    "ML8-G":"general malaise",
+    "ML8-H":"difficulty eating and drinking",
+    "ML8-I":"convulsions/fits",
+    "ML8-J":"drowsiness and unconsciousness",
+    "ML8-dk":"don't know",
+    "ML8-other":"other",
+    "ML8-skip":"no response"
+  };
+  var answersTagalog = {
+    "ML8-A":"lagnat",
+    "ML8-B":"giniginaw/panlalamig",
+    "ML8-C":"pagpapawis",
+    "ML8-D":"pananakit ng ulo",
+    "ML8-E":"naduduwal at pagsusuka",
+    "ML8-F":"pananakit ng katawan",
+    "ML8-G":"panghihina ng buong katawan",
+    "ML8-H":"hirap sa pagkain at paginom",
+    "ML8-I":"kumbolsyon",
+    "ML8-J":"pagkaantok o walang malay",
+    "ML8-dk":"hindi alam",
+    "ML8-other":"ibang sagot",
+    "ML8-skip":"walang sagot"
+  };
+  var optionCount = 10;
+  analysisMoreThreeLessThree(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog, optionCount);
   dengue();
 }
 
@@ -2676,9 +3277,191 @@ function DN1(){
   var questionEnglish = "Have you ever heard of Dengue Fever?";
   var questionTagalog = "May kaalaman ka ba tungkol sa Dengue?";
   analysisYesNo(questionID, questionEnglish, questionTagalog);
-  mosquitonets();  
+  DN2();  
 }
 
+function DN2(){
+  var questionID = "DN2";
+  var questionEnglish = "How does a person get Dengue Fever?";
+  var questionTagalog = "Paano ngkakaroon ng Dengue Fever ang isang tao?";
+  var answersEnglish = {
+    "A":"mosquito bites",
+    "B":"rat bites",
+    "dk":"don't know",
+    "other":"other",
+    "skip":"no response"
+  };
+  var answersTagalog = {
+    "A":"kagat ng lamok",
+    "B":"kagat ng daga",
+    "dk":"hindi alam",
+    "other":"ibang sagot",
+    "skip":"walang sagot"
+  };
+  analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
+  DN4();
+}
+
+function DN4(){
+  var questionID = "DN4";
+  var questionEnglish = "Do you know the time of the day which dengue mosquitoes bite?";
+  var questionTagalog = "Tuwing kalian nangangagat ang lamok?";
+  var answersEnglish = {
+    "A":"dawn / dusk",
+    "B":"morning",
+    "C":"daytime",
+    "D":"night time",
+    "E":"any time",
+    "dk":"don't know",
+    "skip":"no response"
+  };
+  var answersTagalog = {
+    "A":"bukang liwayway / dapit-hapon",
+    "B":"umaga",
+    "C":"araw",
+    "D":false,
+    "E":"kahit anong oras",
+    "dk":"hindi alam",
+    "skip":"walang sagot"
+  };
+  analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
+  DN5();
+}
+
+function DN5(){
+  var questionID = "DN5";
+  var questionEnglish = "What are the signs/ symptoms of Dengue?";
+  var questionTagalog = "Ano ang mga sinyales at simtomas ng Dengue?";
+  var answersEnglish = {
+    "DN5-A":"fever",
+    "DN5-B":"chills",
+    "DN5-C":"sweats",
+    "DN5-D":"headaches",
+    "DN5-E":"nausea and vomiting",
+    "DN5-F":"muscular pain",
+    "DN5-G":"general malaise",
+    "DN5-H":"nose bleeds",
+    "DN5-I":"vomiting",
+    "DN5-J":"skin rash",
+    "DN5-dk":"don't know",
+    "DN5-other":"other",
+    "DN5-skip":"no response"
+  };  
+  var answersTagalog = {
+    "DN5-A":"lagnat",
+    "DN5-B":"nilalamig",
+    "DN5-C":"pinagpapawisan",
+    "DN5-D":"pananakit ng ulo",
+    "DN5-E":"naduduwal o pagsusuka",
+    "DN5-F":"masakit ang mga kalamnan",
+    "DN5-G":"panghihina ng buong katawan",
+    "DN5-H":"npagdurugo ng ilong",
+    "DN5-I":"pagsusuka",
+    "DN5-J":"mga pantal sa balat",
+    "DN5-dk":"hindi alam",
+    "DN5-other":"ibang sagot",
+    "DN5-skip":"walang sagot"
+  };
+  var optionCount = 10;
+  analysisMoreThreeLessThree(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog, optionCount);
+  DN6();
+}
+
+function DN6(){
+  var questionID = "DN6";
+  var questionEnglish = "What can you do to prevent Dengue Fever?";
+  var questionTagalog = "Ano ang maaari mong gawin para makaiwas sa Dengue Fever?";
+  var answersEnglish = {
+    "DN6-A":"cover skin with clothes",
+    "DN6-B":"cover water jars or rainwater collection",
+    "DN6-C":"clean up areas in the community that may collect standing water",
+    "DN6-D":"change standing water in, and clean household objects at least once a week (e.g. fridge, vases)",
+    "DN6-E":"use mosquito repellents (spray, lotion) on body",
+    "DN6-F":"spray internal walls with mosquito repellent",
+    "DN6-G":"put up screens on doors and windows",
+    "DN6-H":"use larvicide (e.g. abate) or fish to treat water",
+    "DN6-I":"use bed nets/ insecticide treated bed nets especially for children and adults",
+    "DN6-dk":"don't know",
+    "DN6-other":"other",
+    "DN6-skip":"no response"
+  };
+  var answersTagalog = {
+    "DN6-A":"magsuot ng akmang damit",
+    "DN6-B":"lagyan ng takip ang mga plorera at mga alulod",
+    "DN6-C":"paglilinis ng mga lugar sa barangay na maaaring pagbahayan ng maduming tubig",
+    "DN6-D":"palitan ang naka-imbak na tubig, at linisin ang mga kagamitang pambahay ng hindi bababa sa isang beses sa isang linggo (e.g. pridyeder, plorera)",
+    "DN6-E":"gumamit ng mosquito repellents (spray, lotion) sa katawan",
+    "DN6-F":"magspray ng mosquito repellent sa mga dinding sa loob ng bahay",
+    "DN6-G":"maglagay ng mga screen sa pinto at bintana",
+    "DN6-H":"gumamit ng larvicide (e.g. abate) o isda para malinisan ang tubig",
+    "DN6-I":"gumamit ng kulambo (insecticide treated)",
+    "DN6-dk":"hindi alam",
+    "DN6-other":"ibang sagot",
+    "DN6-skip":"walang sagot"
+  };
+  var optionCount = 9;
+  analysisMoreThreeLessThree(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog, optionCount);
+  DN7();
+}
+
+function DN7(){
+  var questionID = "DN7";
+  var questionEnglish = "Is Dengue Fever treatable?";
+  var questionTagalog = "Nalulunasan/nagagamot ba ang Dengue?";
+  analysisYesNoDk(questionID, questionEnglish, questionTagalog);
+  DN8();
+}
+
+    // "IM2B-A":"",
+    // "IM2B-B":"",
+    // "IM2B-C":"",
+    // "IM2B-D":"",
+    // "IM2B-E":"",
+    // "IM2B-F":"",
+    // "IM2B-G":"",
+    // "IM2B-H":"",
+    // "IM2B-I":"",
+    // "IM2B-J":"",
+    // "IM2B-K":"",
+    // "IM2B-L":"",
+    // "IM2B-M":"",
+    // "IM2B-N":"",
+    // "IM2B-O":"",
+    // "IM2B-none":"",
+    // "IM2B-other":"other",
+    // "IM2B-dk":"don't know",
+    // "IM2B-skip":"no response"
+
+
+function DN8(){
+  var questionID = "DN8";
+  var questionEnglish = "If you think that you have Dengue Fever, what do you do?";
+  var questionTagalog = "Kung sa tingin mo na ikaw ay may Dengue Fever, ano ang maaari mong gawin?";
+  var answersEnglish = {
+    "DN8-A":"treat myself at home",
+    "DN8-B":"take traditional medicine",
+    "DN8-C":"see a doctor",
+    "DN8-D":"drink lots of water",
+    "DN8-other":"other",
+    "DN8-dk":"don't know",
+    "DN8-skip":"no response"
+  };
+  var answersTagalog = {
+    "DN8-A":"gamutin ang sarili sa bahay",
+    "DN8-B":"uminom ng mga tradisyonal na gamot",
+    "DN8-C":"komunsulta sa duktor",
+    "DN8-D":"uminom ng madaming tubig",
+    "DN8-other":"ibang sagot",
+    "DN8-dk":"hindi alam",
+    "DN8-skip":"walang sagot"
+  };
+  analysisSelectMultipleWhatAnswers(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
+  var infoSelector = "#" + questionID + "_info";
+  var thisNote = "<small><strong>Note:</strong> multiple answers possible. ask: anything else? do not read responses. record all that are mentioned. "+
+    "<span class='text-tagalog'>[maaari ang maraming sagot. tanungin: mayroon ka pa bang nais idagdag? wag basahin ang mga pagpipilian. itala lahat ng nabanggit.]</span><br>";
+  $(infoSelector).append(thisNote);
+  mosquitonets();
+}
 
 
 
@@ -3808,6 +4591,50 @@ function analysisSelectMultipleWhatAnswers(questionID, questionEnglish, question
   $(infoSelector).append("(" + topicSkipped.toString() + " respondents not asked this question)</p>"); 
 }
 
+function observeMultipleWhatAnswers(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog){
+  var skip = questionID + "-no";
+  var totalCount = 0;
+  var topicSkipped = 0;
+  var allResponses = [];
+  for (responseOption in answersEnglish){
+    allResponses[responseOption] = 0;
+  }
+  $.each(filteredData, function(surveyIndex, survey){
+    if (survey[skip] === "n/a"){
+      topicSkipped ++;
+    } else {
+      totalCount ++;
+      // counts for each of the responses
+      for (response in allResponses){
+        if (survey[response] === "TRUE"){
+          allResponses[response] ++;
+        }
+      };
+    } 
+  });
+  $("#infoWrapper").append('<div class="row"><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var infoSelector = "#" + questionID + "_info";
+  var thisInfoHtml = "<h4>" + questionEnglish +
+    ((questionTagalog !== false) ? "<br><small>" + questionTagalog + "</small>" : "") +    
+    "</h4>";
+  $(infoSelector).append(thisInfoHtml);
+  $(infoSelector).append("<p><strong>" + totalCount.toString() + " respondents (multiple responses possible)</strong><br>");
+  for(response in allResponses){
+    var thisResponseCount = allResponses[response];
+    var thisResponsePerc = formatPerc(allResponses[response] / totalCount); 
+    var thisResponseEng = answersEnglish[response];
+    var thisResponseTag = answersTagalog[response];
+    var thisHtml = thisResponsePerc + " - " + thisResponseEng +
+      ((thisResponseTag !== false) ? " <span class='text-tagalog'>[" + thisResponseTag + "]</span>" : "") +
+      " ("+ thisResponseCount + ")<br>";
+    $(infoSelector).append(thisHtml);
+  }
+  $(infoSelector).append("(" + topicSkipped.toString() + " respondents not asked this question)</p>"); 
+}
+
+
+
 function analysisHowManyTimes(questionID, questionEnglish, questionTagalog){
   var numberResponses = [];
   var dkCount = 0;
@@ -4167,6 +4994,233 @@ function analysisAgreeDisagree(questionID, questionEnglish, questionTagalog){
     "(" + notAskedCount.toString() + " respondents not asked this question)</p>";
   $(infoSelector).append(thisInfoHtml);
 }
+
+function vaccineCard(questionID, questionEnglish, questionTagalog){
+  var dateCount = 0;
+  var nodateCount = 0;
+  var recallsCount = 0;
+  var notAskedCount = 0;
+  var totalCount = 0;
+  $.each(filteredData, function(surveyIndex, survey){
+    if (survey[questionID] === "n/a"){
+      notAskedCount ++;
+    } else {
+      totalCount++;
+      if (survey[questionID] === "date"){
+        dateCount ++;
+      }
+      if (survey[questionID] === "nodate"){
+        nodateCount ++;
+      }
+      if (survey[questionID] === "recalls"){
+        recallsCount ++;
+      }
+    }
+  });
+  var thisPieData = [
+    {
+      key: "no",
+      y: nodateCount,
+    },
+    {
+      key: "date",
+      y: dateCount,
+    },
+    {
+      key: "recalls",
+      y: recallsCount,
+    }
+  ];
+  $("#infoWrapper").append('<div class="row"><div id="' + 
+    questionID + '" class="box-chart"><svg id="' +
+    questionID + '_chart"></svg></div><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var width = 180;
+  var chart = nv.models.pie().width(width - 60).height(width - 60)
+    .x(function(d) { return d.key }) 
+    .y(function(d) { return d.y })
+    .color(pieColors)
+    .showLabels(true);
+  var chartSelector = "#" + questionID + "_chart";
+  d3.select(chartSelector)
+    .datum(thisPieData)
+    .transition().duration(1200)
+    .attr('width', width)
+    .attr('height', width)
+    .call(chart);
+  var el = $(".nv-pieLabels");
+  $.each(el, function(aIndex, a){
+    a.parentNode.appendChild(a);
+  });
+  var infoSelector = "#" + questionID + "_info";
+  var datePerc = formatPerc(dateCount / totalCount); 
+  var nodatePerc = formatPerc(nodateCount / totalCount);
+  var recallsPerc =formatPerc(recallsCount / totalCount);
+  var thisInfoHtml = "<h4>" + questionEnglish +
+    ((questionTagalog !== false) ? "<br><small>" + questionTagalog + "</small>" : "") +
+    "</h4>" +
+    "<p><strong>" + totalCount + " observed/asked</strong><br>" +
+    "<span class='percText-1'>" + nodatePerc + "</span> card has no date OR no card and not recalls child receiving (" + 
+    nodateCount.toString() + ") <br>" + 
+    "<span class='percText-2'>" + datePerc + "</span> card has date (" +
+    dateCount.toString() + ")<br>" + 
+    "<span class='percText-3'>" + recallsPerc + "</span> no card or no date on card but recalls child receiving (" + 
+    recallsCount.toString() + ")<br>" +
+    "(" + notAskedCount.toString() + " not observed/asked)";
+  $(infoSelector).append(thisInfoHtml);   
+}
+
+function observationStartOptions(questionID, questionEnglish, questionTagalog){
+  var yesCount = 0;
+  var noCount = 0;
+  var topicSkipped = 0;
+  var totalCount = 0;
+  $.each(filteredData, function(surveyIndex, survey){
+    if (survey[questionID] === "n/a"){
+      topicSkipped ++;
+    } else {
+      totalCount ++;
+      if (survey[questionID] === "yes"){
+        yesCount ++;
+      }
+      if (survey[questionID] === "no"){
+        noCount ++;
+      }
+    }
+  });
+  var thisPieData = [
+    {
+      key: "yes",
+      y: yesCount,
+    },
+    {
+      key: "no",
+      y: noCount,
+    }
+  ];
+  $("#infoWrapper").append('<div class="row"><div id="' + 
+    questionID + '" class="box-chart"><svg id="' +
+    questionID + '_chart"></svg></div><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var width = 180;
+  var chart = nv.models.pie().width(width - 60).height(width - 60)
+    .x(function(d) { return d.key }) 
+    .y(function(d) { return d.y })
+    .color(pieColors)
+    .showLabels(true);
+  var chartSelector = "#" + questionID + "_chart";
+  d3.select(chartSelector)
+    .datum(thisPieData)
+    .transition().duration(1200)
+    .attr('width', width)
+    .attr('height', width)
+    .call(chart);
+  var el = $(".nv-pieLabels");
+  $.each(el, function(aIndex, a){
+    a.parentNode.appendChild(a);
+  });
+  var infoSelector = "#" + questionID + "_info";
+  var yesPerc = formatPerc(yesCount / totalCount); 
+  var noPerc = formatPerc(noCount / totalCount);
+  var thisInfoHtml = "<h4>" + questionEnglish +
+    ((questionTagalog !== false) ? "<br><small>" + questionTagalog + "</small>" : "") +    
+    "</h4>" +
+    "<p><strong>" + totalCount + " respondents</strong><br>" +
+    "<span class='percText-1'>" + yesPerc + "</span> yes, permission is given <span class='text-tagalog'>[oo, may pahintulot]</span> (" +
+    yesCount.toString() + ")<br>" +
+    "<span class='percText-2'>" + noPerc + "</span> no, permission is not given <span class='text-tagalog'>[hindi, walang pahintulot]</span> (" + 
+    noCount.toString() + ")<br>";
+  if(topicSkipped > 0){
+    thisInfoHtml += "(" + topicSkipped.toString() + " not asked this question)";
+  }
+  thisInfoHtml += "</p>";
+  $(infoSelector).append(thisInfoHtml); 
+}
+
+function orsPrep(questionID, questionEnglish, questionTagalog){
+  var yesCount = 0;
+  var noCount = 0;
+  var dontknowCount = 0;
+  var skipped = 0;
+  var topicSkipped = 0;
+  $.each(filteredData, function(surveyIndex, survey){
+    if (survey[questionID] === "correct"){
+      yesCount ++;
+    }
+    if (survey[questionID] === "incorrect"){
+      noCount ++;
+    }
+    if (survey[questionID] === "dk"){
+      dontknowCount ++;
+    }
+    if (survey[questionID] === "skip"){
+      skipped ++;
+    }
+    if (survey[questionID] === "n/a"){
+      topicSkipped ++;
+    }
+  });
+  var thisPieData = [
+    {
+      key: "correct",
+      y: yesCount,
+    },
+    {
+      key: "incorrect/dk",
+      y: noCount + dontknowCount,
+    },
+    {
+      key: "skip",
+      y: skipped,
+    }
+  ];
+  $("#infoWrapper").append('<div class="row"><div id="' + 
+    questionID + '" class="box-chart"><svg id="' +
+    questionID + '_chart"></svg></div><div id="'+
+    questionID + '_info" class="box-info"></div></div><hr>');
+  var width = 180;
+  var chart = nv.models.pie().width(width - 60).height(width - 60)
+    .x(function(d) { return d.key }) 
+    .y(function(d) { return d.y })
+    .color(pieColors)
+    .showLabels(true);
+  var chartSelector = "#" + questionID + "_chart";
+  d3.select(chartSelector)
+    .datum(thisPieData)
+    .transition().duration(1200)
+    .attr('width', width)
+    .attr('height', width)
+    .call(chart);
+  var el = $(".nv-pieLabels");
+  $.each(el, function(aIndex, a){
+    a.parentNode.appendChild(a);
+  });
+  var infoSelector = "#" + questionID + "_info";
+  var nodk = noCount + dontknowCount;
+  var totalCount = yesCount + noCount + dontknowCount + skipped;
+  var yesPerc = formatPerc(yesCount / totalCount);
+  var nodkPerc = formatPerc(nodk / totalCount); 
+  var dkPerc = formatPerc(dontknowCount / totalCount);
+  var noPerc = formatPerc(noCount / totalCount);
+  var skipPerc = formatPerc(skipped / totalCount);
+  var thisInfoHtml = "<h4>" + questionEnglish +
+    ((questionTagalog !== false) ? "<br><small>" + questionTagalog + "</small>" : "") +    
+    "</h4>" +
+    "<p><strong>" + totalCount + " respondents</strong><br>" +
+    "<span class='percText-1'>" + yesPerc + "</span> described correctly <span class='text-tagalog'>[tamang paglalarawan]</span> (" +
+    yesCount.toString() + ")<br>" +
+    "<span class='percText-2'>" + nodkPerc + "</span> described incorrectly <span class='text-tagalog'>[maling paglalarawan]</span> (" + noPerc +
+    ", " + noCount + ") or don't know <span class='text-tagalog'>[hindi alam]</span> (" + dkPerc + ", " +
+    dontknowCount.toString() + ")<br>" + 
+    "<span class='percText-3'>" + skipPerc + "</span> no response <span class='text-tagalog'>[walang sagot]</span> (" + 
+    skipped.toString() + ")<br>";
+  if(topicSkipped > 0){
+    thisInfoHtml += "(" + topicSkipped.toString() + " not asked this question)";
+  }
+  thisInfoHtml += "</p>";
+  $(infoSelector).append(thisInfoHtml);
+}
+
 
 
 
