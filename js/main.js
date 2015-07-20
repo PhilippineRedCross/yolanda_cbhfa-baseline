@@ -14,7 +14,7 @@ var formatPerc = d3.format(".0%");
 var formatCommas = d3.format(",");
 
 function getSurveyData() {
-  d3.csv("data/cbhfa_baseline_final_2014_10_28.csv", function(data){
+  d3.csv("data/cbhfa_baseline_data.csv", function(data){
     $.each(data, function(index, survey){
       if(survey.start_permission == "yes"){
         surveyData.push(survey);
