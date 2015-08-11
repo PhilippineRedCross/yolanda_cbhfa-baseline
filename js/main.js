@@ -2,10 +2,15 @@ var surveyData = [];
 var filteredData = [];
 var alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"];
 
+//
+// 2045-07-30 to reduce data file size changed data values:
+// "TRUE" to "T"
+// "FALSE" to "F"
+// "skip" to "S"
+// "female" to "FM"
+// "male" to "M"
+//
 
-//
-// 2045-07-30 Changed "T" to "T" and "FALSE" to "F" reduce data file size //
-//
 // var pieColors = ["#7fc97f","#fdc086","#ffff99"];
 // var pieColors = ["#66c2a5", "#fdae61", "#ffffbf"];
 var pieColors = ["#4393c3", "#f4a582", "#fddbc7"];
@@ -261,24 +266,24 @@ function BC2() {
 	var totalCount = 0;
 	$.each(filteredData, function (surveyIndex, survey) {
 		totalCount++;
-		if (survey[questionID] === "female") {
+		if (survey[questionID] === "FM") {
 			femaleCount++;
 		}
-		if (survey[questionID] === "male") {
+		if (survey[questionID] === "M") {
 			maleCount++;
 		}
-		if (survey[questionID] === "skip") {
+		if (survey[questionID] === "S") {
 			skipped++;
 		}
 	});
 	var thisPieData = [{
-			key : "male",
+			key : "M",
 			y : maleCount,
 		}, {
-			key : "female",
+			key : "FM",
 			y : femaleCount,
 		}, {
-			key : "skip",
+			key : "S",
 			y : skipped,
 		}
 	];
@@ -390,7 +395,7 @@ function FA2() {
 			if (survey[questionID] === "dk") {
 				dontKnow++;
 			}
-			if (survey[questionID] === "skip") {
+			if (survey[questionID] === "S") {
 				noResponse++;
 			}
 		}
@@ -462,13 +467,13 @@ function FA3() {
 		"A" : "Red Cross Red Crescent",
 		"other" : "other",
 		"dk" : "don't know",
-		"skip" : "no response"
+		"S" : "no response"
 	};
 	var answersTagalog = {
 		"A" : false,
 		"other" : "ibang sagot",
 		"dk" : "hindi alam",
-		"skip" : "walang sagot"
+		"S" : "walang sagot"
 	};
 	analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
 	FA5();
@@ -501,7 +506,7 @@ function FA5() {
 			if (survey[questionID] === "dk") {
 				dk++;
 			}
-			if (survey[questionID] === "skip") {
+			if (survey[questionID] === "S") {
 				skip++;
 			}
 		}
@@ -593,7 +598,7 @@ function FA6() {
 			if (survey[questionID] === "dk") {
 				dk++;
 			}
-			if (survey[questionID] === "skip") {
+			if (survey[questionID] === "S") {
 				skip++;
 			}
 		}
@@ -1034,7 +1039,7 @@ function SM6() {
 			case "no":
 				heightNo++;
 				break;
-			case "skip":
+			case "S":
 				heightSkip++;
 				break;
 			}
@@ -1045,7 +1050,7 @@ function SM6() {
 			case "no":
 				bpNo++;
 				break;
-			case "skip":
+			case "S":
 				bpSkip++;
 				break;
 			}
@@ -1056,7 +1061,7 @@ function SM6() {
 			case "no":
 				urineNo++;
 				break;
-			case "skip":
+			case "S":
 				urineSkip++;
 				break;
 			}
@@ -1067,7 +1072,7 @@ function SM6() {
 			case "no":
 				bloodNo++;
 				break;
-			case "skip":
+			case "S":
 				bloodSkip++;
 				break;
 			}
@@ -1081,7 +1086,7 @@ function SM6() {
 				key : "no",
 				y : noCount,
 			}, {
-				key : "skip",
+				key : "S",
 				y : skipCount,
 			}
 		];
@@ -1193,14 +1198,14 @@ function SM8() {
 		"B" : "two",
 		"C" : "three or more",
 		"dk" : "don't know",
-		"skip" : "no response"
+		"S" : "no response"
 	};
 	var answersTagalog = {
 		"A" : "isa",
 		"B" : "dalawa",
 		"C" : "tatlo o higit pa",
 		"dk" : "hindi alam",
-		"skip" : "walang sagot"
+		"S" : "walang sagot"
 	};
 	analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
 	SM9();
@@ -1419,14 +1424,14 @@ function NB3() {
 		"hours" : "hours",
 		"days" : "days",
 		"dk" : "don't know",
-		"skip" : "no response"
+		"S" : "no response"
 	};
 	var answersTagalog = {
 		"immediate" : false,
 		"hours" : "oras pagkapanganak ng sanggol",
 		"days" : "araw pagkapanganak ng sanggol",
 		"dk" : "hindi alam",
-		"skip" : "walang sagot"
+		"S" : "walang sagot"
 	};
 	analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
 	var infoSelector = "#" + questionID + "_info";
@@ -2039,7 +2044,7 @@ function WS1() {
 		"L" : "bottled water",
 		"M" : "surface water (river/pond/lake/dam/stream/canal/irrigation channels) ",
 		"other" : "other <span class='text-tagalog'>[iba pang kasagutan]</span>",
-		"skip" : "no response <span class='text-tagalog'>[walang sagot]</span>",
+		"S" : "no response <span class='text-tagalog'>[walang sagot]</span>",
 	};
 	var answersTagalog = {
 		"A" : false,
@@ -2056,7 +2061,7 @@ function WS1() {
 		"L" : false,
 		"M" : false,
 		"other" : "iba pang kasagutan",
-		"skip" : "walang sagot",
+		"S" : "walang sagot",
 	};
 	analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
 	WS2();
@@ -2121,7 +2126,7 @@ function WS4() {
 		"J" : "service or bucket latrine (where excreta are manually removed)",
 		"K" : "hanging latrine",
 		"L" : "no facility, field, bush, plastic bag",
-		"skip" : "no response"
+		"S" : "no response"
 	};
 	var answersTagalog = {
 		"A" : false,
@@ -2136,7 +2141,7 @@ function WS4() {
 		"J" : false,
 		"K" : false,
 		"L" : false,
-		"skip" : "walang sagot"
+		"S" : "walang sagot"
 	};
 	analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
 	WS5();
@@ -2150,13 +2155,13 @@ function WS5() {
 		"A" : "inside or attached to dwelling",
 		"B" : "elsewhere inside yard",
 		"C" : "outside yard",
-		"skip" : "no response"
+		"S" : "no response"
 	};
 	var answersTagalog = {
 		"A" : "sa loon ng bahay/tahanan",
 		"B" : "kahit saan sa loon ng bakuran",
 		"C" : "sa labas ng bakuran",
-		"skip" : "walang sagot"
+		"S" : "walang sagot"
 	};
 	analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
 	WS6();
@@ -2170,13 +2175,13 @@ function WS6() {
 		"yes" : "yes",
 		"no" : "not shared (just myself)",
 		"dk" : "don't know",
-		"skip" : "no response"
+		"S" : "no response"
 	};
 	var answersTagalog = {
 		"yes" : "oo",
 		"no" : "walang iba (ako lang)",
 		"dk" : "hindi alam",
-		"skip" : "walang sagot"
+		"S" : "walang sagot"
 	};
 	analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
 	WS6number();
@@ -2531,7 +2536,7 @@ function DI2() {
 			key : "less than 3",
 			y : lessThanThree + nothingCount,
 		}, {
-			key : "skip",
+			key : "S",
 			y : skipped,
 		}
 	];
@@ -2606,7 +2611,7 @@ function DI3() {
 		"more" : "more",
 		"not" : "child not breastfed",
 		"dk" : "don't know",
-		"skip" : "no response"
+		"S" : "no response"
 	};
 	var answersTagalog = {
 		"less" : "bihira",
@@ -2614,7 +2619,7 @@ function DI3() {
 		"more" : "mas madalas",
 		"not" : "hindi na ngpapasuso",
 		"dk" : "hindi alam",
-		"skip" : "walang sagot"
+		"S" : "walang sagot"
 	};
 	analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
 	DI4();
@@ -2630,7 +2635,7 @@ function DI4() {
 		"more" : "more",
 		"not" : "",
 		"dk" : "don't know",
-		"skip" : "no response"
+		"S" : "no response"
 	};
 	var answersTagalog = {
 		"less" : "bihira",
@@ -2638,7 +2643,7 @@ function DI4() {
 		"more" : "mas madalas",
 		"not" : "walang iniinom",
 		"dk" : "hindi alam",
-		"skip" : "walang sagot"
+		"S" : "walang sagot"
 	};
 	analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
 	DI5();
@@ -2654,7 +2659,7 @@ function DI5() {
 		"more" : "more",
 		"not" : "",
 		"dk" : "don't know",
-		"skip" : "no response"
+		"S" : "no response"
 	};
 	var answersTagalog = {
 		"less" : "bihira",
@@ -2662,7 +2667,7 @@ function DI5() {
 		"more" : "mas madalas",
 		"not" : "walang kinakain",
 		"dk" : "hindi alam",
-		"skip" : "walang sagot"
+		"S" : "walang sagot"
 	};
 	analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
 	DI6();
@@ -2696,7 +2701,7 @@ function DI7() {
 		"M" : "community distributors",
 		"N" : "friend/relative",
 		"other" : "other",
-		"skip" : "no response"
+		"S" : "no response"
 	};
 	var answersTagalog = {
 		"A" : "sa bahay",
@@ -2714,7 +2719,7 @@ function DI7() {
 		"M" : "tagapamahagi sa komunidad",
 		"N" : "kaibigan o kamag-anak",
 		"other" : "ibang sagot",
-		"skip" : "walang sagot"
+		"S" : "walang sagot"
 	};
 	analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
 	DI8();
@@ -2792,7 +2797,7 @@ function DI11() {
 		"D" : "more than 24 hours",
 		"other" : "other",
 		"dk" : "don't know",
-		"skip" : "no response"
+		"S" : "no response"
 	};
 	var answersTagalog = {
 		"A" : "sa loob lamang ng 8 oras",
@@ -2801,7 +2806,7 @@ function DI11() {
 		"D" : "mahigit sa 24 oras",
 		"other" : "ibang sagot",
 		"dk" : "hindi alam",
-		"skip" : "walang sagot"
+		"S" : "walang sagot"
 	};
 	analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
 	DI12();
@@ -2819,7 +2824,7 @@ function DI12() {
 		"E" : "quite frequently",
 		"other" : "other",
 		"dk" : "don't know",
-		"skip" : "no response"
+		"S" : "no response"
 	};
 	var answersTagalog = {
 		"A" : "isang beses sa isang araw",
@@ -2829,7 +2834,7 @@ function DI12() {
 		"E" : "mas madalas",
 		"other" : "ibang sagot",
 		"dk" : "hindi alam",
-		"skip" : "walang sagot"
+		"S" : "walang sagot"
 	};
 	analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
 	DI13();
@@ -2984,7 +2989,7 @@ function AR4() {
 		"C" : "inform a Red Cross volunteer",
 		"other" : "other",
 		"dk" : "don't know",
-		"skip" : "no response"
+		"S" : "no response"
 	};
 	var answersTagalog = {
 		"A" : "komunsulta sa duktor",
@@ -2992,7 +2997,7 @@ function AR4() {
 		"C" : "ipagbigay alam sa Red Cross volunteer",
 		"other" : "ibang sagot",
 		"dk" : "hindi alam",
-		"skip" : "walang sagot"
+		"S" : "walang sagot"
 	};
 	analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
 	AR5();
@@ -3007,14 +3012,14 @@ function AR5() {
 		"B" : "next day",
 		"C" : "two days",
 		"D" : "three or more days",
-		"skip" : "no response"
+		"S" : "no response"
 	};
 	var answersTagalog = {
 		"A" : "parehong araw",
 		"B" : "kinabukasan",
 		"C" : "dalawang araw",
 		"D" : "tatlong araw o higit pa",
-		"skip" : "walang sagot"
+		"S" : "walang sagot"
 	};
 	analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
 	AR6();
@@ -3037,7 +3042,7 @@ function AR6() {
 		"J" : "community distributors",
 		"K" : "friend/relative",
 		"other" : "other",
-		"skip" : "no response"
+		"S" : "no response"
 	};
 	var answersTagalog = {
 		"A" : "ospital",
@@ -3052,7 +3057,7 @@ function AR6() {
 		"J" : false,
 		"K" : "kaibigan o kamag-anak",
 		"other" : "iba pa",
-		"skip" : "walang sagot"
+		"S" : "walang sagot"
 	};
 	analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
 	AR7();
@@ -3197,14 +3202,14 @@ function DN2() {
 		"B" : "rat bites",
 		"dk" : "don't know",
 		"other" : "other",
-		"skip" : "no response"
+		"S" : "no response"
 	};
 	var answersTagalog = {
 		"A" : "kagat ng lamok",
 		"B" : "kagat ng daga",
 		"dk" : "hindi alam",
 		"other" : "ibang sagot",
-		"skip" : "walang sagot"
+		"S" : "walang sagot"
 	};
 	analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
 	DN4();
@@ -3221,7 +3226,7 @@ function DN4() {
 		"D" : "night time",
 		"E" : "any time",
 		"dk" : "don't know",
-		"skip" : "no response"
+		"S" : "no response"
 	};
 	var answersTagalog = {
 		"A" : "bukang liwayway / dapit-hapon",
@@ -3230,7 +3235,7 @@ function DN4() {
 		"D" : false,
 		"E" : "kahit anong oras",
 		"dk" : "hindi alam",
-		"skip" : "walang sagot"
+		"S" : "walang sagot"
 	};
 	analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
 	DN5();
@@ -3545,7 +3550,7 @@ function RS2() {
 		"C" : "sometimes",
 		"D" : "never",
 		"E" : "i never rode on a motorcycle",
-		"skip" : "no response"
+		"S" : "no response"
 	};
 	var answersTagalog = {
 		"A" : "lagi",
@@ -3553,7 +3558,7 @@ function RS2() {
 		"C" : "minsan",
 		"D" : "hindi kailanman",
 		"E" : "hindi pa ako nakasakay ng motorsiklo",
-		"skip" : "walang sagot"
+		"S" : "walang sagot"
 	};
 	analysisSelectOneWhatAnswer(questionID, questionEnglish, questionTagalog, answersEnglish, answersTagalog);
 	RS3();
@@ -4091,7 +4096,7 @@ function analysisYesNo(questionID, questionEnglish, questionTagalog) {
 			if (survey[questionID] === "no") {
 				noCount++;
 			}
-			if (survey[questionID] === "skip") {
+			if (survey[questionID] === "S") {
 				skipped++;
 			}
 		}
@@ -4103,7 +4108,7 @@ function analysisYesNo(questionID, questionEnglish, questionTagalog) {
 			key : "no",
 			y : noCount,
 		}, {
-			key : "skip",
+			key : "S",
 			y : skipped,
 		}
 	];
@@ -4169,7 +4174,7 @@ function analysisYesNoDk(questionID, questionEnglish, questionTagalog) {
 		if (survey[questionID] === "dk") {
 			dontknowCount++;
 		}
-		if (survey[questionID] === "skip") {
+		if (survey[questionID] === "S") {
 			skipped++;
 		}
 		if (survey[questionID] === "n/a") {
@@ -4183,7 +4188,7 @@ function analysisYesNoDk(questionID, questionEnglish, questionTagalog) {
 			key : "no/dk",
 			y : noCount + dontknowCount,
 		}, {
-			key : "skip",
+			key : "S",
 			y : skipped,
 		}
 	];
@@ -4254,7 +4259,7 @@ function analysisYesNoDontEat(questionID, questionEnglish, questionTagalog) {
 		if (survey[questionID] === "donteat") {
 			dontEatCount++;
 		}
-		if (survey[questionID] === "skip") {
+		if (survey[questionID] === "S") {
 			skipped++;
 		}
 		if (survey[questionID] === "n/a") {
@@ -4268,7 +4273,7 @@ function analysisYesNoDontEat(questionID, questionEnglish, questionTagalog) {
 			key : "no/don't eat",
 			y : noCount + dontEatCount,
 		}, {
-			key : "skip",
+			key : "S",
 			y : skipped,
 		}
 	];
@@ -4608,7 +4613,7 @@ function analysisMoreThreeLessThree(questionID, questionEnglish, questionTagalog
 			key : "less than 3",
 			y : lessThanThree + dontKnow,
 		}, {
-			key : "skip",
+			key : "S",
 			y : skipped,
 		}
 	];
@@ -4772,7 +4777,7 @@ function analysisAgreeDisagree(questionID, questionEnglish, questionTagalog) {
 			if (survey[questionID] === "dk") {
 				dkCount++;
 			}
-			if (survey[questionID] === "skip") {
+			if (survey[questionID] === "S") {
 				noResponseCount++;
 			}
 		}
@@ -4979,7 +4984,7 @@ function orsPrep(questionID, questionEnglish, questionTagalog) {
 		if (survey[questionID] === "dk") {
 			dontknowCount++;
 		}
-		if (survey[questionID] === "skip") {
+		if (survey[questionID] === "S") {
 			skipped++;
 		}
 		if (survey[questionID] === "n/a") {
@@ -4993,7 +4998,7 @@ function orsPrep(questionID, questionEnglish, questionTagalog) {
 			key : "incorrect/dk",
 			y : noCount + dontknowCount,
 		}, {
-			key : "skip",
+			key : "S",
 			y : skipped,
 		}
 	];
