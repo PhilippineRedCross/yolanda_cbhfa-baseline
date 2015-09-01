@@ -9,7 +9,7 @@ var alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M"]
 // "skip" to "S"
 // "female" to "FM"
 // "male" to "M"
-//
+// "continue" to "C"
 
 // var pieColors = ["#7fc97f","#fdc086","#ffff99"];
 // var pieColors = ["#66c2a5", "#fdae61", "#ffffbf"];
@@ -23,7 +23,7 @@ var formatPerc = d3.format(".0%");
 var formatCommas = d3.format(",");
 
 function getSurveyData() {
-	d3.csv("data/cbhfa_baseline_final_wrk.csv", function (data) {
+	d3.csv("data/cbhfa_baseline_data.csv", function (data) {
 		$.each(data, function (index, survey) {
 			if (survey.start_permission == "yes") {
 				surveyData.push(survey);
@@ -719,7 +719,7 @@ function CM2() {
 function safemotherhood() {
 	var section = false;
 	$.each(filteredData, function (index, survey) {
-		if (survey["cbhfa-SM_section"] == "continue") {
+		if (survey["cbhfa-SM_section"] == "C") {
 			section = true;
 		}
 	});
@@ -1314,7 +1314,7 @@ function SM12() {
 function newborn() {
 	var section = false;
 	$.each(filteredData, function (index, survey) {
-		if (survey["cbhfa-NB_section"] == "continue") {
+		if (survey["cbhfa-NB_section"] == "C") {
 			section = true;
 		}
 	});
@@ -1507,7 +1507,7 @@ function NU2() {
 function babynutrition() {
 	var section = false;
 	$.each(filteredData, function (index, survey) {
-		if (survey["cbhfa-NU_section"] == "continue") {
+		if (survey["cbhfa-NU_section"] == "C") {
 			section = true;
 		}
 	});
@@ -1676,7 +1676,7 @@ function NU13() {
 function immunization() {
 	var section = false;
 	$.each(filteredData, function (index, survey) {
-		if (survey["cbhfa-IM_section"] == "continue") {
+		if (survey["cbhfa-IM_section"] == "C") {
 			section = true;
 		}
 	});
@@ -2008,7 +2008,7 @@ function IM4() {
 function sanitation() {
 	var section = false;
 	$.each(filteredData, function (index, survey) {
-		if (survey["cbhfa-IM_section"] == "continue") {
+		if (survey["cbhfa-IM_section"] == "C") {
 			section = true;
 		}
 	});
@@ -2432,7 +2432,7 @@ function WS16() {
 function diarrhoea() {
 	var section = false;
 	$.each(filteredData, function (index, survey) {
-		if (survey["cbhfa-DI_section"] == "continue") {
+		if (survey["cbhfa-DI_section"] == "C") {
 			section = true;
 		}
 	});
@@ -2915,7 +2915,7 @@ function DI14() {
 function ari() {
 	var section = false;
 	$.each(filteredData, function (index, survey) {
-		if (survey["cbhfa-AR_section"] == "continue") {
+		if (survey["cbhfa-AR_section"] == "C") {
 			section = true;
 		}
 	});
@@ -3101,7 +3101,7 @@ function AR7() {
 function malaria() {
 	var section = false;
 	$.each(filteredData, function (index, survey) {
-		if (survey["cbhfa-ML_section"] == "continue") {
+		if (survey["cbhfa-ML_section"] == "C") {
 			section = true;
 		}
 	});
@@ -3168,7 +3168,7 @@ function ML8() {
 function dengue() {
 	var section = false;
 	$.each(filteredData, function (index, survey) {
-		if (survey["cbhfa-DN_section"] == "continue") {
+		if (survey["cbhfa-DN_section"] == "C") {
 			section = true;
 		}
 	});
@@ -3379,7 +3379,7 @@ function DN8() {
 function mosquitonets() {
 	var section = false;
 	$.each(filteredData, function (index, survey) {
-		if (survey["cbhfa-MN_section"] == "continue") {
+		if (survey["cbhfa-MN_section"] == "C") {
 			section = true;
 		}
 	});
@@ -3415,7 +3415,7 @@ function MN3() {
 function hiv() {
 	var section = false;
 	$.each(filteredData, function (index, survey) {
-		if (survey["cbhfa-HA_section"] == "continue") {
+		if (survey["cbhfa-HA_section"] == "C") {
 			section = true;
 		}
 	});
@@ -3443,7 +3443,7 @@ function HA1() {
 function tb() {
 	var section = false;
 	$.each(filteredData, function (index, survey) {
-		if (survey["cbhfa-TB_section"] == "continue") {
+		if (survey["cbhfa-TB_section"] == "C") {
 			section = true;
 		}
 	});
@@ -3479,7 +3479,7 @@ function TB3() {
 function blooddonation() {
 	var section = false;
 	$.each(filteredData, function (index, survey) {
-		if (survey["cbhfa-BD_section"] == "continue") {
+		if (survey["cbhfa-BD_section"] == "C") {
 			section = true;
 		}
 	});
@@ -3515,7 +3515,7 @@ function BD2() {
 function roadsafety() {
 	var section = false;
 	$.each(filteredData, function (index, survey) {
-		if (survey["cbhfa-RS_section"] == "continue") {
+		if (survey["cbhfa-RS_section"] == "C") {
 			section = true;
 		}
 	});
@@ -3621,7 +3621,7 @@ function RS5() {
 function substanceuse() {
 	var section = false;
 	$.each(filteredData, function (index, survey) {
-		if (survey["cbhfa-ES_section"] == "continue") {
+		if (survey["cbhfa-ES_section"] == "C") {
 			section = true;
 		}
 	});
@@ -3646,7 +3646,7 @@ function ES1() {
 function noncommunicablediseases() {
 	var section = false;
 	$.each(filteredData, function (index, survey) {
-		if (survey["cbhfa-NC_section"] == "continue") {
+		if (survey["cbhfa-NC_section"] == "C") {
 			section = true;
 		}
 	});
@@ -3793,7 +3793,7 @@ function NC21() {
 function violenceprevention() {
 	var section = false;
 	$.each(filteredData, function (index, survey) {
-		if (survey["cbhfa-VP_section"] == "continue") {
+		if (survey["cbhfa-VP_section"] == "C") {
 			section = true;
 		}
 	});
