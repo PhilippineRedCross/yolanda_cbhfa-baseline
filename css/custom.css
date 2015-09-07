@@ -98,11 +98,10 @@ body {
 }
 
 #loading-wrapper{
-    position:absolute;
-    left:0;
-    right:0;
-    text-align: center;
-    z-index: 99999;
+  position: absolute;
+  z-index: 99999;
+  width: 100%;
+  text-align: center;
 }
 #loader{
     width: 150px;
