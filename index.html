@@ -1,149 +1,226 @@
 <!DOCTYPE html>
+
 <html lang="en">
-  <head>
-    <meta name="generator"
-    content="HTML Tidy for HTML5 (experimental) for Windows https://github.com/w3c/tidy-html5/tree/c63cc39" />
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon" />
-    <link rel="icon" href="img/favicon.ico" type="image/x-icon" />
+<head>
+    <meta content=
+    "HTML Tidy for HTML5 (experimental) for Windows https://github.com/w3c/tidy-html5/tree/c63cc39"
+    name="generator">
+    <meta charset="utf-8">
+    <meta content="IE=edge" http-equiv="X-UA-Compatible">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+    <link href="img/favicon.ico" rel="shortcut icon" type="image/x-icon">
+    <link href="img/favicon.ico" rel="icon" type="image/x-icon">
+
     <title>CBHFA baseline</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet" />
-    <link href="css/nv.d3.min.css" rel="stylesheet" />
-    <link href="css/custom.css" rel="stylesheet" />
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/nv.d3.min.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-  </head>
-  <body>
-  <div id="loading-wrapper">
-    <div id="loading-progress">
-      <img id="loader" src="img/ajax_loader_gray_512.gif" />
-      <div class="progress">
-        <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%;"></div>
-      </div>
+</head>
+
+<body>
+    <div id="loading-wrapper">
+        <div id="loading-progress">
+            <img id="loader" src="img/ajax_loader_gray_512.gif">
+
+            <div class="progress">
+                <div class="progress-bar" style="width: 0%;">
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
-  <div class="nav-admin">
-    <img src="img/IFRC_cobranding.png" class="pull-right logo-ifrc" />
-    <p class="nav-text">
-    <span id="selected-admin-label">All surveyed areas</span> 
-    <small>( 
-    <span id="selected-survey-count">X</span> surveys conducted)</small></p>
-    <button type="button" onclick="resetAdmin();" class="btn btn-default btn-xs">Reset</button>
-    <div class="btn-group">
-      <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">Select a Province</button>
-      <ul id="dropdown-menu-province" class="dropdown-menu" role="menu"></ul>
+
+
+    <div class="nav-admin">
+        <img class="pull-right logo-ifrc" src="img/IFRC_cobranding.png">
+
+        <p class="nav-text"><span id="selected-admin-label">All surveyed
+        areas</span> <small>( <span id="selected-survey-count">X</span> surveys
+        conducted)</small></p>
+        <button class="btn btn-default btn-xs" onclick="resetAdmin();" type=
+        "button">Reset</button>
+
+        <div class="btn-group">
+            <button class="btn btn-default btn-xs dropdown-toggle" data-toggle=
+            "dropdown" type="button">Select a Province</button>
+
+            <ul class="dropdown-menu" id="dropdown-menu-province">
+            </ul>
+        </div>
+
+
+        <div class="btn-group">
+            <button class="btn btn-default btn-xs dropdown-toggle" data-toggle=
+            "dropdown" type="button">Select a Municipality</button>
+
+            <ul class="dropdown-menu" id="dropdown-menu-municipality">
+                <li class="disabled">
+                    <a href="#">First select a province</a>
+                </li>
+            </ul>
+        </div>
+
+
+        <div class="btn-group">
+            <button class="btn btn-default btn-xs dropdown-toggle" data-toggle=
+            "dropdown" type="button">Select a Barangay</button>
+
+            <ul class="dropdown-menu" id="dropdown-menu-barangay">
+                <li class="disabled">
+                    <a href="#">First select a municipality</a>
+                </li>
+            </ul>
+        </div>
     </div>
-    <div class="btn-group">
-      <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">Select a Municipality</button>
-      <ul id="dropdown-menu-municipality" class="dropdown-menu" role="menu">
-        <li class="disabled">
-          <a role="menuitem" href="#">First select a province</a>
-        </li>
-      </ul>
+
+
+    <div class="container">
+        <div style="margin-bottom:25px;">
+            <img class="pull-left logo-prc" src="img/PRC-logo.png">
+
+            <h3>Haiyan Recovery: Health</h3>
+
+
+            <h4>CBHFA Baseline Survey</h4>
+        </div>
+
+
+        <p style="text-align:justify;">This data was collected as part of a
+        baseline survey for Community Based Health and First Aid (CBHFA)
+        programmes. Data collected using <a href="https://formhub.org/" target=
+        "_blank">formhub</a> and <a href="http://opendatakit.org/" target=
+        "_blank">ODK Collect</a>. Not all questions are included; this page is
+        under construction and data is in the process of being cleaned.<br>
+        <br>
+        Analysis includes ODK submissions up to <strong>29 August
+        2015.</strong> Please submit questions or feedback by <a href=
+        "mailto:charles.ranby@ifrc.org" target="_blank" title=
+        "charles.ranby@ifrc.org">email</a>.</p>
+        <strong>Topics:</strong><br>
+
+
+        <div id="profile">
+            <a href="#section_profile">Respondents&#39; Profile</a>
+        </div>
+
+
+        <div id="firstaid">
+            <a href="#section_firstaid">First Aid</a>
+        </div>
+
+
+        <div id="majoremergencies">
+            <a href="#section_majoremergencies">Community Mobilization in Major
+            Emergencies</a>
+        </div>
+
+
+        <div id="safemotherhood">
+            <a href="#section_safemotherhood">Safe Motherhood</a>
+        </div>
+
+
+        <div id="newborn">
+            <a href="#section_newborn">Care of a Newborn</a>
+        </div>
+
+
+        <div id="babynutrition">
+            <a href="#section_babynutrition">Baby Nutrition</a>
+        </div>
+
+
+        <div id="immunization">
+            <a href="#section_immunization">Immunization and Vaccination
+            Campaigns</a>
+        </div>
+
+
+        <div id="sanitation">
+            <a href="#section_sanitation">Safe Water, Hygiene, and
+            Sanitation</a>
+        </div>
+
+
+        <div id="diarrhoea">
+            <a href="#section_diarrhoea">Diarrhoea and Dehydation</a>
+        </div>
+
+
+        <div id="ari">
+            <a href="#section_ari">Acute Respiratory Infections</a>
+        </div>
+
+
+        <div id="malaria">
+            <a href="#section_malaria">Malaria Prevention and Control</a>
+        </div>
+
+
+        <div id="dengue">
+            <a href="#section_dengue">Dengue Prevention and Control</a>
+        </div>
+
+
+        <div id="mosquitonets">
+            <a href="#section_mosquitonets">Mosquito Net Use</a>
+        </div>
+
+
+        <div id="hiv">
+            <a href="#section_hiv">HIV and Sexually Transmitted Infections
+            (STI)</a>
+        </div>
+
+
+        <div id="tb">
+            <a href="#section_tb">Tuberculosis (TB)</a>
+        </div>
+
+
+        <div id="blooddonation">
+            <a href="#section_blooddonation">Blood Donation</a>
+        </div>
+
+
+        <div id="roadsafety">
+            <a href="#section_roadsafety">Road Safety</a>
+        </div>
+
+
+        <div id="substanceuse">
+            <a href="#section_substanceuse">Excessive Substance Use</a>
+        </div>
+
+
+        <div id="noncommunicablediseases">
+            <a href="#section_noncommunicablediseases">Noncommunicable
+            Diseases</a>
+        </div>
+
+
+        <div id="violenceprevention">
+            <a href="#section_violenceprevention">Violence Prevention</a>
+        </div>
+
+
+        <div id="redcross">
+            <a href="#section_redcross">Red Cross Exposure</a>
+        </div>
+
+        <hr>
+
+
+        <div id="infoWrapper">
+        </div>
     </div>
-    <div class="btn-group">
-      <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">Select a Barangay</button>
-      <ul id="dropdown-menu-barangay" class="dropdown-menu" role="menu">
-        <li class="disabled">
-          <a role="menuitem" href="#">First select a municipality</a>
-        </li>
-      </ul>
-    </div>
-  </div>
-  <div class="container">
-    <div style="margin-bottom:25px;">
-      <img src="img/PRC-logo.png" class="pull-left logo-prc" />
-      <h3>Haiyan Recovery: Health</h3>
-      <h4>CBHFA Baseline Survey</h4>
-    </div>
-    <p style="text-align:justify;">This data was collected as part of a baseline survey for Community Based Health and First Aid
-    (CBHFA) programmes. Data collected using 
-    <a href="https://formhub.org/" target="_blank">formhub</a> and 
-    <a href="http://opendatakit.org/" target="_blank">ODK Collect</a>. Not all questions are included; this page is under
-    construction and data is in the process of being cleaned.
-    <br />
-    <br />Analysis includes ODK submissions up to <strong> 29 August 2015.</strong> Please submit questions or feedback by 
-    <a href="mailto:charles.ranby@ifrc.org" target="_blank" title="charles.ranby@ifrc.org">email</a>.</p>
-    <strong>Topics:</strong>
-    <br />
-    <div id="profile">
-      <a href="#section_profile">Respondents&#39; Profile</a>
-    </div>
-    <div id="firstaid">
-      <a href="#section_firstaid">First Aid</a>
-    </div>
-    <div id="majoremergencies">
-      <a href="#section_majoremergencies">Community Mobilization in Major Emergencies</a>
-    </div>
-    <div id="safemotherhood">
-      <a href="#section_safemotherhood">Safe Motherhood</a>
-    </div>
-    <div id="newborn">
-      <a href="#section_newborn">Care of a Newborn</a>
-    </div>
-    <div id="babynutrition">
-      <a href="#section_babynutrition">Baby Nutrition</a>
-    </div>
-    <div id="immunization">
-      <a href="#section_immunization">Immunization and Vaccination Campaigns</a>
-    </div>
-    <div id="sanitation">
-      <a href="#section_sanitation">Safe Water, Hygiene, and Sanitation</a>
-    </div>
-    <div id="diarrhoea">
-      <a href="#section_diarrhoea">Diarrhoea and Dehydation</a>
-    </div>
-    <div id="ari">
-      <a href="#section_ari">Acute Respiratory Infections</a>
-    </div>
-    <div id="malaria">
-      <a href="#section_malaria">Malaria Prevention and Control</a>
-    </div>
-    <div id="dengue">
-      <a href="#section_dengue">Dengue Prevention and Control</a>
-    </div>
-    <div id="mosquitonets">
-      <a href="#section_mosquitonets">Mosquito Net Use</a>
-    </div>
-    <div id="hiv">
-      <a href="#section_hiv">HIV and Sexually Transmitted Infections (STI)</a>
-    </div>
-    <div id="tb">
-      <a href="#section_tb">Tuberculosis (TB)</a>
-    </div>
-    <div id="blooddonation">
-      <a href="#section_blooddonation">Blood Donation</a>
-    </div>
-    <div id="roadsafety">
-      <a href="#section_roadsafety">Road Safety</a>
-    </div>
-    <div id="substanceuse">
-      <a href="#section_substanceuse">Excessive Substance Use</a>
-    </div>
-    <div id="noncommunicablediseases">
-      <a href="#section_noncommunicablediseases">Noncommunicable Diseases</a>
-    </div>
-    <div id="violenceprevention">
-      <a href="#section_violenceprevention">Violence Prevention</a>
-    </div>
-    <div id="redcross">
-      <a href="#section_redcross">Red Cross Exposure</a>
-    </div>
-    <hr />
-    <div id="infoWrapper"></div>
-  </div>
-  <script src="js/jQuery.min.js"></script> 
-  <script src="js/bootstrap.min.js"></script> 
-  <script src="js/d3.min.js"></script> 
-  <!-- <script src="js/leaflet.js"></script>
+    <script src="js/jQuery.min.js"></script> <script src="js/bootstrap.min.js"></script> <script src="js/d3.min.js"></script> <!-- <script src="js/leaflet.js"></script>
     <script src="js/leaflet-heat.js"></script> -->
-   
-  <script src="js/nv.d3.min.js"></script> 
-  <script src="js/main.js"></script></body>
+     <script src="js/nv.d3.min.js"></script> <script src="js/main.js"></script>
+</body>
 </html>
