@@ -25,7 +25,7 @@ function getSurveyData() {
                 d3.event.total);
             $('.progress-bar').css("width", percentComplete + '%').attr(
                 'aria-valuenow', percentComplete);
-            if (percentComplete === 100) {
+            if (percentComplete == 100) {
                 $("#loading-wrapper").fadeOut(500);
             }
         }
