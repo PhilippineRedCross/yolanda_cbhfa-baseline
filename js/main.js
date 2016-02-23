@@ -23,8 +23,8 @@ function getSurveyData() {
         if (d3.event.lengthComputable) {
             var percentComplete = Math.round(d3.event.loaded * 100 /
                 d3.event.total);
-            /* $('.progress-bar').css("width", percentComplete + '%').attr(
-                'aria-valuenow', percentComplete); */
+             $('.progress-bar progress-bar-success').css("width", percentComplete + '%')/* .attr(
+                'aria-valuenow', percentComplete) */; 
             if (percentComplete == 100) {
                 $("#loading-wrapper").fadeOut(500);
             }
