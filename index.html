@@ -1,226 +1,152 @@
-<!DOCTYPE html>
-
-<html lang="en">
-<head>
-    <meta content=
-    "HTML Tidy for HTML5 (experimental) for Windows https://github.com/w3c/tidy-html5/tree/c63cc39"
-    name="generator">
-    <meta charset="utf-8">
-    <meta content="IE=edge" http-equiv="X-UA-Compatible">
-    <meta content="width=device-width, initial-scale=1" name="viewport">
-	<title>CBHFA baseline</title>
-
-	<link href="css/bootstrap.min.css" rel="stylesheet">
-    <link href="css/nv.d3.min.css" rel="stylesheet">
-    <link href="css/custom.css" rel="stylesheet">
-	
-    <link href="img/favicon.ico" rel="shortcut icon" type="image/x-icon">
-    <link href="img/favicon.ico" rel="icon" type="image/x-icon">
-	   
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-</head>
-
-<body>
-    <div id="loading-wrapper">
-      			<div id="loading"><img id="loader" src="img/ajax_loader_gray_512.gif" /></div>
-    </div>
-
-
-    <div class="nav-admin">
-        <img class="pull-right logo-ifrc" src="img/IFRC_cobranding.png">
-
-        <p class="nav-text"><span id="selected-admin-label">All surveyed
-        areas</span> <small>( <span id="selected-survey-count">X</span> surveys
-        conducted)</small></p>
-        <button class="btn btn-default btn-xs" onclick="resetAdmin();" type=
-        "button">Reset</button>
-
-        <div class="btn-group">
-            <button class="btn btn-default btn-xs dropdown-toggle" data-toggle=
-            "dropdown" type="button">Select a Province</button>
-
-            <ul class="dropdown-menu" id="dropdown-menu-province">
-            </ul>
+<html><head>
+        <meta content="HTML Tidy for HTML5 (experimental) for Windows https://github.com/w3c/tidy-html5/tree/c63cc39" name="generator">
+        <meta charset="utf-8">
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <meta content="width=device-width, initial-scale=1" name="viewport">
+        <title>CBHFA baseline</title>
+        <link href="css/bootstrap.min.css" rel="stylesheet">
+        <link href="css/nv.d3.min.css" rel="stylesheet">
+        <link href="css/custom.css" rel="stylesheet">
+        <link href="img/favicon.ico" rel="shortcut icon" type="image/x-icon">
+        <link href="img/favicon.ico" rel="icon" type="image/x-icon">
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media
+        queries -->
+        <!-- WARNING: Respond.js doesn't work if you view the page via file://
+        -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        <![endif]-->
+    </head><body>
+        <div id="loading-wrapper">
+            <div id="loading">
+                <div class="progress progress-striped active">
+                    <div class="progress-bar progress-success"></div>
+                </div>
+            </div>
         </div>
-
-
-        <div class="btn-group">
-            <button class="btn btn-default btn-xs dropdown-toggle" data-toggle=
-            "dropdown" type="button">Select a Municipality</button>
-
-            <ul class="dropdown-menu" id="dropdown-menu-municipality">
-                <li class="disabled">
-                    <a href="#">First select a province</a>
-                </li>
-            </ul>
+        <div class="nav-admin">
+            <img class="pull-right logo-ifrc" src="img/IFRC_cobranding.png">
+            <p class="nav-text">
+                <span id="selected-admin-label">All surveyed areas</span>
+                <small>(
+                    <span id="selected-survey-count">X</span>surveys conducted)</small>
+            </p>
+            <button class="btn btn-danger btn-xs" onclick="resetAdmin();" type="button">Reset</button>
+            <div class="btn-group btn-group-sm">
+                <button class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" type="button">Select a Province</button>
+                <ul class="dropdown-menu" id="dropdown-menu-province"></ul>
+            </div>
+            <div class="btn-group btn-group-sm">
+                <button class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" type="button">Select a Municipality</button>
+                <ul class="dropdown-menu" id="dropdown-menu-municipality">
+                    <li class="disabled">
+                        <a href="#">First select a province</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="btn-group btn-group-sm">
+                <button class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" type="button">Select a Barangay</button>
+                <ul class="dropdown-menu" id="dropdown-menu-barangay">
+                    <li class="disabled">
+                        <a href="#">First select a municipality</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-
-
-        <div class="btn-group">
-            <button class="btn btn-default btn-xs dropdown-toggle" data-toggle=
-            "dropdown" type="button">Select a Barangay</button>
-
-            <ul class="dropdown-menu" id="dropdown-menu-barangay">
-                <li class="disabled">
-                    <a href="#">First select a municipality</a>
-                </li>
-            </ul>
+        <div class="container">
+            <div style="margin-bottom:25px;">
+                <img class="pull-left logo-prc" src="img/PRC-logo.png">
+                <h3>Haiyan Recovery: Health</h3>
+                <h4>CBHFA Baseline Survey</h4>
+            </div>
+            <p style="text-align:justify;">This data was collected as part of a baseline survey for Community Based
+                Health and First Aid (CBHFA) programmes. Data collected using
+                <a href="https://formhub.org/" target="_blank">formhub</a>and
+                <a href="http://opendatakit.org/" target="_blank">ODK Collect</a>. Not all questions are included; this page is under construction and
+                data is in the process of being cleaned. Incorrectly scanned codes will
+                be marked as "Invalid QR Code scanned".
+                <br>
+                <br>Analysis includes ODK submissions up to
+                <strong>7th February 2016.</strong>Please submit questions or feedback by
+                <a href="mailto:charles.ranby@ifrc.org" target="_blank" title="charles.ranby@ifrc.org">email</a>.</p>
+            <hr class="divider">
+            <strong>Topics:</strong>
+            <br>
+            <div id="profile">
+                <a href="#section_profile">Respondents' Profile</a>
+            </div>
+            <div id="firstaid">
+                <a href="#section_firstaid">First Aid</a>
+            </div>
+            <div id="majoremergencies">
+                <a href="#section_majoremergencies">Community Mobilization in Major Emergencies</a>
+            </div>
+            <div id="safemotherhood">
+                <a href="#section_safemotherhood">Safe Motherhood</a>
+            </div>
+            <div id="newborn">
+                <a href="#section_newborn">Care of a Newborn</a>
+            </div>
+            <div id="babynutrition">
+                <a href="#section_babynutrition">Baby Nutrition</a>
+            </div>
+            <div id="immunization">
+                <a href="#section_immunization">Immunization and Vaccination Campaigns</a>
+            </div>
+            <div id="sanitation">
+                <a href="#section_sanitation">Safe Water, Hygiene, and Sanitation</a>
+            </div>
+            <div id="diarrhoea">
+                <a href="#section_diarrhoea">Diarrhoea and Dehydation</a>
+            </div>
+            <div id="ari">
+                <a href="#section_ari">Acute Respiratory Infections</a>
+            </div>
+            <div id="malaria">
+                <a href="#section_malaria">Malaria Prevention and Control</a>
+            </div>
+            <div id="dengue">
+                <a href="#section_dengue">Dengue Prevention and Control</a>
+            </div>
+            <div id="mosquitonets">
+                <a href="#section_mosquitonets">Mosquito Net Use</a>
+            </div>
+            <div id="hiv">
+                <a href="#section_hiv">HIV and Sexually Transmitted Infections (STI)</a>
+            </div>
+            <div id="tb">
+                <a href="#section_tb">Tuberculosis (TB)</a>
+            </div>
+            <div id="blooddonation">
+                <a href="#section_blooddonation">Blood Donation</a>
+            </div>
+            <div id="roadsafety">
+                <a href="#section_roadsafety">Road Safety</a>
+            </div>
+            <div id="substanceuse">
+                <a href="#section_substanceuse">Excessive Substance Use</a>
+            </div>
+            <div id="noncommunicablediseases">
+                <a href="#section_noncommunicablediseases">Noncommunicable Diseases</a>
+            </div>
+            <div id="violenceprevention">
+                <a href="#section_violenceprevention">Violence Prevention</a>
+            </div>
+            <div id="redcross">
+                <a href="#section_redcross">Red Cross Exposure</a>
+            </div>
+            <hr>
+            <div id="infoWrapper"></div>
         </div>
-    </div>
+        <script src="js/jQuery.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/d3.min.js"></script>
+        <script src="js/nv.d3.min.js"></script>
+        <script src="js/main.js"></script>
+        <!-- <script src="js/leaflet.js"></script>
 
-
-    <div class="container">
-        <div style="margin-bottom:25px;">
-            <img class="pull-left logo-prc" src="img/PRC-logo.png">
-
-            <h3>Haiyan Recovery: Health</h3>
-
-
-            <h4>CBHFA Baseline Survey</h4>
-        </div>
-
-
-        <p style="text-align:justify;">This data was collected as part of a
-        baseline survey for Community Based Health and First Aid (CBHFA)
-        programmes. Data collected using <a href="https://formhub.org/" target=
-        "_blank">formhub</a> and <a href="http://opendatakit.org/" target=
-        "_blank">ODK Collect</a>. Not all questions are included; this page is
-        under construction and data is in the process of being cleaned.<br>
-        <br>
-        Analysis includes ODK submissions up to <strong>7th February 2016.
-		</strong> Please submit questions or feedback by <a href=
-        "mailto:charles.ranby@ifrc.org" target="_blank" title=
-        "charles.ranby@ifrc.org">email</a>.</p>
-        <strong>Topics:</strong><br>
-
-
-        <div id="profile">
-            <a href="#section_profile">Respondents&#39; Profile</a>
-        </div>
-
-
-        <div id="firstaid">
-            <a href="#section_firstaid">First Aid</a>
-        </div>
-
-
-        <div id="majoremergencies">
-            <a href="#section_majoremergencies">Community Mobilization in Major
-            Emergencies</a>
-        </div>
-
-
-        <div id="safemotherhood">
-            <a href="#section_safemotherhood">Safe Motherhood</a>
-        </div>
-
-
-        <div id="newborn">
-            <a href="#section_newborn">Care of a Newborn</a>
-        </div>
-
-
-        <div id="babynutrition">
-            <a href="#section_babynutrition">Baby Nutrition</a>
-        </div>
-
-
-        <div id="immunization">
-            <a href="#section_immunization">Immunization and Vaccination
-            Campaigns</a>
-        </div>
-
-
-        <div id="sanitation">
-            <a href="#section_sanitation">Safe Water, Hygiene, and
-            Sanitation</a>
-        </div>
-
-
-        <div id="diarrhoea">
-            <a href="#section_diarrhoea">Diarrhoea and Dehydation</a>
-        </div>
-
-
-        <div id="ari">
-            <a href="#section_ari">Acute Respiratory Infections</a>
-        </div>
-
-
-        <div id="malaria">
-            <a href="#section_malaria">Malaria Prevention and Control</a>
-        </div>
-
-
-        <div id="dengue">
-            <a href="#section_dengue">Dengue Prevention and Control</a>
-        </div>
-
-
-        <div id="mosquitonets">
-            <a href="#section_mosquitonets">Mosquito Net Use</a>
-        </div>
-
-
-        <div id="hiv">
-            <a href="#section_hiv">HIV and Sexually Transmitted Infections
-            (STI)</a>
-        </div>
-
-
-        <div id="tb">
-            <a href="#section_tb">Tuberculosis (TB)</a>
-        </div>
-
-
-        <div id="blooddonation">
-            <a href="#section_blooddonation">Blood Donation</a>
-        </div>
-
-
-        <div id="roadsafety">
-            <a href="#section_roadsafety">Road Safety</a>
-        </div>
-
-
-        <div id="substanceuse">
-            <a href="#section_substanceuse">Excessive Substance Use</a>
-        </div>
-
-
-        <div id="noncommunicablediseases">
-            <a href="#section_noncommunicablediseases">Noncommunicable
-            Diseases</a>
-        </div>
-
-
-        <div id="violenceprevention">
-            <a href="#section_violenceprevention">Violence Prevention</a>
-        </div>
-
-
-        <div id="redcross">
-            <a href="#section_redcross">Red Cross Exposure</a>
-        </div>
-
-        <hr>
-
-
-        <div id="infoWrapper">
-        </div>
-    </div>
-	
-    <script src="js/jQuery.min.js"></script>
-	<script src="js/bootstrap.min.js"></script>
-	<script src="js/d3.min.js"></script>
-	<script src="js/nv.d3.min.js"></script>
-	<script src="js/main.js"></script>
-		<!-- <script src="js/leaflet.js"></script>
     <script src="js/leaflet-heat.js"></script> -->
-    	</body>
-</html>
+    
+
+</body></html>
