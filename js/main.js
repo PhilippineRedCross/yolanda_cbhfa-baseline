@@ -21,10 +21,10 @@ function getSurveyData() {
     }).on("progress", function(event) {
         //update progress bar
         if (d3.event.lengthComputable) {
-            var percentComplete = Math.round(d3.event.loaded / 10000);
-/*                 d3.event.total); */
-            $('.progress-bar').css("width", percentComplete + '%').attr(
-                'aria-valuenow', percentComplete);
+            var percentComplete = Math.round(d3.event.loaded * 100 /
+                d3.event.total);
+            /* $('.progress-bar').css("width", percentComplete + '%').attr(
+                'aria-valuenow', percentComplete); */
             if (percentComplete == 100) {
                 $("#loading-wrapper").fadeOut(500);
             }
