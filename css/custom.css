@@ -3,7 +3,7 @@ body{ padding-top:85px}
 .jumpto{ margin-top:-110px;   padding-bottom:110px;  display:block}
 
 .tableIcon{ height:34px;  width:34px}
-.table-custom{ width:0}
+.table-custom{ width:100%}
 
 .logo-ifrc{ height:100%;  background:#fff}
 .logo-prc{ height:60px;  margin-right:20px}
