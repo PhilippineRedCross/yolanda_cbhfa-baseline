@@ -2672,6 +2672,7 @@ function DI3(){
     "less":"less",
     "same":"same",
     "more":"more",
+	"nothing":"",
     "not":"child not breastfed",
     "dk":"don't know",
     "skip":"no response"
@@ -2680,6 +2681,7 @@ function DI3(){
     "less":"bihira",
     "same":"gayag ng dato o walang pagbabago",
     "more":"mas madalas",
+    "nothing":"",
     "not":"hindi na ngpapasuso",
     "dk":"hindi alam",
     "skip":"walang sagot"
@@ -2696,7 +2698,8 @@ function DI4(){
     "less":"less",
     "same":"same",
     "more":"more",
-    "not":"",
+    "nothing":"",
+	"not":"",
     "dk":"don't know",
     "skip":"no response"
   };
@@ -2704,7 +2707,8 @@ function DI4(){
     "less":"bihira",
     "same":"gayag ng dato o walang pagbabago",
     "more":"mas madalas",
-    "not":"walang iniinom",
+    "nothing":"",  
+	"not":"walang iniinom",
     "dk":"hindi alam",
     "skip":"walang sagot"
   };
@@ -2720,7 +2724,8 @@ function DI5(){
     "less":"less",
     "same":"same",
     "more":"more",
-    "not":"",
+    "nothing":"",
+	"not":"",
     "dk":"don't know",
     "skip":"no response"
   };
@@ -2728,6 +2733,7 @@ function DI5(){
     "less":"bihira",
     "same":"gayag ng dato o walang pagbabago",
     "more":"mas madalas",
+    "nothing":"",
     "not":"walang kinakain",
     "dk":"hindi alam",
     "skip":"walang sagot"
