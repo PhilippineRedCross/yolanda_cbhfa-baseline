@@ -2256,7 +2256,8 @@ function WS6number(){
   var notAskedCount = 0;
   $.each(filteredData, function(surveyIndex, survey){
     var thisAnswer = survey[questionID];
-    if (thisAnswer == "n/a"){
+    // if (thisAnswer == "n/a"){
+		    if ((thisAnswer === '') || (thisAnswer === "999")){
       notAskedCount ++;
     } else {
       if(isFinite(parseInt(thisAnswer, 10)) == true){
